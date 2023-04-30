@@ -7,7 +7,7 @@ export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
 };
 
-export const Api = (ctx: Context) => {
+export const Api = (ctx: Context): ApiReturnTypes => {
   const cookies = ctx ? Cookies.get(ctx) : parseCookies();
   const token = cookies.token;
 
