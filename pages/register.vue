@@ -1,48 +1,58 @@
-<template lang="">
+<template>
   <div>
     <form @submit.prevent="onSubmit">
-      <input type="text" placeholder="firstName" v-model="firstName" />
-      <input type="text" placeholder="lastName" v-model="lastName" />
-      <input type="text" placeholder="email" v-model="email" />
-      <input type="text" placeholder="password" v-model="password" />
-      <input type="text" placeholder="Подтвердите пароль" v-model="password2" />
+      <input type="text" placeholder="Имя" v-model="firstName" />
+      <span v-if="errors.firstName">{{ errors.firstName[0] }}</span>
+      <input type="text" placeholder="Фамилия" v-model="lastName" />
+      <span v-if="errors.lastName">{{ errors.lastName[0] }}</span>
+      <input type="text" placeholder="Email" v-model="email" />
+      <span v-if="errors.email">{{ errors.email[0] }}</span>
+      <input type="text" placeholder="Пароль" v-model="password" />
+      <span v-if="errors.password">{{ errors.password[0] }}</span>
+      <input
+        type="text"
+        placeholder="Подтвердите пароль"
+        v-model="passwordConfirmed"
+      />
       <button type="submit">Зарегистроваться</button>
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
 import { Api } from "~/api";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-export default {
-  data() {
-    return {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      password2: "",
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const password = ref("");
+const passwordConfirmed = ref("");
+const errors = ref([]);
+const router = useRouter();
+
+const onSubmit = async () => {
+  try {
+    const dto = {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+      password_confirmation: passwordConfirmed.value,
     };
-  },
-  methods: {
-    async onSubmit() {
-      try {
-        const dto = {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password,
-        };
-        const data = await Api().auth.register(dto);
-        console.log(data);
-        this.$router.push("/");
-      } catch (err) {
-        console.warn(err);
-        alert("Ошибка при регистрации");
-      }
-    },
-  },
+    const data = await Api().auth.register(dto);
+    console.log(data);
+    router.push("/");
+  } catch (err) {
+    errors.value = err.response.data.message;
+    console.warn(err);
+  }
 };
 </script>
 
-<style lang=""></style>
+<style lang="scss">
+input {
+  display: block;
+}
+</style>
