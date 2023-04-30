@@ -12,6 +12,7 @@
 
 <script>
 import axios from "axios";
+import { Api } from "~/api";
 
 export default {
   data() {
@@ -24,17 +25,23 @@ export default {
   },
   methods: {
     async onSubmit() {
-      const dto = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        password: this.password,
-      };
-      const { data } = await axios.post(
-        "http://127.0.0.1:8000/api/auth/register",
-        dto
-      );
-      console.log(data);
+      try {
+        const dto = {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.email,
+          password: this.password,
+        };
+        // const { data } = await axios.post(
+        //   "http://127.0.0.1:8000/api/auth/register",
+        //   dto
+        // );
+        const data = await Api().auth.register(dto);
+        console.log(data);
+      } catch (err) {
+        console.warn(err);
+        alert("Ошибка при регистрации");
+      }
     },
   },
 };
