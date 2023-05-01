@@ -1,11 +1,12 @@
 <template>
   <div>
     <form @submit.prevent="onSubmit">
+      <span v-if="errors.email">{{ errors.email[0] }}</span>
       <Input name="firstName" placeholder="Имя" />
       <Input name="lastName" placeholder="Фамилия" />
       <Input name="email" placeholder="Email" />
       <Input name="password" placeholder="Пароль" />
-      <Input name="passwordConfirmed" placeholder="Подтвердите пароль" />
+      <Input name="password_confirmation" placeholder="Подтвердите пароль" />
       <button type="submit">Зарегистроваться</button>
     </form>
   </div>
@@ -15,6 +16,7 @@
 components: {
   Input;
 }
+
 import { useForm } from "vee-validate";
 import { RegisterScheme } from "~/utils/validation/RegisterScheme";
 import { Api } from "~/api";
@@ -26,24 +28,13 @@ const { handleSubmit } = useForm({
   validationSchema: RegisterScheme,
 });
 
-const firstName = ref("");
-const lastName = ref("");
-const email = ref("");
-const password = ref("");
-const passwordConfirmed = ref("");
 const errors = ref([]);
 const router = useRouter();
 
-const onSubmit = handleSubmit(async () => {
+const onSubmit = handleSubmit(async (values) => {
+  console.log(values);
   try {
-    const dto = {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      password: password.value,
-      password_confirmation: passwordConfirmed.value,
-    };
-    const data = await Api().auth.register(dto);
+    const data = await Api().auth.register(values);
     console.log(data);
     router.push("/");
   } catch (err) {

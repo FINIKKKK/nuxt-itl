@@ -10,8 +10,8 @@ export const RegisterScheme = yup.object().shape({
   password: yup
     .string()
     .required("Поле является обязательным")
-    .min(9, "Пароль должен состоять минимум из 9 символов"),
-  passwordConfirmed: yup
+    .min(6, "Пароль должен состоять минимум из 6 символов"),
+  password_confirmation: yup
     .string()
     .required("Поле является обязательным")
     .oneOf([yup.ref("password")], "Пароли должны совпадать"),

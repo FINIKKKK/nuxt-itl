@@ -2,36 +2,41 @@
   <div>
     <form @submit.prevent="onSubmit">
       <span v-if="error">{{ error }}</span>
-      <input type="text" placeholder="Email" v-model="email" />
-      <input type="text" placeholder="Пароль" v-model="password" />
+      <Input name="email" placeholder="Email" />
+      <Input name="password" placeholder="Пароль" />
       <button type="submit">Войти</button>
     </form>
   </div>
 </template>
 
 <script setup>
+components: {
+  Input;
+}
+
+import { useForm } from "vee-validate";
 import { Api } from "~/api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { LoginScheme } from "~/utils/validation/LoginScheme";
+import Input from "~/components/Input.vue";
 
-const email = ref("");
-const password = ref("");
+const { handleSubmit } = useForm({
+  validationSchema: LoginScheme,
+});
+
 const error = ref("");
 const router = useRouter();
 
-const onSubmit = async () => {
+const onSubmit = handleSubmit(async (values) => {
   try {
-    const dto = {
-      email: email.value,
-      password: password.value,
-    };
-    const data = await Api().auth.login(dto);
+    const data = await Api().auth.login(values);
     console.log(data);
     router.push("/");
   } catch (err) {
     error.value = err.response.data.main_message;
   }
-};
+});
 </script>
 
 <style lang=""></style>
