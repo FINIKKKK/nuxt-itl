@@ -18,11 +18,12 @@ components: {
 }
 
 import { useForm } from "vee-validate";
-import { RegisterScheme } from "~/utils/validation/RegisterScheme";
-import { Api } from "~/api";
+import { RegisterScheme } from "@/utils/validation/RegisterScheme";
+import { Api } from "@/api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import Input from "~/components/Input.vue";
+import Input from "@/components/Input.vue";
+import { setCookie } from 'nookies';
 
 const { handleSubmit } = useForm({
   validationSchema: RegisterScheme,
@@ -34,8 +35,11 @@ const router = useRouter();
 const onSubmit = handleSubmit(async (values) => {
   console.log(values);
   try {
-    const data = await Api().auth.register(values);
-    console.log(data);
+    const token = await Api().auth.register(values);
+    setCookie(null, "access_token", token.access_token, {
+      maxAge: 30 * 60 * 24 * 14,
+      path: "/",
+    });
     router.push("/");
   } catch (err) {
     errors.value = err.response.data.message;

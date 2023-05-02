@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { TUser } from "../user/types";
 import { RegisterUserDto, LoginUserDto, TToken } from "./types";
 
 export const AuthApi = (instance: AxiosInstance) => ({
@@ -13,6 +14,12 @@ export const AuthApi = (instance: AxiosInstance) => ({
     const { data } = await instance.post<LoginUserDto, { data: TToken }>(
       "/auth/login",
       dto
+    );
+    return data;
+  },
+  async me() {
+    const { data } = await instance.get<TUser>(
+      "/auth/me",
     );
     return data;
   },

@@ -1,4 +1,4 @@
-import { TBase } from "~/api/types";
+import { TBase } from "@/api/types";
 
 export type TUser = TBase & {
   firstName: string;

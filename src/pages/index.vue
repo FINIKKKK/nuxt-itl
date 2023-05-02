@@ -1,7 +1,7 @@
 <template>
   <div>Главная</div>
   <header>
-    <nav>
+    <nav v-if="userData === null">
       <ul>
         <li>
           <NuxtLink to="/register">Регистрация</NuxtLink>
@@ -11,10 +11,14 @@
         </li>
       </ul>
     </nav>
-    <p>Пользователь вошел</p>
+    <p v-else>Пользователь вошел</p>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { useUserStore } from "~/stores/UserStore";
+
+const { userData } = useUserStore();
+</script>
 
 <style lang=""></style>

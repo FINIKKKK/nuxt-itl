@@ -6,6 +6,7 @@ export type LoginUserDto = {
 export type RegisterUserDto = LoginUserDto & {
   firstName: string;
   lastName: string;
+  password_confirmation: string;
 };
 
 export type TToken = {
