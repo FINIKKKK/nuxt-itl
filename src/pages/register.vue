@@ -1,18 +1,31 @@
 <template>
-  <div>
-    <form @submit.prevent="onSubmit">
+  <NuxtLayout name="main" :title="'Регистрация'" :titleSpan="'>  Создание компании  >  Добавление компании'">
+    <form class="form" @submit.prevent="onSubmit">
+      <p class="text">
+        У вас уже есть аккаунт?
+        <NuxtLink to="/login">Войдите в систему</NuxtLink>
+      </p>
       <span v-if="errors.email">{{ errors.email[0] }}</span>
-      <Input name="firstName" placeholder="Имя" />
-      <Input name="lastName" placeholder="Фамилия" />
-      <Input name="email" placeholder="Email" />
-      <Input name="password" placeholder="Пароль" />
-      <Input name="password_confirmation" placeholder="Подтвердите пароль" />
-      <button type="submit">Зарегистроваться</button>
+      <Input name="firstName" label="Имя" />
+      <Input name="lastName" label="Фамилия" />
+      <Input name="email" label="Email" />
+      <Input name="password" label="Пароль" />
+      <Input name="password_confirmation" label="Подтвердите пароль" />
+      <p class="text">
+        Нажимая кнопку «Зарегистроваться» вы принимаете
+        <NuxtLink to="#">Условия обслуживания</NuxtLink>в отношении продуктов
+        ITL и соглашаетесь с
+        <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
+      </p>
+      <button type="submit" class="btn">Зарегистроваться</button>
     </form>
-  </div>
+  </NuxtLayout>
 </template>
 
 <script setup>
+definePageMeta({
+  layout: false,
+});
 components: {
   Input;
 }
@@ -23,7 +36,7 @@ import { Api } from "@/api";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Input from "@/components/Input.vue";
-import { setCookie } from 'nookies';
+import { setCookie } from "nookies";
 
 const { handleSubmit } = useForm({
   validationSchema: RegisterScheme,
@@ -48,8 +61,11 @@ const onSubmit = handleSubmit(async (values) => {
 });
 </script>
 
-<style lang="scss">
-input {
-  display: block;
+<style lang="scss" scoped>
+.form {
+  width: 720px;
+}
+.text {
+  margin-bottom: 40px;
 }
 </style>

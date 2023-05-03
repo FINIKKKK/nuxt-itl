@@ -4,9 +4,13 @@ $font: Roboto;
 // ---- Colors ----
 $white: #ffffff;
 $black: #333333;
-$blue: #0E65DD;
-$blue2: #0E5AC5;
-$blue3: rgba(#0E65DD, 0.5);
-$bg: #F1F6FD;
+$blue: #0e65dd;
+$blue2: #0e5ac5;
+$blue3: rgba($blue, 0.5);
+$bg: #f1f6fd;
+$red: #bd081c;
+$red2: rgba($red, 0.5);
+$yellow: #ffd740;
+$gray: rgba($black, 0.2);
 
 // ---- Mixins ----

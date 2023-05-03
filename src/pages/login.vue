@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div>
     <form @submit.prevent="onSubmit">
       <span v-if="error">{{ error }}</span>

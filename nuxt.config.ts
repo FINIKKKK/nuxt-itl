@@ -6,4 +6,13 @@ export default defineNuxtConfig({
     // ...
     "@pinia/nuxt",
   ],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "~/assets/styles/assets/variables";',
+        },
+      },
+    },
+  },
 });

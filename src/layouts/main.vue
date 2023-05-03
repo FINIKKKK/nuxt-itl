@@ -47,15 +47,29 @@
       </nav>
     </aside>
 
-    <slot />
+    <div class="content">
+      <h1 class="title">
+        {{ title }} <span v-if="titleSpan">{{ titleSpan }}</span>
+      </h1>
+      <slot />
+    </div>
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  titleSpan: {
+    type: String,
+    required: true,
+  },
+});
+</script>
 
 <style lang="scss" scoped>
-@import "~/assets/styles/assets/variables";
-
 main {
   display: flex;
 }
@@ -67,6 +81,12 @@ main {
   flex-direction: column;
   align-items: center;
   padding: 32px 0 38px;
+}
+.content {
+  width: 100%;
+  height: 100vh;
+  padding: 40px;
+  overflow: auto;
 }
 .logo {
   margin-bottom: 50px;
@@ -91,6 +111,14 @@ main {
   justify-content: center;
   &:hover {
     background-color: $blue2;
+  }
+}
+.title {
+  font-size: 40px;
+  line-height: 48px;
+  margin-bottom: 56px;
+  span {
+    color: $gray;
   }
 }
 </style>
