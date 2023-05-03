@@ -2,7 +2,7 @@
   <NuxtLayout
     name="main"
     :title="'Регистрация'"
-    :titleSpan="'>  Создание компании  >  Добавление компании'"
+    :titleSpan="'>  Создание компании  >  Добавление пользователей'"
   >
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">

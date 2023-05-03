@@ -43,17 +43,33 @@ svg {
   line-height: 18px;
   padding: 15px 32px;
   border-radius: 4px;
-  text-transform: capitalize;
   transition: 0.3s;
   &:hover {
     background-color: darken($yellow, 15%);
   }
   &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+.secondary {
+  background-color: $blue4;
+  color: $blue;
+  border-radius: 2px;
+  transition: 0.3s;
+  &:hover {
+    background-color: rgba($blue, 0.15);
+  }
+  svg path {
+    fill: $blue;
   }
 }
 
 .form {
   width: 720px;
+  .text {
+    margin-bottom: 40px;
+  }
 }
 
 // ScrollBar
