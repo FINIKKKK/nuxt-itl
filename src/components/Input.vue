@@ -3,15 +3,26 @@
     <div class="inner">
       <label>{{ label }}</label>
       <input
-        type="text"
+        :type="isShowPassword ? 'text' : 'password'"
         v-model="value"
         :name="name"
         @focus="isFocus = true"
         @blur="isFocus = false"
       />
-      <!-- <svg class="password" width="20" height="20">
-      <use xlink:href="./img/icons/icons.svg#eye" />
-    </svg> -->
+      <div v-if="props.isPassword" class="password">
+        <img
+          v-if="!isShowPassword"
+          @click="() => setShowPassword(true)"
+          src="@/assets/img/eye.svg"
+          alt="eye"
+        />
+        <img
+          v-if="isShowPassword"
+          @click="() => setShowPassword(false)"
+          src="@/assets/img/noeye.svg"
+          alt="eye"
+        />
+      </div>
     </div>
     <span class="error">{{ errorMessage }}</span>
   </div>
@@ -30,11 +41,19 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  isPassword: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 const isFocus = ref(false);
+const isShowPassword = ref(false);
 const { errorMessage, value } = useField(props.name);
 
+const setShowPassword = (value) => {
+  isShowPassword.value = value;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -50,6 +69,7 @@ const { errorMessage, value } = useField(props.name);
     color: $black;
     input {
       padding: 16px 24px;
+      width: 100%;
     }
   }
   &.focus {
@@ -73,6 +93,12 @@ const { errorMessage, value } = useField(props.name);
   .error {
     font-size: 12px;
     color: $red;
+  }
+  .password {
+    position: absolute;
+    top: 14px;
+    right: 19px;
+    cursor: pointer;
   }
 }
 </style>

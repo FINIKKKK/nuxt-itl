@@ -64,7 +64,7 @@ const props = defineProps({
   },
   titleSpan: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 </script>

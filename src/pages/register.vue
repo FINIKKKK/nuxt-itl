@@ -13,8 +13,12 @@
       <Input name="firstName" label="Имя" />
       <Input name="lastName" label="Фамилия" />
       <Input name="email" label="Email" />
-      <Input name="password" label="Пароль" />
-      <Input name="password_confirmation" label="Подтвердите пароль" />
+      <Input name="password" label="Пароль" isPassword />
+      <Input
+        name="password_confirmation"
+        label="Подтвердите пароль"
+        isPassword
+      />
       <p class="text">
         Нажимая кнопку «Зарегистроваться» вы принимаете
         <NuxtLink to="#">Условия обслуживания</NuxtLink> в отношении продуктов
@@ -41,7 +45,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Input from "@/components/Input.vue";
 import { setCookie } from "nookies";
-
 
 const errors = ref<any>([]);
 const router = useRouter();

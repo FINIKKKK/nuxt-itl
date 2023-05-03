@@ -6,7 +6,7 @@
       </p>
       <div v-if="error" class="error">{{ error }}</div>
       <Input name="email" label="Email" />
-      <Input name="password" label="Пароль" />
+      <Input name="password" label="Пароль" isPassword />
       <p class="text">
         Нажимая кнопку «Зарегистроваться» вы принимаете
         <NuxtLink to="#">Условия обслуживания</NuxtLink> в отношении продуктов
