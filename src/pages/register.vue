@@ -1,11 +1,15 @@
 <template>
-  <NuxtLayout name="main" :title="'Регистрация'" :titleSpan="'>  Создание компании  >  Добавление компании'">
+  <NuxtLayout
+    name="main"
+    :title="'Регистрация'"
+    :titleSpan="'>  Создание компании  >  Добавление компании'"
+  >
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">
         У вас уже есть аккаунт?
         <NuxtLink to="/login">Войдите в систему</NuxtLink>
       </p>
-      <span v-if="errors.email">{{ errors.email[0] }}</span>
+      <div v-if="errors.email" class="error">{{ errors.email[0] }}</div>
       <Input name="firstName" label="Имя" />
       <Input name="lastName" label="Фамилия" />
       <Input name="email" label="Email" />
@@ -13,7 +17,7 @@
       <Input name="password_confirmation" label="Подтвердите пароль" />
       <p class="text">
         Нажимая кнопку «Зарегистроваться» вы принимаете
-        <NuxtLink to="#">Условия обслуживания</NuxtLink>в отношении продуктов
+        <NuxtLink to="#">Условия обслуживания</NuxtLink> в отношении продуктов
         ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
@@ -22,7 +26,7 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 definePageMeta({
   layout: false,
 });
@@ -38,34 +42,43 @@ import { useRouter } from "vue-router";
 import Input from "@/components/Input.vue";
 import { setCookie } from "nookies";
 
+
+const errors = ref<any>([]);
+const router = useRouter();
 const { handleSubmit } = useForm({
   validationSchema: RegisterScheme,
 });
 
-const errors = ref([]);
-const router = useRouter();
-
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
   try {
-    const token = await Api().auth.register(values);
+    const dto = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      password_confirmation: values.password_confirmation,
+    };
+    const token = await Api().auth.register(dto);
     setCookie(null, "access_token", token.access_token, {
       maxAge: 30 * 60 * 24 * 14,
       path: "/",
     });
     router.push("/");
-  } catch (err) {
-    errors.value = err.response.data.message;
+  } catch (err: any) {
+    errors.value = err?.response?.data?.message;
     console.warn(err);
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.form {
-  width: 720px;
-}
 .text {
   margin-bottom: 40px;
+}
+.error {
+  color: $red;
+  font-size: 14px;
+  margin-top: -20px;
+  margin-bottom: 25px;
 }
 </style>

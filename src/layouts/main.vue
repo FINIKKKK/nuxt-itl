@@ -56,7 +56,7 @@
   </main>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const props = defineProps({
   title: {
     type: String,
@@ -104,11 +104,14 @@ main {
 }
 .nav__item {
   cursor: pointer;
-  padding: 24px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+  }
   &:hover {
     background-color: $blue2;
   }

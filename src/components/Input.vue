@@ -67,7 +67,7 @@ const { errorMessage, value } = useField(props.name);
     left: 19px;
     top: 16px;
     padding: 0 5px;
-    background-color: $bg;
+    background-color: $white;
     transition: 0.3s;
   }
   .error {

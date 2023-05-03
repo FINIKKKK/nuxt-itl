@@ -1,24 +1,11 @@
 <template>
-  <div>Главная</div>
-  <header>
-    <nav v-if="userData === null">
-      <ul>
-        <li>
-          <NuxtLink to="/register">Регистрация</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/login">Войти</NuxtLink>
-        </li>
-      </ul>
-    </nav>
-    <p v-else>Пользователь вошел</p>
-  </header>
+  <NuxtLayout name="main" :title="'Главная'"></NuxtLayout>
 </template>
 
-<script setup>
-import { useUserStore } from "~/stores/UserStore";
-
-const { userData } = useUserStore();
+<script lang="ts" setup>
+definePageMeta({
+  layout: false,
+});
 </script>
 
-<style lang=""></style>
+<style lang="scss" scoped></style>
