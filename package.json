@@ -10,10 +10,14 @@
   },
   "devDependencies": {
     "@types/node": "^18",
-    "nuxt": "^3.4.2"
+    "nuxt": "^3.4.2",
+    "svg-sprite-loader": "^6.0.11",
+    "svgo-loader": "^4.0.0"
   },
   "dependencies": {
     "@nuxt/types": "^2.16.3",
+    "@nuxtjs/svg": "^0.4.0",
+    "@nuxtjs/svg-sprite": "^1.0.2",
     "@pinia/nuxt": "^0.4.9",
     "axios": "^1.4.0",
     "nookies": "^2.5.2",

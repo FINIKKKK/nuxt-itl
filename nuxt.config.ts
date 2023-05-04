@@ -1,11 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  srcDir: "src/",
   css: ["~/assets/styles/style.scss"],
-  modules: [
-    // ...
-    "@pinia/nuxt",
-  ],
+  modules: ["@pinia/nuxt", "@nuxtjs/svg-sprite"],
   vite: {
     css: {
       preprocessorOptions: {
@@ -14,5 +10,9 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+  svgSprite: {
+    input: "~/assets/img",
+    output: "~/assets/sprite",
   },
 });

@@ -33,7 +33,7 @@
         @keydown.enter="handleInput('keydown')"
         ref="inputField"
       />
-      <div v-if="props.type === 'password'" class="password">
+      <div v-if="props.type === 'password'" class="showPassword">
         <img
           v-if="!isShowPassword && value"
           @click="() => setShowPassword(true)"
@@ -173,7 +173,7 @@ const handleInput = async (type: string) => {
     font-size: 12px;
     color: $red;
   }
-  .password {
+  .showPassword {
     position: absolute;
     top: 13px;
     right: 24px;
@@ -182,9 +182,9 @@ const handleInput = async (type: string) => {
   .tooltip {
     width: 18px;
     margin-left: 5px;
+    fill: $blue3;
     path {
       transition: 0.3s;
-      fill: $blue3;
     }
   }
   .address {
