@@ -13,11 +13,11 @@
       <Input name="firstName" label="Имя" />
       <Input name="lastName" label="Фамилия" />
       <Input name="email" label="Email" />
-      <Input name="password" label="Пароль" isPassword />
+      <Input name="password" label="Пароль" type="password" />
       <Input
         name="password_confirmation"
         label="Подтвердите пароль"
-        isPassword
+        type="password"
       />
       <p class="text">
         Нажимая кнопку «Зарегистроваться» вы принимаете
@@ -66,7 +66,7 @@ const onSubmit = handleSubmit(async (values) => {
       maxAge: 30 * 60 * 24 * 14,
       path: "/",
     });
-    router.push("/");
+    router.push("/create_company");
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
     console.warn(err);

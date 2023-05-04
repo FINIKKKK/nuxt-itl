@@ -1,7 +1,7 @@
 <template>
   <div
     class="input"
-    :class="{ focus: isFocus || value, password: props.isPassword }"
+    :class="{ focus: isFocus || value, password: props.type === 'password' }"
   >
     <div class="inner">
       <label
@@ -22,16 +22,18 @@
         </svg>
       </label>
       <input
-        :type="!props.isPassword || isShowPassword ? 'text' : 'password'"
+        :type="
+          props.type !== 'password' || isShowPassword ? 'text' : 'password'
+        "
         v-model="value"
         :name="name"
         @focus="isFocus = true"
         @blur="isFocus = false"
-        @input="handleInput"
-        @keydown.enter="handleEnter"
+        @input="handleInput('input')"
+        @keydown.enter="handleInput('keydown')"
         ref="inputField"
       />
-      <div v-if="props.isPassword" class="password">
+      <div v-if="props.type === 'password'" class="password">
         <img
           v-if="!isShowPassword && value"
           @click="() => setShowPassword(true)"
@@ -45,16 +47,15 @@
           alt="eye"
         />
       </div>
-      <div v-if="isUrlAdress" class="address">.itl.wiki</div>
+      <div v-if="props.type === 'url_address'" class="address">.itl.wiki</div>
     </div>
     <span class="error">{{ errorMessage }}</span>
   </div>
 </template>
 
-<script setup>
-import { defineProps, ref } from "vue";
+<script lang="ts" setup>
 import { useField } from "vee-validate";
-import * as yup from "yup";
+import { AddUsersScheme } from "~/utils/validation/AddUsersScheme";
 
 const props = defineProps({
   name: {
@@ -65,19 +66,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  isPassword: {
-    type: Boolean,
-    required: false,
-  },
   isLabelTooltip: {
     type: Boolean,
     required: false,
   },
-  isUrlAdress: {
-    type: Boolean,
-    required: false,
-  },
-  ref: {
+  type: {
     type: String,
     required: false,
   },
@@ -86,33 +79,45 @@ const props = defineProps({
     required: false,
   },
 });
-
 const emits = defineEmits(["inputValue"]);
 
+const inputField = ref<HTMLInputElement | null>(null);
 const isFocus = ref(false);
 const isShowPassword = ref(false);
-const { errorMessage, value: inputValue } = useField(props.name);
-const value = ref("");
-const inputField = ref(null);
-// const value = ref(ref ? inputValue2.value : inputValue);
-const setShowPassword = (value) => {
+const { errorMessage: error, value: inputValue } = useField(props.name);
+const value = ref(props.type === "add_users" ? "" : inputValue);
+const errorMessage = ref(props.type === "add_users" ? "" : error);
+
+const setShowPassword = (value: boolean) => {
   isShowPassword.value = value;
 };
 
-const handleInput = () => {
-  emits("inputValue", value.value);
-  const userList = value.value.split(",");
-  if (userList.length > 1) {
-    props.handleInput(userList[0]);
-    value.value = "";
-    inputField.value.focus();
-  }
-};
-const handleEnter = () => {
-  if (value.value !== "") {
-    props.handleInput(value.value);
-    value.value = "";
-    inputField.value.focus();
+const handleInput = async (type: string) => {
+  if (props.type === "add_users") {
+    emits("inputValue", value.value);
+    try {
+      await AddUsersScheme.validate(
+        { email: value.value },
+        { abortEarly: false }
+      );
+      errorMessage.value = "";
+      if (type === "input") {
+        const emailsArr = value?.value?.split(",");
+        if (emailsArr.length > 1) {
+          props.handleInput?.(emailsArr[0]);
+          value.value = "";
+          inputField.value?.focus();
+        }
+      } else if (type === "keydown") {
+        if (value.value !== "") {
+          props.handleInput?.(value.value);
+          value.value = "";
+          inputField.value?.focus();
+        }
+      }
+    } catch (err: any) {
+      errorMessage.value = err.message;
+    }
   }
 };
 </script>

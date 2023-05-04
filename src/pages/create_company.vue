@@ -10,7 +10,7 @@
         name="address"
         label="Адрес вашей компании"
         isLabelTooltip
-        isUrlAdress
+        type="url_address"
       />
       <p class="text">
         Нажимая кнопку «Создать компанию» вы принимаете
@@ -25,8 +25,8 @@
 
 <script lang="ts" setup>
 import { useForm } from "vee-validate";
-import Input from "~/components/Input.vue";
-import { CompanyScheme } from "~/utils/validation/CompanyScheme";
+import Input from "@/components/Input.vue";
+import { CompanyScheme } from "@/utils/validation/CompanyScheme";
 
 definePageMeta({
   layout: false,
@@ -34,6 +34,8 @@ definePageMeta({
 components: {
   Input;
 }
+
+const router = useRouter();
 
 const { handleSubmit } = useForm({
   validationSchema: CompanyScheme,
@@ -45,6 +47,7 @@ const onSubmit = handleSubmit(async (values) => {
       name: values.name,
       address: values.address,
     };
+    router.push("/add_users");
   } catch (err) {
     console.warn(err);
     alert("Ошибка при создании компании");

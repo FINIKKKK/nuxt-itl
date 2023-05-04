@@ -7,19 +7,19 @@
       </p>
       <Input
         name="email"
-        :label="'Введите e-mail адреса пользователей через запятую'"
+        label="Введите e-mail адреса пользователей через запятую"
         isLabelTooltip
-        ref="inputValue"
+        type="add_users"
         :handleInput="handleInput"
         @inputValue="setValue"
       />
-      <ul class="users">  
+      <ul class="users">
         <li
-          v-for="user in users"
-          @click="() => removeUser(user)"
+          v-for="email in emails"
+          @click="emails = emails.filter((obj) => obj !== email)"
           class="user secondary"
         >
-          <p>{{ user }}</p>
+          <p>{{ email }}</p>
           <svg
             width="10"
             height="10"
@@ -34,36 +34,34 @@
           </svg>
         </li>
       </ul>
-      <button class="btn form__btn1" :class="{ disabled: !value }">
+      <button class="btn form__btn1" :class="{ disabled: !inputValue }">
         Выслать приглашение
       </button>
-      <NuxtLink to="/" class="btn secondary form__btn2">Пропустить</NuxtLink>
+      <button class="btn secondary form__btn2" @click="() => router.push('/')">
+        Пропустить
+      </button>
     </form>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import { useForm } from "vee-validate";
-import { ref } from "vue";
 definePageMeta({
   layout: false,
 });
 
-const users = ref([]);
-const value = ref("");
+const inputValue = ref("");
+const emails = ref<string[]>([]);
+const router = useRouter();
 
-const handleInput = (value) => {
-  // const userList = value.split(",");
-  // if (userList.length > 1) {
-  users.value.push(value);
-  // }
+const handleInput = (value: string) => {
+  if (!emails.value.includes(value)) {
+    emails.value.push(value);
+  }
 };
-const removeUser = (email) => {
-  users.value = users.value.filter((obj) => obj !== email);
+const setValue = (value: string) => {
+  inputValue.value = value;
 };
-const setValue = (vl) => {
-  value.value = vl;
-};
+const onSubmit = () => {};
 </script>
 
 <style lang="scss" scoped>
