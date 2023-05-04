@@ -6,7 +6,8 @@
     <div class="inner">
       <label
         >{{ label }}
-        <svg v-if="isLabelTooltip"
+        <svg
+          v-if="isLabelTooltip"
           class="tooltip"
           width="22"
           height="22"
@@ -21,11 +22,14 @@
         </svg>
       </label>
       <input
-        :type="isShowPassword ? 'text' : 'password'"
+        :type="!props.isPassword || isShowPassword ? 'text' : 'password'"
         v-model="value"
         :name="name"
         @focus="isFocus = true"
         @blur="isFocus = false"
+        @input="handleInput"
+        @keydown.enter="handleEnter"
+        ref="inputField"
       />
       <div v-if="props.isPassword" class="password">
         <img
@@ -50,6 +54,7 @@
 <script setup>
 import { defineProps, ref } from "vue";
 import { useField } from "vee-validate";
+import * as yup from "yup";
 
 const props = defineProps({
   name: {
@@ -72,14 +77,43 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
+  ref: {
+    type: String,
+    required: false,
+  },
+  handleInput: {
+    type: Function,
+    required: false,
+  },
 });
+
+const emits = defineEmits(["inputValue"]);
 
 const isFocus = ref(false);
 const isShowPassword = ref(false);
-const { errorMessage, value } = useField(props.name);
-
+const { errorMessage, value: inputValue } = useField(props.name);
+const value = ref("");
+const inputField = ref(null);
+// const value = ref(ref ? inputValue2.value : inputValue);
 const setShowPassword = (value) => {
   isShowPassword.value = value;
+};
+
+const handleInput = () => {
+  emits("inputValue", value.value);
+  const userList = value.value.split(",");
+  if (userList.length > 1) {
+    props.handleInput(userList[0]);
+    value.value = "";
+    inputField.value.focus();
+  }
+};
+const handleEnter = () => {
+  if (value.value !== "") {
+    props.handleInput(value.value);
+    value.value = "";
+    inputField.value.focus();
+  }
 };
 </script>
 
@@ -136,7 +170,7 @@ const setShowPassword = (value) => {
   }
   .password {
     position: absolute;
-    top: 14px;
+    top: 13px;
     right: 24px;
     cursor: pointer;
   }

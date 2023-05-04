@@ -5,7 +5,7 @@
         <img src="~/assets/img/logo.svg" alt="logo" />
       </NuxtLink>
       <nav class="nav">
-        <ul class="nav__list nav__list-up">
+        <!-- <ul class="nav__list nav__list-up">
           <li class="nav__item">
             <NuxtLink to="/home"
               ><img src="~/assets/img/home.svg" alt="home"
@@ -21,9 +21,9 @@
               ><img src="~/assets/img/search.svg" alt="search"
             /></NuxtLink>
           </li>
-        </ul>
+        </ul> -->
         <ul class="nav__list nav__list-down">
-          <li class="nav__item">
+          <!-- <li class="nav__item">
             <NuxtLink to="/settings"
               ><img src="~/assets/img/settings.svg" alt="settings"
             /></NuxtLink>
@@ -37,7 +37,7 @@
             <NuxtLink to="/info"
               ><img src="~/assets/img/info.svg" alt="info"
             /></NuxtLink>
-          </li>
+          </li> -->
           <li class="nav__item">
             <NuxtLink to="/register"
               ><img src="~/assets/img/user.svg" alt="info"

@@ -4,7 +4,7 @@
     :title="'Создание компании'"
     :titleSpan="'>  Добавление пользователей'"
   >
-    <form class="form">
+    <form @submit.prevent="onSubmit" class="form">
       <Input name="name" label="Название вашей компании" />
       <Input
         name="address"
@@ -24,7 +24,9 @@
 </template>
 
 <script lang="ts" setup>
+import { useForm } from "vee-validate";
 import Input from "~/components/Input.vue";
+import { CompanyScheme } from "~/utils/validation/CompanyScheme";
 
 definePageMeta({
   layout: false,
@@ -32,6 +34,22 @@ definePageMeta({
 components: {
   Input;
 }
+
+const { handleSubmit } = useForm({
+  validationSchema: CompanyScheme,
+});
+
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const dto = {
+      name: values.name,
+      address: values.address,
+    };
+  } catch (err) {
+    console.warn(err);
+    alert("Ошибка при создании компании");
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>
