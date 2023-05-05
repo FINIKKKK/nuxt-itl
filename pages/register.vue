@@ -69,7 +69,6 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/create_company");
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
-    console.warn(err);
   }
 });
 </script>

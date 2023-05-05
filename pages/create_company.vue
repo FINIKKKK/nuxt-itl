@@ -5,6 +5,11 @@
     :titleSpan="'>  Добавление пользователей'"
   >
     <form @submit.prevent="onSubmit" class="form">
+      <div class="error" v-if="errors">
+        <span v-for="error in errors">
+          {{ error[0] }}
+        </span>
+      </div>
       <Input name="name" label="Название вашей компании" />
       <Input
         name="address"
@@ -27,6 +32,7 @@
 import { useForm } from "vee-validate";
 import Input from "@/components/Input.vue";
 import { CompanyScheme } from "@/utils/validation/CompanyScheme";
+import { Api } from "~/api";
 
 definePageMeta({
   layout: false,
@@ -36,6 +42,7 @@ components: {
 }
 
 const router = useRouter();
+const errors = ref("");
 
 const { handleSubmit } = useForm({
   validationSchema: CompanyScheme,
@@ -45,14 +52,24 @@ const onSubmit = handleSubmit(async (values) => {
   try {
     const dto = {
       name: values.name,
-      address: values.address,
+      url_address: `http://${values.address.toLowerCase()}.itl.wiki`,
     };
+    await Api().company.create(dto);
     router.push("/add_users");
-  } catch (err) {
-    console.warn(err);
-    alert("Ошибка при создании компании");
+  } catch (err: any) {
+    errors.value = err?.response?.data?.message;
   }
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.error {
+  color: $red;
+  font-size: 14px;
+  margin-top: -20px;
+  margin-bottom: 25px;
+  span {
+    display: block;
+  }
+}
+</style>

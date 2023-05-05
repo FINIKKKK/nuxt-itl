@@ -2,9 +2,11 @@ import axios from "axios";
 import { Context } from "@nuxt/types";
 import Cookies, { parseCookies } from "nookies";
 import { AuthApi } from "./models/auth";
+import { CompanyApi } from "./models/company";
 
 export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
+  company: ReturnType<typeof CompanyApi>;
 };
 
 export const Api = (ctx?: Context): ApiReturnTypes => {
@@ -20,5 +22,6 @@ export const Api = (ctx?: Context): ApiReturnTypes => {
 
   return {
     auth: AuthApi(instance),
+    company: CompanyApi(instance),
   };
 };
