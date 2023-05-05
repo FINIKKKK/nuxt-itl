@@ -14,9 +14,10 @@
             >
               <li
                 class="nav__item"
+                :class="{ active: activeItem === item.id }"
                 v-for="item in itemsList"
                 :key="item.id"
-                @click="() => setActiveItem(index)"
+                @click="() => setActiveItem(item.id)"
               >
                 <svg-icon :name="item.name" />
               </li>
@@ -24,20 +25,21 @@
           </div>
         </div>
 
-        <div class="popup" :class="{ active: activeItem }">
+        <div class="popup" :class="{ active: isShowPopup }">
           <div class="popup__inner">
-            <h3 class="popup__title">Профиль</h3>
+            <h3 class="popup__title">
+              {{ activeItem && inner[activeItem - 1].title }}
+            </h3>
             <ul>
-              <li class="popup__item">
-                <NuxtLink to="/">
-                  <svg-icon name="home" />
-                  <p>Редактировать</p>
-                </NuxtLink>
-              </li>
-              <li class="popup__item">
-                <NuxtLink to="/">
-                  <svg-icon name="home" />
-                  <p>Редактировать</p>
+              <li
+                class="popup__item"
+                v-if="activeItem"
+                v-for="item in inner[activeItem - 1].items"
+                :key="item.id"
+              >
+                <NuxtLink to="{{item.link}}">
+                  <svg-icon :name="item.icon" />
+                  <p>{{ item.label }}</p>
                 </NuxtLink>
               </li>
             </ul>
@@ -70,20 +72,72 @@ const props = defineProps({
 const items = [
   [
     { id: 1, name: "home" },
-    { id: 1, name: "search" },
-    { id: 1, name: "settings" },
+    { id: 2, name: "add" },
+    { id: 3, name: "search" },
   ],
   [
-    { id: 1, name: "bell" },
-    { id: 1, name: "tooltip" },
-    { id: 1, name: "user" },
+    { id: 4, name: "settings" },
+    { id: 5, name: "bell" },
+    { id: 6, name: "tooltip" },
+    { id: 7, name: "user" },
   ],
 ];
 
-const activeItem = ref<null | number>(null);
+const inner = [
+  {
+    title: "Ваша компания",
+    items: [
+      { id: 1, icon: "activation", label: "Активность", link: "/" },
+      { id: 2, icon: "document", label: "Ваши работы", link: "/" },
+      { id: 3, icon: "favorite", label: "Закладки", link: "/" },
+    ],
+  },
+  {
+    title: "Посты",
+    items: [
+      { id: 1, icon: "add", label: "Добавить", link: "/create_post" },
+      { id: 2, icon: "document", label: "Все посты", link: "/posts" },
+    ],
+  },
+  {
+    title: "Поиск",
+    items: [{ id: 1, icon: "search", label: "Поиск", link: "/" }],
+  },
+  {
+    title: "Настройки",
+    items: [
+      { id: 1, icon: "settings", label: "Общие", link: "/" },
+      { id: 2, icon: "user", label: "Пользователи", link: "/" },
+    ],
+  },
+  {
+    title: "Уведомления",
+    items: [{ id: 1, icon: "bell", label: "Уведомления", link: "/" }],
+  },
+  {
+    title: "Информация",
+    items: [{ id: 1, icon: "tooltip", label: "Информация", link: "/" }],
+  },
+  {
+    title: "Профиль",
+    items: [
+      { id: 1, icon: "edit", label: "Редактировать", link: "/profile" },
+      { id: 2, icon: "logout", label: "Выйти", link: "/" },
+    ],
+  },
+];
+
+const activeItem = ref<null | number>(0);
+const isShowPopup = ref(false);
 
 const setActiveItem = (index: number) => {
-  activeItem.value = index;
+  if (activeItem.value === index) {
+    isShowPopup.value = false;
+    activeItem.value = null;
+  } else {
+    activeItem.value = index;
+    isShowPopup.value = true;
+  }
 };
 </script>
 
@@ -138,17 +192,15 @@ main {
   width: 100%;
   padding: 24px;
   svg {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
+    fill: $white;
   }
   &:hover {
     background-color: $blue2;
   }
-}
-.nav__list:nth-child(1) {
-  .nav__item:nth-child(1) svg {
-    width: 31px;
-    height: 31px;
+  &.active {
+    background-color: $blue2;
   }
 }
 .title {
@@ -160,13 +212,15 @@ main {
   }
 }
 .popup {
+  user-select: none;
+  white-space: nowrap;
   z-index: 30;
   width: 0px;
   background-color: $blue4;
   transition: 0.3s;
+  transform: translateX(-100%);
   .popup__inner {
     padding: 48px 16px 48px 32px;
-    transform: translateX(-100px);
     opacity: 0;
     transition: 0.3s;
   }
@@ -177,8 +231,8 @@ main {
   }
   &.active {
     width: 256px;
+    transform: translateX(0px);
     .popup__inner {
-      transform: translateX(0px);
       opacity: 1;
     }
   }
@@ -198,6 +252,7 @@ main {
     width: 22px;
     height: 22px;
     margin-right: 8px;
+    fill: $blue;
   }
   p {
     font-size: 14px;
