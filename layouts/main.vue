@@ -1,49 +1,48 @@
 <template>
   <main>
     <aside class="sidebar">
-      <NuxtLink to="/" class="logo">
-        <img src="~/assets/img/logo.svg" alt="logo" />
-      </NuxtLink>
       <nav class="nav">
-        <!-- <ul class="nav__list nav__list-up">
-          <li class="nav__item">
-            <NuxtLink to="/home"
-              ><img src="~/assets/img/home.svg" alt="home"
-            /></NuxtLink>
-          </li>
-          <li class="nav__item">
-            <NuxtLink to="/add"
-              ><img src="~/assets/img/plus.svg" alt="add"
-            /></NuxtLink>
-          </li>
-          <li class="nav__item">
-            <NuxtLink to="/search"
-              ><img src="~/assets/img/search.svg" alt="search"
-            /></NuxtLink>
-          </li>
-        </ul> -->
-        <ul class="nav__list nav__list-down">
-          <!-- <li class="nav__item">
-            <NuxtLink to="/settings"
-              ><img src="~/assets/img/settings.svg" alt="settings"
-            /></NuxtLink>
-          </li>
-          <li class="nav__item">
-            <NuxtLink to="/notices"
-              ><img src="~/assets/img/bell.svg" alt="notices"
-            /></NuxtLink>
-          </li>
-          <li class="nav__item">
-            <NuxtLink to="/info"
-              ><img src="~/assets/img/info.svg" alt="info"
-            /></NuxtLink>
-          </li> -->
-          <li class="nav__item">
-            <NuxtLink to="/register"
-              ><img src="~/assets/img/user.svg" alt="info"
-            /></NuxtLink>
-          </li>
-        </ul>
+        <div class="nav__main">
+          <NuxtLink to="/" class="logo">
+            <img src="~/assets/img/logo.svg" alt="logo" />
+          </NuxtLink>
+          <div class="nav__lists">
+            <ul
+              class="nav__list"
+              v-for="(itemsList, index) in items"
+              :key="index"
+            >
+              <li
+                class="nav__item"
+                v-for="item in itemsList"
+                :key="item.id"
+                @click="() => setActiveItem(index)"
+              >
+                <svg-icon :name="item.name" />
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="popup" :class="{ active: activeItem }">
+          <div class="popup__inner">
+            <h3 class="popup__title">Профиль</h3>
+            <ul>
+              <li class="popup__item">
+                <NuxtLink to="/">
+                  <svg-icon name="home" />
+                  <p>Редактировать</p>
+                </NuxtLink>
+              </li>
+              <li class="popup__item">
+                <NuxtLink to="/">
+                  <svg-icon name="home" />
+                  <p>Редактировать</p>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </div>
       </nav>
     </aside>
 
@@ -67,6 +66,25 @@ const props = defineProps({
     required: false,
   },
 });
+
+const items = [
+  [
+    { id: 1, name: "home" },
+    { id: 1, name: "search" },
+    { id: 1, name: "settings" },
+  ],
+  [
+    { id: 1, name: "bell" },
+    { id: 1, name: "tooltip" },
+    { id: 1, name: "user" },
+  ],
+];
+
+const activeItem = ref<null | number>(null);
+
+const setActiveItem = (index: number) => {
+  activeItem.value = index;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -74,13 +92,10 @@ main {
   display: flex;
 }
 .sidebar {
-  background-color: $blue;
-  width: 96px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 0 38px;
 }
 .content {
   width: 100%;
@@ -93,6 +108,19 @@ main {
 }
 .nav {
   display: flex;
+  height: 100%;
+}
+.nav__main {
+  background-color: $blue;
+  z-index: 40;
+  padding: 32px 0 38px;
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.nav__lists {
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
@@ -104,16 +132,23 @@ main {
 }
 .nav__item {
   cursor: pointer;
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 24px;
+  svg {
+    width: 25px;
+    height: 25px;
   }
   &:hover {
     background-color: $blue2;
+  }
+}
+.nav__list:nth-child(1) {
+  .nav__item:nth-child(1) svg {
+    width: 31px;
+    height: 31px;
   }
 }
 .title {
@@ -122,6 +157,61 @@ main {
   margin-bottom: 56px;
   span {
     color: $gray;
+  }
+}
+.popup {
+  z-index: 30;
+  width: 0px;
+  background-color: $blue4;
+  transition: 0.3s;
+  .popup__inner {
+    padding: 48px 16px 48px 32px;
+    transform: translateX(-100px);
+    opacity: 0;
+    transition: 0.3s;
+  }
+  .popup__title {
+    font-size: 20px;
+    line-height: 23px;
+    margin-bottom: 23px;
+  }
+  &.active {
+    width: 256px;
+    .popup__inner {
+      transform: translateX(0px);
+      opacity: 1;
+    }
+  }
+}
+.popup__item {
+  transition: 0.3s;
+  margin-left: -16px;
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+  }
+  svg {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+  }
+  p {
+    font-size: 14px;
+    line-height: 20px;
+    color: $black;
+  }
+  &:hover {
+    background-color: $blue4;
+    a {
+      text-decoration: none;
+    }
+  }
+  &.active {
+    background-color: $blue4;
   }
 }
 </style>
