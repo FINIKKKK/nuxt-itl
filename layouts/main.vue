@@ -1,6 +1,6 @@
 <template>
   <main>
-    <aside class="sidebar">
+    <aside class="sidebar" ref="popupRef">
       <nav class="nav">
         <div class="nav__main">
           <NuxtLink to="/" class="logo">
@@ -25,26 +25,10 @@
           </div>
         </div>
 
-        <div class="popup" :class="{ active: isShowPopup }">
-          <div class="popup__inner">
-            <h3 class="popup__title">
-              {{ activeItem && inner[activeItem - 1].title }}
-            </h3>
-            <ul>
-              <li
-                class="popup__item"
-                v-if="activeItem"
-                v-for="item in inner[activeItem - 1].items"
-                :key="item.id"
-              >
-                <NuxtLink to="{{item.link}}">
-                  <svg-icon :name="item.icon" />
-                  <p>{{ item.label }}</p>
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <SidebarPopup
+          :isShow="isShowPopup && !isShowPopup2"
+          :activeItem="activeItem"
+        />
       </nav>
     </aside>
 
@@ -58,6 +42,12 @@
 </template>
 
 <script lang="ts" setup>
+import SidebarPopup from "~/components/SidebarPopup.vue";
+import { useOutsideClick } from "~/hooks/useOutsideClick";
+
+components: {
+  SidebarPopup;
+}
 const props = defineProps({
   title: {
     type: String,
@@ -83,52 +73,10 @@ const items = [
   ],
 ];
 
-const inner = [
-  {
-    title: "Ваша компания",
-    items: [
-      { id: 1, icon: "activation", label: "Активность", link: "/" },
-      { id: 2, icon: "document", label: "Ваши работы", link: "/" },
-      { id: 3, icon: "favorite", label: "Закладки", link: "/" },
-    ],
-  },
-  {
-    title: "Посты",
-    items: [
-      { id: 1, icon: "add", label: "Добавить", link: "/create_post" },
-      { id: 2, icon: "document", label: "Все посты", link: "/posts" },
-    ],
-  },
-  {
-    title: "Поиск",
-    items: [{ id: 1, icon: "search", label: "Поиск", link: "/" }],
-  },
-  {
-    title: "Настройки",
-    items: [
-      { id: 1, icon: "settings", label: "Общие", link: "/" },
-      { id: 2, icon: "user", label: "Пользователи", link: "/" },
-    ],
-  },
-  {
-    title: "Уведомления",
-    items: [{ id: 1, icon: "bell", label: "Уведомления", link: "/" }],
-  },
-  {
-    title: "Информация",
-    items: [{ id: 1, icon: "tooltip", label: "Информация", link: "/" }],
-  },
-  {
-    title: "Профиль",
-    items: [
-      { id: 1, icon: "edit", label: "Редактировать", link: "/profile" },
-      { id: 2, icon: "logout", label: "Выйти", link: "/" },
-    ],
-  },
-];
-
-const activeItem = ref<null | number>(0);
+const activeItem = ref<null | number>(null);
+const popupRef = ref(null);
 const isShowPopup = ref(false);
+const isShowPopup2 = useOutsideClick(popupRef, activeItem);
 
 const setActiveItem = (index: number) => {
   if (activeItem.value === index) {
@@ -209,64 +157,6 @@ main {
   margin-bottom: 56px;
   span {
     color: $gray;
-  }
-}
-.popup {
-  user-select: none;
-  white-space: nowrap;
-  z-index: 30;
-  width: 0px;
-  background-color: $blue4;
-  transition: 0.3s;
-  transform: translateX(-100%);
-  .popup__inner {
-    padding: 48px 16px 48px 32px;
-    opacity: 0;
-    transition: 0.3s;
-  }
-  .popup__title {
-    font-size: 20px;
-    line-height: 23px;
-    margin-bottom: 23px;
-  }
-  &.active {
-    width: 256px;
-    transform: translateX(0px);
-    .popup__inner {
-      opacity: 1;
-    }
-  }
-}
-.popup__item {
-  transition: 0.3s;
-  margin-left: -16px;
-  &:not(:last-child) {
-    margin-bottom: 8px;
-  }
-  a {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-  }
-  svg {
-    width: 22px;
-    height: 22px;
-    margin-right: 8px;
-    fill: $blue;
-  }
-  p {
-    font-size: 14px;
-    line-height: 20px;
-    color: $black;
-  }
-  &:hover {
-    background-color: $blue4;
-    a {
-      text-decoration: none;
-    }
-  }
-  &.active {
-    background-color: $blue4;
   }
 }
 </style>
