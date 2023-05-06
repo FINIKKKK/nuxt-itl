@@ -1,9 +1,9 @@
-import { AxiosInstance } from 'axios';
-import { TCompany, CompanyDto } from './types';
+import { AxiosInstance } from "axios";
+import { TCompany, CompanyDto } from "./types";
 
 export const CompanyApi = (instance: AxiosInstance) => ({
   async getAll() {
-    const { data } = await instance.get<TCompany[]>('/companies');
+    const { data } = await instance.get<TCompany[]>("/companies");
     return data;
   },
   async getOne(id: number) {
@@ -12,9 +12,13 @@ export const CompanyApi = (instance: AxiosInstance) => ({
   },
   async create(dto: CompanyDto) {
     const { data } = await instance.post<CompanyDto, { data: TCompany }>(
-      '/companies',
+      "/companies",
       dto
     );
+    return data;
+  },
+  async getMine() {
+    const { data } = await instance.get<TCompany>(`/companies/mine`);
     return data;
   },
   async update(id: number, dto: CompanyDto) {
@@ -26,6 +30,6 @@ export const CompanyApi = (instance: AxiosInstance) => ({
   },
   async remove(id: number) {
     const { data } = await instance.delete<TCompany>(`/companies/${id}`);
-      return data;
-    },
+    return data;
+  },
 });

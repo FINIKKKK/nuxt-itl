@@ -45,7 +45,7 @@ const inner = [
   {
     title: "Посты",
     items: [
-      { id: 1, icon: "add", label: "Добавить", link: "/create_post" },
+      { id: 1, icon: "add", label: "Добавить", link: "/posts/create " },
       { id: 2, icon: "document", label: "Все посты", link: "/posts" },
     ],
   },

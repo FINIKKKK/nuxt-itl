@@ -15,6 +15,10 @@
     "svgo-loader": "^4.0.0"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.26.5",
+    "@editorjs/header": "^2.7.0",
+    "@editorjs/list": "^1.8.0",
+    "@editorjs/quote": "^2.5.0",
     "@nuxt/types": "^2.16.3",
     "@nuxtjs/svg": "^0.4.0",
     "@nuxtjs/svg-sprite": "^1.0.2",

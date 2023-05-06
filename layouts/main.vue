@@ -75,7 +75,7 @@ const items = [
   ],
 ];
 
-const activeItem = ref<null | number>(null);
+const activeItem = ref<null | number>(0);
 const popupRef = ref(null);
 const isShowPopup = ref(false);
 const isShowPopup2 = useOutsideClick(popupRef, activeItem);
