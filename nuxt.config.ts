@@ -15,4 +15,5 @@ export default defineNuxtConfig({
     input: "~/assets/img",
     output: "~/assets/sprite",
   },
+  ssr: true,
 });

@@ -15,8 +15,9 @@
               <li
                 class="nav__item"
                 :class="{ active: activeItem === item.id }"
-                v-for="item in itemsList"
+                v-for="(item, index1) in itemsList"
                 :key="item.id"
+                v-show="token || item.id === 6 || item.id === 7"
                 @click="() => setActiveItem(item.id)"
               >
                 <svg-icon :name="item.name" />
@@ -44,6 +45,7 @@
 <script lang="ts" setup>
 import SidebarPopup from "~/components/SidebarPopup.vue";
 import { useOutsideClick } from "~/hooks/useOutsideClick";
+import { useUserStore } from "~/stores/UserStore";
 
 components: {
   SidebarPopup;
@@ -77,6 +79,7 @@ const activeItem = ref<null | number>(null);
 const popupRef = ref(null);
 const isShowPopup = ref(false);
 const isShowPopup2 = useOutsideClick(popupRef, activeItem);
+const { token } = useUserStore();
 
 const setActiveItem = (index: number) => {
   if (activeItem.value === index) {
