@@ -23,7 +23,9 @@
         ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
-      <button class="btn">Создать компанию</button>
+      <button class="btn" :class="{ disabled: isLoading }">
+        Создать компанию
+      </button>
     </form>
   </NuxtLayout>
 </template>
@@ -43,6 +45,7 @@ components: {
 
 const router = useRouter();
 const errors = ref("");
+const isLoading = ref(false);
 
 const { handleSubmit } = useForm({
   validationSchema: CompanyScheme,
@@ -50,6 +53,7 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   try {
+    isLoading.value = true;
     const dto = {
       name: values.name,
       url_address: `http://${values.address.toLowerCase()}.itl.wiki`,
@@ -58,6 +62,8 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/add_users");
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
+  }finally {
+    isLoading.value = false;
   }
 });
 </script>

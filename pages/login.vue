@@ -13,7 +13,7 @@
         ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
-      <button type="submit" class="btn">Войти</button>
+      <button type="submit" class="btn" :class="{ disabled: isLoading }">Войти</button>
     </form>
   </NuxtLayout>
 </template>
@@ -40,9 +40,11 @@ const { handleSubmit } = useForm({
 
 const error = ref("");
 const router = useRouter();
+const isLoading = ref(false);
 
 const onSubmit = handleSubmit(async (values) => {
   try {
+    isLoading.value = true;
     const dto = {
       email: values.email,
       password: values.password,
@@ -55,6 +57,8 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/");
   } catch (err: any) {
     error.value = err?.response?.data?.main_message;
+  }finally {
+    isLoading.value = false;
   }
 });
 </script>

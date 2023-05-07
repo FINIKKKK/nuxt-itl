@@ -25,7 +25,9 @@
         ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
-      <button type="submit" class="btn">Зарегистроваться</button>
+      <button type="submit" class="btn" :class="{ disabled: isLoading }">
+        Зарегистроваться
+      </button>
     </form>
   </NuxtLayout>
 </template>
@@ -48,12 +50,14 @@ import { setCookie } from "nookies";
 
 const errors = ref<any>([]);
 const router = useRouter();
+const isLoading = ref(false);
 const { handleSubmit } = useForm({
   validationSchema: RegisterScheme,
 });
 
 const onSubmit = handleSubmit(async (values) => {
   try {
+    isLoading.value = true;
     const dto = {
       firstName: values.firstName,
       lastName: values.lastName,
@@ -69,6 +73,8 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/create_company");
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
+  } finally {
+    isLoading.value = false;
   }
 });
 </script>
