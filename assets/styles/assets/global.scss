@@ -71,6 +71,10 @@ svg {
     margin-bottom: 40px;
   }
 }
+.error {
+  font-size: 12px;
+  color: $red;
+}
 
 // ScrollBar
 ::-webkit-scrollbar {

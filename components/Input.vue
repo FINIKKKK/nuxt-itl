@@ -169,10 +169,6 @@ const handleInput = async (type: string) => {
     align-items: center;
     transition: 0.3s;
   }
-  .error {
-    font-size: 12px;
-    color: $red;
-  }
   .showPassword {
     position: absolute;
     top: 13px;

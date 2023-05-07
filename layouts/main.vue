@@ -15,7 +15,7 @@
               <li
                 class="nav__item"
                 :class="{ active: activeItem === item.id }"
-                v-for="(item, index1) in itemsList"
+                v-for="item in itemsList"
                 :key="item.id"
                 v-show="token || item.id === 6 || item.id === 7"
                 @click="() => setActiveItem(item.id)"

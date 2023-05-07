@@ -45,7 +45,7 @@ const inner = [
   {
     title: "Посты",
     items: [
-      { id: 1, icon: "add", label: "Добавить", link: "/posts/create " },
+      { id: 1, icon: "add", label: "Добавить", link: "/posts/create" },
       { id: 2, icon: "document", label: "Все посты", link: "/posts" },
     ],
   },
@@ -57,7 +57,7 @@ const inner = [
     title: "Настройки",
     items: [
       { id: 1, icon: "settings", label: "Общие", link: "/" },
-      { id: 2, icon: "user", label: "Пользователи", link: "/" },
+      { id: 2, icon: "user", label: "Пользователи", link: "/add_users" },
     ],
   },
   {
