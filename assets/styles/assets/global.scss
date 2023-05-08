@@ -76,6 +76,32 @@ svg {
   color: $red;
 }
 
+.table {
+  width: 100%;
+  thead {
+    text-align: left;
+    color: rgba($blue, 0.3);
+  }
+  tr {
+    td,
+    th {
+      margin-right: 80px;
+      padding: 20px;
+      vertical-align: middle;
+      &::after {
+        content: '';
+        margin-right: 80px;
+      }
+    }
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba($blue, 0.1);
+    &:hover {
+      background-color: rgba($blue, 0.05);
+    }
+  }
+}
+
 // ScrollBar
 ::-webkit-scrollbar {
   width: 5px;

@@ -1,10 +1,11 @@
 import { OutputBlockData } from "@editorjs/editorjs";
 import { TBase } from "~/api/types";
+import { TUser } from "../user/types";
 
 export type TPost = TBase & {
   title: string;
   body: OutputBlockData[];
-  user_id: number;
+  user: TUser;
 };
 
 export type PostDto = {

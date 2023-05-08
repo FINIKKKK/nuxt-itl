@@ -27,9 +27,10 @@ import Editor from "~/components/Editor.vue";
 import { OutputBlockData } from "@editorjs/editorjs";
 import { PostScheme } from "~/utils/validation/PostScheme";
 
-// export type TError = {
-//   title: str;
-// };
+export type TError = {
+  title: string;
+  body: string;
+};
 
 definePageMeta({
   layout: false,
