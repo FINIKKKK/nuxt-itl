@@ -22,6 +22,22 @@
         <li class="tag">Мой тег</li>
       </ul>
     </div>
+
+    <div class="field">
+      <Textarea
+        label="Добавить комментарий"
+        @value="setCommentValue"
+        isCommentInput
+      />
+      <button
+        v-if="commentValue"
+        @click="onCreateComment"
+        class="btn"
+        :class="{ disabled: isLoading }"
+      >
+        Отправить
+      </button>
+    </div>
   </NuxtLayout>
 </template>
 
@@ -29,6 +45,7 @@
 import { Api } from "~/api";
 import { useFormatDate } from "~/hooks/useFormatDate";
 import Body from "~/components/Body.vue";
+import Textarea from "~/components/Textarea.vue";
 
 definePageMeta({
   layout: false,
@@ -40,6 +57,29 @@ const { data: post } = useAsyncData(async () => {
   const post = await Api().post.getOne(Number(id));
   return post;
 });
+const commentValue = ref("");
+const isLoading = ref(false);
+
+const setCommentValue = (value: string) => {
+  commentValue.value = value;
+};
+
+const onCreateComment = async () => {
+  try {
+    isLoading.value = true;
+    const dto = {
+      text: commentValue.value,
+      post_id: post.value.id,
+    };
+    const comment = await Api().comment.create(dto);
+    commentValue.value = "";
+  } catch (err) {
+    console.warn(err);
+    alert("Ошибка при создании комментария");
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -110,6 +150,20 @@ const { data: post } = useAsyncData(async () => {
     background-color: $blue4;
     border-color: transparent;
     color: $blue;
+  }
+}
+.field {
+  position: relative;
+  .btn {
+    position: absolute;
+    top: 15px;
+    right: 24px;
+    background-color: $blue;
+    color: $white;
+    padding: 11px 22px;
+    &:hover {
+      background-color: darken($blue, 10%);
+    }
   }
 }
 </style>

@@ -31,7 +31,7 @@ a {
   }
 }
 svg {
-  fill: $black;
+  fill: $blue;
   transition: 0.2s;
   height: auto;
 }
@@ -99,6 +99,46 @@ svg {
     &:hover {
       background-color: rgba($blue, 0.05);
     }
+  }
+}
+
+.input {
+  .inner {
+    position: relative;
+    width: 100%;
+    border: 1px solid $blue3;
+    border-radius: 2px;
+    color: $black;
+    input, textarea {
+      padding: 16px 24px;
+      width: 100%;
+    }
+  }
+  &.focus {
+    label {
+      font-size: 14px;
+      top: -10px;
+      color: $blue;
+      svg {
+        width: 16px;
+        path {
+          fill: $blue;
+        }
+      }
+    }
+  }
+  label {
+    pointer-events: none;
+    line-height: 20px;
+    color: $blue3;
+    position: absolute;
+    left: 19px;
+    top: 16px;
+    padding: 0 5px;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
   }
 }
 

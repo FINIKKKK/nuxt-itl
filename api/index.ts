@@ -4,11 +4,13 @@ import Cookies, { parseCookies } from "nookies";
 import { AuthApi } from "./models/auth";
 import { CompanyApi } from "./models/company";
 import { PostApi } from "./models/post";
+import { CommentApi } from "./models/comment";
 
 export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
   company: ReturnType<typeof CompanyApi>;
   post: ReturnType<typeof PostApi>;
+  comment: ReturnType<typeof CommentApi>;
 };
 
 export const Api = (ctx?: Context): ApiReturnTypes => {
@@ -26,5 +28,6 @@ export const Api = (ctx?: Context): ApiReturnTypes => {
     auth: AuthApi(instance),
     company: CompanyApi(instance),
     post: PostApi(instance),
+    comment: CommentApi(instance),
   };
 };

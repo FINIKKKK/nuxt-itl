@@ -282,6 +282,7 @@ const props = defineProps({
 
   // checkbox ###############
   .checkbox {
+    pointer-events: none;
     input {
       position: absolute;
       z-index: -1;
