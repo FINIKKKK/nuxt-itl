@@ -14,7 +14,11 @@
         <Editor @data-change="setBodyValue" />
         <span class="error">{{ errors?.body }}</span>
       </div>
-      <button v-if="titleValue" class="btn" :class="{ disabled: isLoading }">
+      <button
+        v-if="titleValue && bodyValue.length"
+        class="btn"
+        :class="{ disabled: isLoading }"
+      >
         Создать
       </button>
     </form>
@@ -27,11 +31,6 @@ import Editor from "~/components/Editor.vue";
 import { OutputBlockData } from "@editorjs/editorjs";
 import { PostScheme } from "~/utils/validation/PostScheme";
 
-export type TError = {
-  title: string;
-  body: string;
-};
-
 definePageMeta({
   layout: false,
 });
@@ -43,6 +42,7 @@ const titleValue = ref("");
 const bodyValue = ref<OutputBlockData[]>([]);
 const errors = ref({});
 const isLoading = ref(false);
+const router = useRouter();
 
 const onSubmit = async () => {
   try {
@@ -53,8 +53,10 @@ const onSubmit = async () => {
     };
     await PostScheme.validate(dto, { abortEarly: false });
     const post = await Api().post.create(dto);
+    router.push(`/posts/${post.id}`);
   } catch (err: any) {
-    if (err.inner) {
+    if (err) {
+      console.warn(err);
       const errorsMessages: Record<string, string> = {};
       err.inner.forEach((error: { path: string; message: string }) => {
         errorsMessages[error.path] = error.message;
