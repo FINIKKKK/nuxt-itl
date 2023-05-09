@@ -1,9 +1,11 @@
-import { AxiosInstance } from 'axios';
-import { TComment, CommentDto } from './types';
+import { AxiosInstance } from "axios";
+import { TComment, CommentDto, CommentParams } from "./types";
 
 export const CommentApi = (instance: AxiosInstance) => ({
-  async getAll() {
-    const { data } = await instance.get<TComment[]>('/comments');
+  async getAll(params: CommentParams) {
+    const { data } = await instance.get<TComment[]>(
+      `/comments?post_id=${params.post_id}`,
+    );
     return data;
   },
   async getOne(id: number) {
@@ -12,7 +14,7 @@ export const CommentApi = (instance: AxiosInstance) => ({
   },
   async create(dto: CommentDto) {
     const { data } = await instance.post<CommentDto, { data: TComment }>(
-      '/comments',
+      "/comments",
       dto
     );
     return data;
@@ -26,6 +28,6 @@ export const CommentApi = (instance: AxiosInstance) => ({
   },
   async remove(id: number) {
     const { data } = await instance.delete<TComment>(`/comments/${id}`);
-      return data;
-    },
+    return data;
+  },
 });

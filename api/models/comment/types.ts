@@ -11,3 +11,7 @@ export type CommentDto = {
   text: string;
   post_id?: number;
 };
+
+export type CommentParams = {
+  post_id?: number;
+};
