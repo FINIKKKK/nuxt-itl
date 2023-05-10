@@ -20,8 +20,6 @@
 
 <script lang="ts" setup>
 import { Api } from "~/api";
-import Textarea from "~/components/Textarea.vue";
-import Comment from "~/components/Comment.vue";
 
 const props = defineProps({
   post_id: {

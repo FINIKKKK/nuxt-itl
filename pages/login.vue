@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="main" :title="'Авторизация'">
+  <NuxtLayout name="main" title="Авторизация">
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">
         Впервые здесь? <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
@@ -13,7 +13,9 @@
         ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
-      <button type="submit" class="btn" :class="{ disabled: isLoading }">Войти</button>
+      <button type="submit" class="btn" :class="{ disabled: isLoading }">
+        Войти
+      </button>
     </form>
   </NuxtLayout>
 </template>
@@ -22,22 +24,15 @@
 definePageMeta({
   layout: false,
 });
-components: {
-  Input;
-}
 
 import { useForm } from "vee-validate";
 import { Api } from "@/api";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { LoginScheme } from "@/utils/validation/LoginScheme";
-import Input from "@/components/Input.vue";
 import { setCookie } from "nookies";
 
 const { handleSubmit } = useForm({
   validationSchema: LoginScheme,
 });
-
 const error = ref("");
 const router = useRouter();
 const isLoading = ref(false);
@@ -57,7 +52,7 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/");
   } catch (err: any) {
     error.value = err?.response?.data?.main_message;
-  }finally {
+  } finally {
     isLoading.value = false;
   }
 });

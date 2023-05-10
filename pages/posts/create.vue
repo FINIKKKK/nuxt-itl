@@ -26,17 +26,13 @@
 </template>
 
 <script lang="ts" setup>
-import { Api } from "~/api";
-import Editor from "~/components/Editor.vue";
-import { OutputBlockData } from "@editorjs/editorjs";
-import { PostScheme } from "~/utils/validation/PostScheme";
-
 definePageMeta({
   layout: false,
 });
-components: {
-  Editor;
-}
+
+import { Api } from "~/api";
+import { OutputBlockData } from "@editorjs/editorjs";
+import { PostScheme } from "~/utils/validation/PostScheme";
 
 const titleValue = ref("");
 const bodyValue = ref<OutputBlockData[]>([]);

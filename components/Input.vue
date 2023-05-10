@@ -105,6 +105,9 @@ const handleInput = async (type: string) => {
     }
   }
 };
+watch(value, () => {
+  emits("inputValue", value.value)
+})
 </script>
 
 <style lang="scss" scoped>

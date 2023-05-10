@@ -5,22 +5,23 @@ import { AuthApi } from "./models/auth";
 import { CompanyApi } from "./models/company";
 import { PostApi } from "./models/post";
 import { CommentApi } from "./models/comment";
+import { FilesApi } from "./models/files";
 
 export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
   company: ReturnType<typeof CompanyApi>;
   post: ReturnType<typeof PostApi>;
   comment: ReturnType<typeof CommentApi>;
+  files: ReturnType<typeof FilesApi>;
 };
 
-export const Api = (ctx?: Context): ApiReturnTypes => {
-  const cookies = ctx ? Cookies.get(ctx) : parseCookies();
-  const token = cookies.access_token;
+export const Api = (): ApiReturnTypes => {
+  const token = useCookie("access_token");
 
   const instance = axios.create({
     baseURL: "http://127.0.0.1:8000/api/",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token.value}`,
     },
   });
 
@@ -29,5 +30,6 @@ export const Api = (ctx?: Context): ApiReturnTypes => {
     company: CompanyApi(instance),
     post: PostApi(instance),
     comment: CommentApi(instance),
+    files: FilesApi(instance),
   };
 };

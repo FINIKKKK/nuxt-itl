@@ -25,12 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-import { Api } from "~/api";
-import { useFormatDate } from "~/hooks/useFormatDate";
-
 definePageMeta({
   layout: false,
 });
+
+import { Api } from "~/api";
+import { useFormatDate } from "~/hooks/useFormatDate";
 
 const { data: posts } = useAsyncData(async () => {
   const posts = await Api().post.getAll();

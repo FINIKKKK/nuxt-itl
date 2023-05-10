@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout
     name="main"
-    :title="'Регистрация'"
-    :titleSpan="'>  Создание компании  >  Добавление пользователей'"
+    title="Регистрация"
+    titleSpan=">  Создание компании  >  Добавление пользователей"
   >
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">
@@ -36,16 +36,10 @@
 definePageMeta({
   layout: false,
 });
-components: {
-  Input;
-}
 
 import { useForm } from "vee-validate";
 import { RegisterScheme } from "@/utils/validation/RegisterScheme";
 import { Api } from "@/api";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import Input from "@/components/Input.vue";
 import { setCookie } from "nookies";
 
 const errors = ref<any>([]);

@@ -22,19 +22,18 @@
         <li class="tag">Мой тег</li>
       </ul>
     </div>
-    <Comments :post_id="route.params.id"/>
+    <Comments :post_id="route.params.id" />
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import { Api } from "~/api";
-import { useFormatDate } from "~/hooks/useFormatDate";
-import Body from "~/components/Body.vue";
-import Comments from "~/components/Comments.vue";
-
 definePageMeta({
   layout: false,
 });
+
+import { Api } from "~/api";
+import { useFormatDate } from "~/hooks/useFormatDate";
+import Body from "~/components/Body.vue";
 
 const route = useRoute();
 const { data: post } = useAsyncData(async () => {
@@ -114,5 +113,4 @@ const { data: post } = useAsyncData(async () => {
     color: $blue;
   }
 }
-
 </style>

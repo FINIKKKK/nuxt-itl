@@ -5,6 +5,7 @@ export type TComment = TBase & {
   text: string;
   post_id?: number;
   user: TUser;
+  children: TComment[];
 };
 
 export type CommentDto = {

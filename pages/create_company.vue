@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout
     name="main"
-    :title="'Создание компании'"
-    :titleSpan="'>  Добавление пользователей'"
+    title="Создание компании"
+    titleSpan=">  Добавление пользователей"
   >
     <form @submit.prevent="onSubmit" class="form">
       <div class="error" v-if="errors">
@@ -31,22 +31,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useForm } from "vee-validate";
-import Input from "@/components/Input.vue";
-import { CompanyScheme } from "@/utils/validation/CompanyScheme";
-import { Api } from "~/api";
-
 definePageMeta({
   layout: false,
 });
-components: {
-  Input;
-}
+
+import { useForm } from "vee-validate";
+import { CompanyScheme } from "@/utils/validation/CompanyScheme";
+import { Api } from "~/api";
 
 const router = useRouter();
 const errors = ref("");
 const isLoading = ref(false);
-
 const { handleSubmit } = useForm({
   validationSchema: CompanyScheme,
 });
@@ -62,7 +57,7 @@ const onSubmit = handleSubmit(async (values) => {
     router.push("/add_users");
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
-  }finally {
+  } finally {
     isLoading.value = false;
   }
 });

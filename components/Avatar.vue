@@ -28,6 +28,7 @@ const shortName = props.user.firstName[0] + props.user.lastName[0];
   width: 40px;
   height: 40px;
   span {
+    text-transform: uppercase;
     position: absolute;
     left: 50%;
     top: 50%;

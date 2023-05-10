@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Api } from "~/api";
 import { OutputBlockData } from "@editorjs/editorjs";
 
 const props = defineProps({
@@ -40,12 +41,37 @@ onMounted(async () => {
       codeBox: CodeBox,
       linkTool: LinkTool,
       embed: Embed,
-      quote: Quote,
+      quote: {
+        class: Quote,
+        inlineToolbar: true,
+        config: {
+          quotePlaceholder: "Введите цитату",
+          captionPlaceholder: "Введите автора",
+        },
+      },
       checklist: CheckList,
       delimiter: Delimiter,
       inlineCode: InlineCode,
       simpleImage: SimpleImage,
       table: Table,
+      image: {
+        class: Image,
+        config: {
+          buttonContent: "Выберите изображение",
+          uploader: {
+            async uploadByFile(file: any) {
+              const fileName = await Api().files.upload(file);
+              console.log(fileName);
+              return {
+                success: 1,
+                file: {
+                  url: `${fileName}`,
+                },
+              };
+            },
+          },
+        },
+      },
     },
     data: {
       blocks: props.initialValue
