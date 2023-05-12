@@ -8,7 +8,7 @@
     <button
       v-if="commentValue"
       @click="onCreateComment"
-      class="btn"
+      class="btn btn3"
       :class="{ disabled: isLoading }"
     >
       Отправить
@@ -68,14 +68,8 @@ const onCreateComment = async () => {
   margin-bottom: 40px;
   .btn {
     position: absolute;
-    top: 15px;
-    right: 24px;
-    background-color: $blue;
-    color: $white;
-    padding: 11px 22px;
-    &:hover {
-      background-color: darken($blue, 10%);
-    }
+    top: 11px;
+    right: 15px;
   }
 }
 </style>

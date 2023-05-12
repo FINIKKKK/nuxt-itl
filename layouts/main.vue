@@ -17,7 +17,7 @@
                 :class="{ active: activeItem === item.id }"
                 v-for="item in itemsList"
                 :key="item.id"
-                v-show="token || item.id === 6 || item.id === 7"
+                v-show="user || item.id === 6 || item.id === 7"
                 @click="() => setActiveItem(item.id)"
               >
                 <svg-icon :name="item.name" />
@@ -35,7 +35,8 @@
 
     <div class="content">
       <h1 class="title">
-        {{ title }} <span v-if="titleSpan">{{ titleSpan }}</span>
+        {{ props.title }}
+        <span v-if="props.titleSpan">{{ props.titleSpan }}</span>
       </h1>
       <slot />
     </div>
@@ -43,13 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-import SidebarPopup from "~/components/SidebarPopup.vue";
 import { useOutsideClick } from "~/hooks/useOutsideClick";
 import { useUserStore } from "~/stores/UserStore";
 
-components: {
-  SidebarPopup;
-}
 const props = defineProps({
   title: {
     type: String,
@@ -79,7 +76,7 @@ const activeItem = ref<null | number>(0);
 const popupRef = ref(null);
 const isShowPopup = ref(false);
 const isShowPopup2 = useOutsideClick(popupRef, activeItem);
-const { token } = useUserStore();
+const { user } = useUserStore();
 
 const setActiveItem = (index: number) => {
   if (activeItem.value === index) {
@@ -94,6 +91,7 @@ const setActiveItem = (index: number) => {
 
 <style lang="scss" scoped>
 main {
+  position: relative;
   display: flex;
 }
 .sidebar {
@@ -103,6 +101,7 @@ main {
   align-items: center;
 }
 .content {
+  position: relative;
   width: 100%;
   height: 100vh;
   padding: 40px;

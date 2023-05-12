@@ -49,6 +49,7 @@ const { data: posts } = useAsyncData(async () => {
       width: 24px;
       height: 24px;
       margin-right: 32px;
+      flex: 0 0 auto;
     }
     color: $blue;
   }

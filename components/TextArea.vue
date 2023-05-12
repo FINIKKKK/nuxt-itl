@@ -36,7 +36,7 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null);
 watch(value, () => {
   emits("value", value.value);
   if (textareaRef.value) {
-    textareaRef.value.style.height = "auto";
+    textareaRef.value.style.height = "55px";
     textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`;
   }
 });
@@ -46,8 +46,7 @@ watch(value, () => {
 .input {
   textarea {
     overflow: hidden;
-    min-height: 50px;
-    max-height: 150px;
+    height: 55px;
   }
   &.comment {
     textarea {

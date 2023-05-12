@@ -26,7 +26,7 @@
       <button class="btn form__btn1" :class="{ disabled: !inputValue }">
         Выслать приглашение
       </button>
-      <button class="btn secondary form__btn2" @click="() => router.push('/')">
+      <button class="btn btn2 form__btn2" @click="() => router.push('/')">
         Пропустить
       </button>
     </form>

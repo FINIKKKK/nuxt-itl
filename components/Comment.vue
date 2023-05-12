@@ -12,21 +12,29 @@
       <div class="controls">
         <div class="like">
           <svg-icon name="like" />
-          3
+          0
         </div>
-        <button @click="isAnswer = !isAnswer" :class="{ disabled: isLoading }">
+        <button
+          class="inline_btn"
+          @click="isAnswer = !isAnswer"
+          :class="{ disabled: isLoading }"
+        >
           {{ !isAnswer ? "Ответить" : "Закрыть" }}
         </button>
-        <button @click="onDeleteComment" :class="{ disabled: isLoading }">
+        <button
+          v-if="user?.id === props.comment.user.id"
+          class="inline_btn"
+          @click="onDeleteComment"
+          :class="{ disabled: isLoading }"
+        >
           Удалить
         </button>
       </div>
       <div v-if="isAnswer" class="reply">
-        <Input
-          label="Комментарий"
-          name="comment"
-          class="reply__input"
-          @inputValue="setReplyValue"
+        <Textarea
+          label="Добавить комментарий"
+          @value="setReplyValue"
+          isCommentInput
         />
         <button @click="onReplyComment" class="btn">Отправить</button>
       </div>
@@ -41,6 +49,7 @@
 import { useFormatDate } from "~/hooks/useFormatDate";
 import { Api } from "~/api";
 import { TComment } from "~/api/models/comment/types";
+import { useUserStore } from "~/stores/UserStore";
 
 const props = defineProps({
   comment: {
@@ -52,6 +61,7 @@ const props = defineProps({
 const isLoading = ref(false);
 const isAnswer = ref(false);
 const replyValue = ref("");
+const { user } = useUserStore();
 
 const setReplyValue = (value: string) => {
   replyValue.value = value;
@@ -134,24 +144,16 @@ const onReplyComment = async () => {
     &:not(:last-child) {
       margin-right: 32px;
     }
-    transition: 0.3s;
-    color: $blue5;
-    &:hover {
-      color: $blue;
-    }
   }
 }
 .reply {
   margin-top: 25px;
   position: relative;
   width: 100%;
-  .reply__input {
-    width: 100%;
-  }
   .btn {
     position: absolute;
-    top: 10px;
-    right: 24px;
+    top: 11px;
+    right: 15px;
     background-color: $blue;
     color: $white;
     padding: 8px 22px;

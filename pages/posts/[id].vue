@@ -1,5 +1,10 @@
 <template>
   <NuxtLayout name="main" :title="post?.title">
+    <div v-if="user?.id === post?.user.id" class="controls">
+      <svg-icon name="edit" />
+      <svg-icon name="close" />
+    </div>
+
     <ul class="post__info">
       <li class="post__info-item">
         Автор:
@@ -34,6 +39,7 @@ definePageMeta({
 import { Api } from "~/api";
 import { useFormatDate } from "~/hooks/useFormatDate";
 import Body from "~/components/Body.vue";
+import { useUserStore } from "~/stores/UserStore";
 
 const route = useRoute();
 const { data: post } = useAsyncData(async () => {
@@ -41,9 +47,26 @@ const { data: post } = useAsyncData(async () => {
   const post = await Api().post.getOne(Number(id));
   return post;
 });
+const { user } = useUserStore();
 </script>
 
 <style lang="scss" scoped>
+.controls {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  svg {
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    fill: $blue;
+    padding: 7px;
+    border-radius: 5px;
+    &.active {
+      background-color: $blue4;
+    }
+  }
+}
 .post__info {
   margin-top: -35px;
   display: flex;

@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { TUser } from "../user/types";
-import { RegisterUserDto, LoginUserDto, TToken } from "./types";
+import { RegisterUserDto, LoginUserDto, TToken, TUserData } from "./types";
 
 export const AuthApi = (instance: AxiosInstance) => ({
   async register(dto: RegisterUserDto) {
@@ -18,7 +18,7 @@ export const AuthApi = (instance: AxiosInstance) => ({
     return data;
   },
   async me() {
-    const { data } = await instance.get<TUser>(
+    const { data } = await instance.get<TUserData>(
       "/auth/me",
     );
     return data;

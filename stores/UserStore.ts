@@ -1,15 +1,23 @@
 import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
+import { TCompany } from "~/api/models/company/types";
+import { TUser } from "~/api/models/user/types";
 
 export const useUserStore = defineStore("userStore", () => {
-  const token: Ref<string | null> = ref(null);
+  const user: Ref<TUser | null> = ref(null);
+  const company: Ref<TCompany | null> = ref(null);
 
-  const setUserToken = (obj: string) => {
-    token.value = obj;
+  const setUser = (obj: TUser) => {
+    user.value = obj;
+  };
+  const setCompany = (obj: TCompany) => {
+    company.value = obj;
   };
 
   return {
-    token,
-    setUserToken,
+    user,
+    company,
+    setUser,
+    setCompany
   };
 });
