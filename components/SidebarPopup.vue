@@ -2,13 +2,13 @@
     <div class="popup" :class="{ active: props.isShow && props.activeItem }">
         <div class="popup__inner">
             <h3 class="popup__title">
-                {{ props.activeItem && inner.find(obj => obj.id === props.activeItem).title }}
+                {{ props.activeItem && innerItems.find(obj => obj.id === props.activeItem).title }}
             </h3>
             <ul>
                 <li
                         class="popup__item"
                         v-if="props.activeItem"
-                        v-for="item in inner.find(obj => obj.id === props.activeItem).items"
+                        v-for="item in innerItems.find(obj => obj.id === props.activeItem).items"
                         :key="item.id"
                 >
                     <NuxtLink :to="item.link">
@@ -22,6 +22,8 @@
 </template>
 
 <script lang="ts" setup>
+import {innerItems} from "~/utils/data/sidebar";
+
 const props = defineProps({
     isShow: {
         type: Boolean,
@@ -33,47 +35,6 @@ const props = defineProps({
     },
 });
 
-const inner = [
-    {
-        id: 1,
-        title: "Ваша компания",
-        items: [
-            {id: 1, icon: "activation", label: "Активность", link: "/"},
-            {id: 2, icon: "document", label: "Ваши работы", link: "/"},
-            {id: 3, icon: "favorite", label: "Закладки", link: "/"},
-        ],
-    },
-    {
-        id: 2,
-        title: "Посты",
-        items: [
-            {id: 1, icon: "document", label: "Статью", link: "/posts/create"},
-            {id: 2, icon: "ащдвук", label: "Раздел", link: "/posts"},
-        ],
-    },
-    {
-        id: 3,
-        title: "Поиск",
-        items: [{id: 1, icon: "search", label: "Поиск", link: "/"}],
-    },
-    {
-        id: 5,
-        title: "Настройки",
-        items: [
-            {id: 1, icon: "settings", label: "Общие", link: "/profile"},
-            {id: 2, icon: "user", label: "Соотрудники", link: "/"},
-            {id: 3, icon: "settings", label: "Внешние интеграции", link: "/"},
-        ],
-    },
-    {
-        id: 6,
-        title: "Профиль",
-        items: [
-            {id: 1, icon: "edit", label: "Редактировать", link: "/profile"},
-            {id: 2, icon: "logout", label: "Выйти", link: "/"},
-        ],
-    },
-];
 </script>
 
 <style lang="scss" scoped>

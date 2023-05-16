@@ -1,16 +1,16 @@
 <template>
-  <div ref="refEditor"></div>
+    <div ref="refEditor" id="editor"></div>
 </template>
 
 <script lang="ts" setup>
-import { Api } from "~/api";
-import { OutputBlockData } from "@editorjs/editorjs";
+import {Api} from "~/api";
+import {OutputBlockData} from "@editorjs/editorjs";
 
 const props = defineProps({
-  initialValue: {
-    type: Array,
-    required: false,
-  },
+    initialValue: {
+        type: Array,
+        required: false,
+    },
 });
 const emits = defineEmits(["data-change"]);
 
@@ -18,88 +18,86 @@ const refEditor = ref(undefined);
 const editorData = ref<OutputBlockData[]>([]);
 
 onMounted(async () => {
-  const { default: EditorJS } = await import("@editorjs/editorjs");
-  const { default: Header } = await import("@editorjs/header");
-  const { default: List } = await import("@editorjs/list");
-  const { default: Quote } = await import("@editorjs/quote");
-  const { default: Table } = await import("@editorjs/table");
-  const { default: Embed } = await import("@editorjs/embed");
-  const { default: Image } = await import("@editorjs/image");
-  const { default: CodeBox } = await import("@bomdi/codebox");
-  const { default: Delimiter } = await import("@editorjs/delimiter");
-  const { default: InlineCode } = await import("@editorjs/inline-code");
-  const { default: LinkTool } = await import("@editorjs/link");
-  const { default: SimpleImage } = await import("@editorjs/simple-image");
-  const { default: CheckList } = await import("@editorjs/checklist");
+    const {default: EditorJS} = await import("@editorjs/editorjs");
+    const {default: Header} = await import("@editorjs/header");
+    const {default: List} = await import("@editorjs/list");
+    const {default: Quote} = await import("@editorjs/quote");
+    const {default: Table} = await import("@editorjs/table");
+    const {default: Embed} = await import("@editorjs/embed");
+    const {default: Image} = await import("@editorjs/image");
+    const {default: CodeBox} = await import("@bomdi/codebox");
+    const {default: Delimiter} = await import("@editorjs/delimiter");
+    const {default: InlineCode} = await import("@editorjs/inline-code");
+    const {default: LinkTool} = await import("@editorjs/link");
+    const {default: SimpleImage} = await import("@editorjs/simple-image");
+    const {default: CheckList} = await import("@editorjs/checklist");
 
-  const editor = new EditorJS({
-    holder: refEditor.value,
-    placeholder: "Текст",
-    tools: {
-      header: Header,
-      list: List,
-      codeBox: CodeBox,
-      linkTool: LinkTool,
-      embed: Embed,
-      quote: {
-        class: Quote,
-        inlineToolbar: true,
-        config: {
-          quotePlaceholder: "Введите цитату",
-          captionPlaceholder: "Введите автора",
-        },
-      },
-      checklist: CheckList,
-      delimiter: Delimiter,
-      inlineCode: InlineCode,
-      simpleImage: SimpleImage,
-      table: Table,
-      image: {
-        class: Image,
-        config: {
-          buttonContent: "Выберите изображение",
-          uploader: {
-            async uploadByFile(file: any) {
-              const fileName = await Api().files.upload(file);
-              console.log(fileName);
-              return {
-                success: 1,
-                file: {
-                  url: `${fileName}`,
+    const editor = new EditorJS({
+        holder: refEditor.value,
+        autofocus: true,
+        tools: {
+            header: Header,
+            list: List,
+            codeBox: CodeBox,
+            linkTool: LinkTool,
+            embed: Embed,
+            quote: {
+                class: Quote,
+                inlineToolbar: true,
+                config: {
+                    quotePlaceholder: "Введите цитату",
+                    captionPlaceholder: "Введите автора",
                 },
-              };
             },
-          },
+            checklist: CheckList,
+            delimiter: Delimiter,
+            inlineCode: InlineCode,
+            simpleImage: SimpleImage,
+            table: Table,
+            image: {
+                class: Image,
+                config: {
+                    buttonContent: "Выберите изображение",
+                    uploader: {
+                        async uploadByFile(file: any) {
+                            const fileName = await Api().files.upload(file);
+                            console.log(fileName);
+                            return {
+                                success: 1,
+                                file: {
+                                    url: `${fileName}`,
+                                },
+                            };
+                        },
+                    },
+                },
+            },
         },
-      },
-    },
-    data: {
-      blocks: props.initialValue
-        ? (props.initialValue as OutputBlockData[])
-        : [],
-    },
-    async onChange() {
-      const { blocks } = await editor.save();
-      editorData.value = blocks;
-    },
-  });
+        data: {
+            blocks: props.initialValue
+                ? (props.initialValue as OutputBlockData[])
+                : [],
+        },
+        async onChange() {
+            const {blocks} = await editor.save();
+            editorData.value = blocks;
+        },
+    });
 });
 
 watch(editorData, (newData) => {
-  emits("data-change", newData);
+    emits("data-change", newData);
 });
 </script>
 
 <style lang="scss">
-.codex-editor {
-  min-height: 350px;
+
+#editor, .codex-editor {
+  //margin: 0 -3rem;
 }
-.ce-block__content {
-  max-width: 100%;
-  padding-left: 70px;
-}
-.ce-toolbar__content {
-  max-width: 100%;
-  margin-left: 60px;
+
+.codex-editor .ce-toolbar__content, .ce-block__content {
+  width: 90rem;
+  max-width: 90rem;
 }
 </style>

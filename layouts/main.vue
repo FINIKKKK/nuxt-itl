@@ -14,15 +14,15 @@
                         >
                             <li
                                     class="nav__item"
-                                    :class="{ active: activeItem === item.id, link: item.id === 4 }"
+                                    :class="{ active: activeItem === item.id && item.id !== 4, link: item.id === 4 }"
                                     v-for="item in itemsList"
                                     :key="item.id"
                                     v-show="userStore.activeCompany || item.id === 4 || item.id === 6"
                                     @click="() => setActiveItem(item.id)"
                             >
-                                <NuxtLink v-if="item.id === 4" to="https://help.itl.wiki/public/section/30">
+                                <a v-if="item.id === 4" href="https://help.itl.wiki/public/section/30" target="_blank">
                                     <svg-icon :name="item.name"/>
-                                </NuxtLink>
+                                </a>
                                 <svg-icon v-else :name="item.name"/>
                             </li>
                         </ul>
@@ -49,6 +49,7 @@
 <script lang="ts" setup>
 import {useOutsideClick} from "~/hooks/useOutsideClick";
 import {useUserStore} from "~/stores/UserStore";
+import {items} from "~/utils/data/sidebar";
 
 const props = defineProps({
     title: {
@@ -61,18 +62,6 @@ const props = defineProps({
     },
 });
 
-const items = [
-    [
-        {id: 1, name: "home"},
-        {id: 2, name: "add"},
-        {id: 3, name: "search"},
-    ],
-    [
-        {id: 4, name: "tooltip"},
-        {id: 5, name: "settings"},
-        {id: 6, name: "user"},
-    ],
-];
 
 const activeItem = ref<number | null>(null);
 const popupRef = ref(null);
@@ -170,8 +159,8 @@ main {
   }
 
   svg {
-    width: 30px;
-    height: 30px;
+    width: 22px;
+    height: 22px;
     fill: $white;
   }
 

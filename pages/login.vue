@@ -8,13 +8,7 @@
             <div v-if="error" class="error">{{ error }}</div>
             <Input name="email" label="Email"/>
             <Input name="password" label="Пароль" type="password"/>
-            <p class="text">
-                Нажимая кнопку «Зарегистроваться» вы принимаете
-                <NuxtLink to="#">Условия обслуживания</NuxtLink>
-                в отношении продуктов
-                ITL и соглашаетесь с
-                <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
-            </p>
+            <NuxtLink class="text" to="/reset_password">Забыли пароль?</NuxtLink>
             <button type="submit" class="btn" :class="{ disabled: isLoading }">
                 Войти
             </button>
@@ -63,6 +57,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 <style lang="scss" scoped>
 .text {
+  display: block;
   margin-bottom: 40px;
 }
 

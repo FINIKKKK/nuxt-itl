@@ -9,8 +9,10 @@
                 </NuxtLink>
             </li>
             <li class="company add_company">
-                <svg-icon name="add"/>
-                <p>Добавить компанию</p>
+                <NuxtLink to="/create_company">
+                    <svg-icon name="add2"/>
+                    <p>Добавить компанию</p>
+                </NuxtLink>
             </li>
         </ul>
     </NuxtLayout>
@@ -82,12 +84,23 @@ const onActiveCompany = (company: TCompany) => {
 
 .add_company {
   background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border: 1px solid $blue4;
   transition: 0.3s;
   cursor: pointer;
+  padding: 0;
+
+  a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 37px 39px;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 
   svg {
     width: 24px;
