@@ -1,11 +1,12 @@
 <template>
     <NuxtLayout name="main" title="Ваши компании">
-
         <ul class="companies">
             <li class="company" v-for="company in companies">
-                <NuxtLink to="/">{{ company.name }}</NuxtLink>
+                <NuxtLink @click="() => onActiveCompany(company)">{{ company.name }}</NuxtLink>
                 <p>Пользователей: <span>1</span></p>
-                <svg-icon class="edit" name="edit"/>
+                <NuxtLink class="edit" to="edit_company">
+                    <svg-icon name="edit"/>
+                </NuxtLink>
             </li>
             <li class="company add_company">
                 <svg-icon name="add"/>
@@ -18,14 +19,17 @@
 <script lang="ts" setup>
 import {Api} from "~/api";
 import {useUserStore} from "~/stores/UserStore";
+import {TCompany} from "~/api/models/company/types";
 
 definePageMeta({
     layout: false,
 });
 
-const {companies} = useUserStore()
+const {companies, setActiveCompany} = useUserStore()
 
-
+const onActiveCompany = (company: TCompany) => {
+    setActiveCompany(company);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -60,12 +64,15 @@ const {companies} = useUserStore()
   }
 
   .edit {
-    width: 18px;
-    height: 18px;
     position: absolute;
     right: 39px;
     top: 37px;
     cursor: pointer;
+
+    svg {
+      height: 18px;
+      width: 18px;
+    }
   }
 
   &:hover {
