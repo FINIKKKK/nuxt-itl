@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout name="main" :title="post?.title">
     <div v-if="user?.id === post?.user.id" class="controls">
-      <svg-icon name="edit" />
-      <svg-icon name="close" />
+      <svg-icon @click="router.push(`/posts/edit/${post?.id}`)" name="edit" />
+      <svg-icon @click="onDeletePost" name="close" />
     </div>
 
     <ul class="post__info">
@@ -48,6 +48,23 @@ const { data: post } = useAsyncData(async () => {
   return post;
 });
 const { user } = useUserStore();
+const isLoading = ref(false);
+const router = useRouter();
+
+const onDeletePost = async () => {
+  if (window.confirm("Вы точно хотите удалить пост?")) {
+    try {
+      isLoading.value = true;
+      await Api().post.remove(Number(route.params.id));
+      router.push("/posts");
+    } catch (err) {
+      console.warn(err);
+      alert("Ошибка при удаление поста");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -104,8 +104,9 @@ main {
   position: relative;
   width: 100%;
   height: 100vh;
-  padding: 40px;
+  padding: 46px 50px;
   overflow: auto;
+  background-color: $blue3;
 }
 .logo {
   margin-bottom: 50px;
@@ -154,9 +155,9 @@ main {
   }
 }
 .title {
-  font-size: 40px;
-  line-height: 48px;
-  margin-bottom: 56px;
+  font-size: 24px;
+  line-height: 28px;
+  margin-bottom: 36px;
   span {
     color: $gray;
   }

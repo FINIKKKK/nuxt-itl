@@ -84,7 +84,7 @@ const inner = [
   white-space: nowrap;
   z-index: 30;
   width: 0px;
-  background-color: $blue4;
+  background-color: $blue2;
   transition: 0.3s;
   transform: translateX(-100%);
   .popup__inner {
@@ -129,13 +129,13 @@ const inner = [
     color: $black;
   }
   &:hover {
-    background-color: $blue4;
+    background-color: $blue2;
     a {
       text-decoration: none;
     }
   }
   .router-link-active {
-    background-color: $blue4;
+    background-color: $blue2;
   }
 }
 </style>

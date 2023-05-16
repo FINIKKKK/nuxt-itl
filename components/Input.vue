@@ -135,7 +135,7 @@ watch(value, () => {
     width: 18px;
     height: 18px;
     margin-left: 5px;
-    fill: $blue3;
+    fill: $blue2;
     path {
       transition: 0.3s;
     }
@@ -145,7 +145,7 @@ watch(value, () => {
     top: 5.5px;
     right: 5.5px;
     padding: 8px 19.5px;
-    background-color: $blue4;
+    background-color: $blue2;
     background-repeat: 2px;
   }
 }
