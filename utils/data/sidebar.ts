@@ -26,7 +26,7 @@ export const innerItems = [
         title: "Посты",
         items: [
             {id: 1, icon: "document", label: "Статью", link: "/posts/create"},
-            {id: 2, icon: "folder", label: "Раздел", link: "/section/create"},
+            {id: 2, icon: "folder", label: "Раздел", link: "/sections/create"},
         ],
     },
     {

@@ -20,8 +20,8 @@ body {
   min-width: 320px;
   font-family: $font;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 20px;
   color: $black;
   background: $white;
   height: 100vh;
@@ -37,26 +37,35 @@ a {
 }
 
 svg {
-  fill: $blue;
+  fill: $blue2;
   transition: 0.2s;
   height: auto;
 }
 
 // ---- Buttons ----
 .btn {
-  background-color: $blue;
+  background-color: $blue2;
   padding: 16px 30px;
-  border-radius: 4px;
+  border-radius: 2px;
   color: $white;
   transition: 0.3s;
 
   &:hover {
-    background-color: darken($blue, 15%);
+    background-color: darken($blue2, 10%);
   }
 
   &.disabled {
     pointer-events: none;
     opacity: 0.5;
+  }
+}
+
+.btn.btn2 {
+  background-color: $blue5;
+  color: $blue2;
+
+  &:hover {
+    background-color: $blue4;
   }
 }
 

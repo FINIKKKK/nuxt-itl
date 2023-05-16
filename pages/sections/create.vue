@@ -1,14 +1,13 @@
 <template>
-  <NuxtLayout name="create" type="post">
+    <NuxtLayout name="create" type="section">
 
-  </NuxtLayout>
+    </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: false,
+    layout: false,
 });
-
 
 
 </script>

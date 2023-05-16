@@ -1,11 +1,26 @@
 <template>
-    <form class="form" @submit.prevent="onSubmit">
+    <div class="controls">
+        <ul class="extra">
+            <li class="extra__item">
+                <svg-icon name="lock"/>
+                <p>Доступ</p>
+            </li>
+        </ul>
+        <div class="btns">
+            <button @click="onSubmit" class="btn">{{
+                props.type === 'post' ? 'Опубликовать' : 'Создать раздел'
+                }}
+            </button>
+            <button class="btn btn2">Отменить</button>
+        </div>
+    </div>
+    <div class="form">
         <div class="input">
             <input
                     v-model="titleValue"
                     class="title"
                     type="text"
-                    placeholder="Заголовок статьи"
+                    :placeholder="props.type === 'post' ? 'Заголовок статьи' : 'Заголовок раздела'"
             />
             <span class="error">{{ errors?.title }}</span>
         </div>
@@ -13,37 +28,51 @@
             <Editor @data-change="setBodyValue"/>
             <span class="error">{{ errors?.body }}</span>
         </div>
-        <button
-                v-if="titleValue && bodyValue.length"
-                class="btn"
-                :class="{ disabled: isLoading }"
-        >
-            Создать
-        </button>
-    </form>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import {Api} from "~/api";
 import {OutputBlockData} from "@editorjs/editorjs";
 import {PostScheme} from "~/utils/validation/PostScheme";
+import {useUserStore} from "~/stores/UserStore";
+
+const props = defineProps({
+    type: {
+        type: String,
+        required: true,
+    },
+});
+
 
 const titleValue = ref("");
 const bodyValue = ref<OutputBlockData[]>([]);
 const errors = ref({});
 const isLoading = ref(false);
 const router = useRouter();
+const userStore = useUserStore()
 
 const onSubmit = async () => {
     try {
         isLoading.value = true;
-        const dto = {
-            title: titleValue.value,
-            body: bodyValue.value,
-        };
-        await PostScheme.validate(dto, {abortEarly: false});
-        const post = await Api().post.create(dto);
-        router.push(`/posts/${post.id}`);
+        if (props.type === "post") {
+            const dto = {
+                title: titleValue.value,
+                body: bodyValue.value,
+            };
+            await PostScheme.validate(dto, {abortEarly: false});
+            const post = await Api().post.create(dto);
+            await router.push(`/posts/${post.id}`);
+        } else {
+            const dto = {
+                title: titleValue.value,
+                body: bodyValue.value,
+                company_id: 1
+            };
+            await PostScheme.validate(dto, {abortEarly: false});
+            const post = await Api().section.create(dto);
+            await router.push(`/sections/${post.id}`);
+        }
     } catch (err: any) {
         if (err) {
             console.warn(err);
@@ -85,4 +114,41 @@ const setBodyValue = (value: OutputBlockData[]) => {
   }
 }
 
+.controls {
+  padding: 17px 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.extra {
+  display: flex;
+  align-items: center;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      margin-right: 14px;
+    }
+
+    &:hover {
+      color: $blue2;
+    }
+  }
+}
+
+.btns {
+  .btn {
+    padding: 10px 15px;
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+}
 </style>
