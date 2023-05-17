@@ -1,10 +1,17 @@
 <template>
-    <NuxtLayout name="main" :title="section?.title">
-        <div v-if="user?.id === section?.user.id" class="controls">
-            <svg-icon @click="router.push(`/sections/edit/${section?.id}`)" name="edit"/>
-            <svg-icon @click="onDelete" name="close"/>
+    <NuxtLayout name="main" :title="section?.title" type="section">
+        <div class="controls">
+            <svg-icon class="control" @click="router.push(`/sections/edit/${section?.id}`)" name="edit"/>
+            <svg-icon class="control" name="attach"/>
+            <svg-icon class="control" name="lock"/>
+            <svg-icon class="control" name="share"/>
+            <svg-icon class="control" @click="onDelete" name="remove"/>
         </div>
 
+        <div class="post__header">
+            <svg-icon class="favorite" name="favorite"/>
+            <h1 class="title">{{ section.title }}</h1>
+        </div>
         <ul class="post__info">
             <li class="post__info-item">
                 Автор:
@@ -14,7 +21,6 @@
                 Опубликовано:
                 <span>{{ section?.created_at && useFormatDate(section?.created_at) }}</span>
             </li>
-            <svg-icon class="favorite" name="favorite"/>
         </ul>
         <Body class="body" :data="section"/>
 
@@ -80,8 +86,14 @@ const onDelete = async () => {
 <style lang="scss" scoped>
 .controls {
   position: absolute;
-  right: 30px;
-  top: 30px;
+  right: 50px;
+  top: 46px;
+
+  .control {
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
 
   svg {
     cursor: pointer;
@@ -91,36 +103,53 @@ const onDelete = async () => {
     padding: 7px;
     border-radius: 5px;
 
+    &:hover {
+      background-color: $blue4;
+    }
+
     &.active {
       background-color: $blue4;
     }
   }
 }
 
-.post__info {
-  margin-top: -35px;
+.post__header {
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.favorite {
+  fill: $blue6;
+  width: 14px;
+  height: 18px;
+  cursor: pointer;
+  position: absolute;
+  left: -25px;
+
+  &:hover {
+    fill: $blue;
+  }
+}
+
+.title {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.post__info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .post__info-item {
-  margin-right: 24px;
+  margin-right: 12px;
   color: $gray;
 
   span {
     color: $black;
-  }
-}
-
-.favorite {
-  fill: $blue3;
-  width: 18px;
-  height: 32px;
-  cursor: pointer;
-
-  &:hover {
-    fill: $blue;
   }
 }
 

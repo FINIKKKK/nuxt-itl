@@ -24,7 +24,6 @@ body {
   line-height: 20px;
   color: $black;
   background: $white;
-  //height: 100vh;
 }
 
 a {
@@ -67,6 +66,10 @@ svg {
   &:hover {
     background-color: $blue4;
   }
+}
+
+.btn.btn3 {
+  padding: 10px 16px;
 }
 
 // ---- Forms ----
@@ -154,6 +157,7 @@ svg {
 // ScrollBar
 ::-webkit-scrollbar {
   width: 5px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-thumb {

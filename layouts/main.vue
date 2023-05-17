@@ -37,7 +37,7 @@
             </nav>
         </aside>
 
-        <div class="content">
+        <div class="content" :class="{section: props.type === 'section'}">
             <h1 class="title">
                 <span>{{ props.title }}</span>
                 <span v-if="props.title2">{{ props.title2 }}</span>
@@ -66,6 +66,10 @@ const props = defineProps({
         type: String,
         required: false,
     },
+    type: {
+        type: String,
+        required: false
+    }
 });
 
 const activeItem = ref<number | null>(null);
@@ -201,6 +205,17 @@ main {
       transform: translateY(-50%);
       top: 50%;
       right: 0;
+    }
+  }
+}
+
+.section {
+  .title {
+    font-size: 14px;
+    margin-bottom: 40px;
+
+    span {
+      color: $gray !important;
     }
   }
 }

@@ -29,17 +29,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["value"]);
 
-const isFocus = ref(false);
-const value = ref("");
-const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
-watch(value, () => {
-  emits("value", value.value);
-  if (textareaRef.value) {
-    textareaRef.value.style.height = "55px";
-    textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`;
-  }
-});
 </script>
 
 <style lang="scss" scoped>
