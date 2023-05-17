@@ -5,7 +5,7 @@ import {TMessage} from "~/api/types";
 export const SectionApi = (instance: AxiosInstance) => ({
     async getAll(params: SectionParams) {
         const {data} = await instance.get<TSectionsData>(
-            `/sections?post_id=${params.company_id}`,
+            `/sections?company_id=${params.company_id}`,
         );
         return data;
     },

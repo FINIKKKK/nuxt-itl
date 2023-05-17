@@ -28,7 +28,7 @@ body {
 }
 
 a {
-  color: $blue;
+  color: $blue2;
   transition: 0.2s;
 
   &:hover {
@@ -78,6 +78,18 @@ svg {
     line-height: 20px;
     margin-bottom: 40px;
   }
+
+  .link {
+    font-size: 11px;
+    line-height: 18px;
+    color: $gray;
+    margin-bottom: 40px;
+
+    a {
+      color: $gray;
+      text-decoration: underline;
+    }
+  }
 }
 
 .error {
@@ -91,7 +103,7 @@ svg {
 
   thead {
     text-align: left;
-    color: rgba($blue, 0.3);
+    color: rgba($blue2, 0.3);
   }
 
   tr {
@@ -109,10 +121,10 @@ svg {
   }
 
   tbody tr {
-    border-bottom: 1px solid rgba($blue, 0.1);
+    border-bottom: 1px solid rgba($blue2, 0.1);
 
     &:hover {
-      background-color: rgba($blue, 0.05);
+      background-color: rgba($blue2, 0.05);
     }
   }
 }
@@ -130,7 +142,6 @@ svg {
       line-height: 23px;
       padding: 10px 13px;
       width: 100%;
-      width: 100%;
       border-bottom: 1px solid $gray2;
 
       &::placeholder {
@@ -140,26 +151,13 @@ svg {
   }
 }
 
-// ---- links ----
-.link {
-  font-size: 11px;
-  line-height: 18px;
-  color: $gray;
-  margin-bottom: 40px;
-
-  a {
-    color: $gray;
-    text-decoration: underline;
-  }
-}
-
 // ScrollBar
 ::-webkit-scrollbar {
   width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: $blue;
+  background-color: $blue2;
   border-radius: 3px;
 }
 
@@ -169,5 +167,5 @@ svg {
 
 // Selection
 ::selection {
-  background: rgba($blue, 0.2);
+  background: rgba($blue2, 0.2);
 }

@@ -18,7 +18,7 @@ export type TPost = TBase & {
 export type PostDto = {
     title: string;
     body: OutputBlockData[];
-    section_id?: number;
+    section_id: number;
 };
 
 export type PostParams = {

@@ -17,12 +17,30 @@
                     </NuxtLink>
                 </li>
             </ul>
+            <div v-if="props.activeItem === 1" class="sections">
+                <h3>Разделы</h3>
+                <ul>
+                    <li
+                            class="popup__item"
+                            v-if="props.activeItem"
+                            v-for="section in sections"
+                            :key="section.id"
+                    >
+                        <NuxtLink :to="`/sections/${section.id}`">
+                            <svg-icon name="folder"/>
+                            <p>{{ section.title }}</p>
+                        </NuxtLink>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import {innerItems} from "~/utils/data/sidebar";
+import {Api} from "~/api";
+import {useUserStore} from "~/stores/UserStore";
 
 const props = defineProps({
     isShow: {
@@ -35,6 +53,15 @@ const props = defineProps({
     },
 });
 
+const userStore = useUserStore()
+const {data: sections} = useAsyncData(async () => {
+    const params = {
+        company_id: userStore.activeCompany?.id || 1,
+    }
+    const {data} = await Api().section.getAll(params);
+    return data;
+});
+console.log(sections);
 </script>
 
 <style lang="scss" scoped>
@@ -90,12 +117,16 @@ const props = defineProps({
     height: 22px;
     margin-right: 15px;
     fill: $blue;
+    flex: 0 0 auto;
   }
 
   p {
     font-size: 14px;
     line-height: 20px;
     color: $black;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &:hover {
@@ -104,6 +135,16 @@ const props = defineProps({
     a {
       text-decoration: none;
     }
+  }
+}
+
+.sections {
+  margin-top: 49px;
+
+  h3 {
+    text-transform: uppercase;
+    color: $gray;
+    margin-bottom: 18px;
   }
 }
 </style>
