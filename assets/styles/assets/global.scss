@@ -24,11 +24,11 @@ body {
   line-height: 20px;
   color: $black;
   background: $white;
-  height: 100vh;
+  //height: 100vh;
 }
 
 a {
-  color: $blue2;
+  color: $blue;
   transition: 0.2s;
 
   &:hover {
@@ -37,21 +37,21 @@ a {
 }
 
 svg {
-  fill: $blue2;
+  fill: $blue;
   transition: 0.2s;
   height: auto;
 }
 
 // ---- Buttons ----
 .btn {
-  background-color: $blue2;
+  background-color: $blue;
   padding: 16px 30px;
   border-radius: 2px;
   color: $white;
   transition: 0.3s;
 
   &:hover {
-    background-color: darken($blue2, 10%);
+    background-color: darken($blue, 10%);
   }
 
   &.disabled {
@@ -62,7 +62,7 @@ svg {
 
 .btn.btn2 {
   background-color: $blue5;
-  color: $blue2;
+  color: $blue;
 
   &:hover {
     background-color: $blue4;
@@ -103,7 +103,7 @@ svg {
 
   thead {
     text-align: left;
-    color: rgba($blue2, 0.3);
+    color: rgba($blue, 0.3);
   }
 
   tr {
@@ -121,10 +121,10 @@ svg {
   }
 
   tbody tr {
-    border-bottom: 1px solid rgba($blue2, 0.1);
+    border-bottom: 1px solid rgba($blue, 0.1);
 
     &:hover {
-      background-color: rgba($blue2, 0.05);
+      background-color: rgba($blue, 0.05);
     }
   }
 }
@@ -157,7 +157,7 @@ svg {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: $blue2;
+  background-color: $blue;
   border-radius: 3px;
 }
 
@@ -167,5 +167,5 @@ svg {
 
 // Selection
 ::selection {
-  background: rgba($blue2, 0.2);
+  background: rgba($blue, 0.2);
 }

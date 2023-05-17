@@ -39,6 +39,7 @@ const userStore = useUserStore()
 
 const onSubmit = handleSubmit(async (values) => {
     try {
+        error.value = '';
         isLoading.value = true;
         const dto = {
             email: values.email,
@@ -52,7 +53,7 @@ const onSubmit = handleSubmit(async (values) => {
         userStore.setUser(data.user);
         await router.push("/");
     } catch (err: any) {
-        error.value = err?.response?.data?.main_message;
+        error.value = err?.response?.data?.message;
     } finally {
         isLoading.value = false;
     }

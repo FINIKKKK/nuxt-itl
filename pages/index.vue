@@ -59,6 +59,7 @@ const onActiveCompany = (company: TCompany) => {
   p {
     font-size: 14px;
     line-height: 20px;
+    white-space: nowrap;
 
     span {
       color: $blue;

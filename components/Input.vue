@@ -3,14 +3,12 @@
             class="input"
             :class="{ focus: isFocus || value, password: props.type === 'password' }"
     >
-        <div class="inner">
+        <div class="inner" :class="{input_address: props.type === 'url_address'}">
             <input
                     :placeholder="label"
                     :type=" props.type !== 'password' || isShowPassword ? 'text' : 'password'"
                     v-model="value"
                     :name="name"
-                    @focus="isFocus = true"
-                    @blur="isFocus = false"
                     @input="handleInput('input')"
                     @keydown.enter="handleInput('keydown')"
                     ref="inputField"
@@ -28,7 +26,10 @@
                         @click="() => setShowPassword(false)"
                 />
             </div>
-            <div v-if="props.type === 'url_address'" class="address">.itl.wiki</div>
+            <div v-if="props.type === 'url_address'" class="address">
+                <div class="url">.itl.wiki</div>
+                <svg-icon class="tooltip" name="tooltip2"/>
+            </div>
         </div>
         <span class="error">{{ errorMessage }}</span>
     </div>
@@ -109,7 +110,7 @@ watch(value, () => {
 <style lang="scss" scoped>
 .input {
   &:not(:last-child) {
-    margin-bottom: 32px;
+    margin-bottom: 60px;
   }
 
   &.password {
@@ -137,24 +138,35 @@ watch(value, () => {
     }
   }
 
-  .tooltip {
-    width: 18px;
-    height: 18px;
-    margin-left: 5px;
-    fill: $blue2;
+  .input_address {
+    display: flex;
+    align-items: center;
 
-    path {
-      transition: 0.3s;
+    input {
+      margin-right: 8px;
     }
   }
 
   .address {
-    position: absolute;
-    top: 5.5px;
-    right: 5.5px;
-    padding: 8px 19.5px;
-    background-color: $blue2;
-    background-repeat: 2px;
+    display: flex;
+    align-items: center;
+
+    .url {
+      font-size: 20px;
+      margin-right: 9px;
+    }
+
+    .tooltip {
+      width: 18px;
+      height: 18px;
+      opacity: 0.5;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
+
 }
 </style>

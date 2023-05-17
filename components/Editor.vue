@@ -60,12 +60,11 @@ onMounted(async () => {
                     buttonContent: "Выберите изображение",
                     uploader: {
                         async uploadByFile(file: any) {
-                            const fileName = await Api().files.upload(file);
-                            console.log(fileName);
+                            const {data} = await Api().files.upload(file);
                             return {
                                 success: 1,
                                 file: {
-                                    url: `${fileName}`,
+                                    url: `${data}`,
                                 },
                             };
                         },
@@ -91,13 +90,19 @@ watch(editorData, (newData) => {
 </script>
 
 <style lang="scss">
+#editor svg {
+  fill: none;
+}
 
-#editor, .codex-editor {
-  //margin: 0 -3rem;
+.codex-editor__redactor {
+  padding-bottom: 100px;
 }
 
 .codex-editor .ce-toolbar__content, .ce-block__content {
-  width: 90rem;
-  max-width: 90rem;
+  max-width: 900px;
+}
+
+.cdx-input {
+  display: none;
 }
 </style>

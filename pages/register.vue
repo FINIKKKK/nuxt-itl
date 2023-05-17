@@ -56,6 +56,7 @@ const userStore = useUserStore()
 
 const onSubmit = handleSubmit(async (values) => {
     try {
+        errors.value = '';
         isLoading.value = true;
         const dto = {
             firstName: values.firstName,

@@ -9,6 +9,7 @@
                     <div class="nav__lists">
                         <ul
                                 class="nav__list"
+                                v-if="userStore.user"
                                 v-for="(itemsList, index) in items"
                                 :key="index"
                         >
@@ -38,8 +39,9 @@
 
         <div class="content">
             <h1 class="title">
-                {{ props.title }}
-                <span v-if="props.titleSpan">{{ props.titleSpan }}</span>
+                <span>{{ props.title }}</span>
+                <span v-if="props.title2">{{ props.title2 }}</span>
+                <span v-if="props.title3">{{ props.title3 }}</span>
             </h1>
             <slot/>
         </div>
@@ -56,19 +58,21 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    titleSpan: {
+    title2: {
+        type: String,
+        required: false,
+    },
+    title3: {
         type: String,
         required: false,
     },
 });
-
 
 const activeItem = ref<number | null>(null);
 const popupRef = ref(null);
 const isShowPopup = ref(false);
 const isShowPopup2 = useOutsideClick(popupRef, activeItem);
 const userStore = useUserStore();
-
 const route = useRoute();
 
 const setActiveItem = (id: number) => {
@@ -89,6 +93,10 @@ main {
 
   &.home {
     background-color: $blue3;
+
+    .title {
+      margin-bottom: 36px;
+    }
   }
 }
 
@@ -120,7 +128,7 @@ main {
   background-color: $blue;
   z-index: 40;
   padding: 32px 0 38px;
-  width: 100px;
+  width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -175,11 +183,25 @@ main {
 
 .title {
   font-size: 24px;
-  line-height: 28px;
-  margin-bottom: 36px;
+  margin-bottom: 130px;
+  color: $gray2;
 
-  span {
-    color: $gray;
+  span:nth-child(1) {
+    color: $black;
+  }
+
+  span:not(:last-child) {
+    position: relative;
+    padding-right: 32px;
+    margin-right: 20px;
+
+    &::after {
+      content: url("~/assets/img/arrow.svg");
+      position: absolute;
+      transform: translateY(-50%);
+      top: 50%;
+      right: 0;
+    }
   }
 }
 </style>
