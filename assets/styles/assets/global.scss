@@ -123,24 +123,34 @@ svg {
     position: relative;
     color: $black;
 
-    &::placeholder {
-      color: $gray;
-    }
 
     input,
     textarea {
-      padding: 8px 10px;
+      font-size: 20px;
+      line-height: 23px;
+      padding: 10px 13px;
       width: 100%;
       width: 100%;
       border-bottom: 1px solid $gray2;
+
+      &::placeholder {
+        color: $gray;
+      }
     }
   }
 }
 
 // ---- links ----
 .link {
-  //color: $gray;
-  //text-decoration: underline;
+  font-size: 11px;
+  line-height: 18px;
+  color: $gray;
+  margin-bottom: 40px;
+
+  a {
+    color: $gray;
+    text-decoration: underline;
+  }
 }
 
 // ScrollBar

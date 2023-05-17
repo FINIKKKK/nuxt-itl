@@ -8,7 +8,9 @@
             <div v-if="error" class="error">{{ error }}</div>
             <Input name="email" label="Email"/>
             <Input name="password" label="Пароль" type="password"/>
-            <NuxtLink class="text" to="/reset_password">Забыли пароль?</NuxtLink>
+            <p class="link">
+                <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
+            </p>
             <button type="submit" class="btn" :class="{ disabled: isLoading }">
                 Войти
             </button>
@@ -17,14 +19,15 @@
 </template>
 
 <script lang="ts" setup>
+import {useUserStore} from "~/stores/UserStore";
+import {useForm} from "vee-validate";
+import {Api} from "@/api";
+import {setCookie} from "nookies";
+import {LoginScheme} from "~/utils/validation/Scheme";
+
 definePageMeta({
     layout: false,
 });
-
-import {useForm} from "vee-validate";
-import {Api} from "@/api";
-import {LoginScheme} from "@/utils/validation/LoginScheme";
-import {setCookie} from "nookies";
 
 const {handleSubmit} = useForm({
     validationSchema: LoginScheme,
@@ -32,6 +35,7 @@ const {handleSubmit} = useForm({
 const error = ref("");
 const router = useRouter();
 const isLoading = ref(false);
+const userStore = useUserStore()
 
 const onSubmit = handleSubmit(async (values) => {
     try {
@@ -41,12 +45,12 @@ const onSubmit = handleSubmit(async (values) => {
             password: values.password,
         };
         const {data} = await Api().auth.login(dto);
-
         setCookie(null, "access_token", data.token.access_token, {
             maxAge: data.token.expires_in,
             path: "/",
         });
-        router.push("/");
+        userStore.setUser(data.user);
+        await router.push("/");
     } catch (err: any) {
         error.value = err?.response?.data?.main_message;
     } finally {

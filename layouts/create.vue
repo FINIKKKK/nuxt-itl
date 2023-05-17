@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import {Api} from "~/api";
 import {OutputBlockData} from "@editorjs/editorjs";
-import {PostScheme} from "~/utils/validation/PostScheme";
+import {PostScheme, SectionScheme} from "~/utils/validation/Scheme";
 import {useUserStore} from "~/stores/UserStore";
 
 const props = defineProps({
@@ -43,7 +43,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 
 const titleValue = ref("");
 const bodyValue = ref<OutputBlockData[]>([]);
@@ -61,17 +60,17 @@ const onSubmit = async () => {
                 body: bodyValue.value,
             };
             await PostScheme.validate(dto, {abortEarly: false});
-            const post = await Api().post.create(dto);
-            await router.push(`/posts/${post.id}`);
+            const {data} = await Api().post.create(dto);
+            await router.push(`/posts/${data.id}`);
         } else {
             const dto = {
                 title: titleValue.value,
                 body: bodyValue.value,
                 company_id: 1
             };
-            await PostScheme.validate(dto, {abortEarly: false});
-            const post = await Api().section.create(dto);
-            await router.push(`/sections/${post.id}`);
+            await SectionScheme.validate(dto, {abortEarly: false});
+            const {data} = await Api().section.create(dto);
+            await router.push(`/sections/${data.id}`);
         }
     } catch (err: any) {
         if (err) {

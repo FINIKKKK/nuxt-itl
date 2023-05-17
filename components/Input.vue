@@ -6,9 +6,7 @@
         <div class="inner">
             <input
                     :placeholder="label"
-                    :type="
-          props.type !== 'password' || isShowPassword ? 'text' : 'password'
-        "
+                    :type=" props.type !== 'password' || isShowPassword ? 'text' : 'password'"
                     v-model="value"
                     :name="name"
                     @focus="isFocus = true"
@@ -16,6 +14,7 @@
                     @input="handleInput('input')"
                     @keydown.enter="handleInput('keydown')"
                     ref="inputField"
+                    maxlength="200"
             />
             <div v-if="props.type === 'password'" class="showPassword">
                 <svg-icon
@@ -37,7 +36,7 @@
 
 <script lang="ts" setup>
 import {useField} from "vee-validate";
-import {AddUsersScheme} from "~/utils/validation/AddUsersScheme";
+import {AddUsersScheme} from "~/utils/validation/Scheme";
 
 const props = defineProps({
     name: {
@@ -121,14 +120,20 @@ watch(value, () => {
 
   .showPassword {
     position: absolute;
-    top: 13px;
-    right: 24px;
+    bottom: 8px;
+    right: 11px;
     cursor: pointer;
+    opacity: 0.5;
+    transition: 0.3s;
 
     svg {
       fill: $blue;
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 16px;
+    }
+
+    &:hover {
+      opacity: 1;
     }
   }
 

@@ -1,12 +1,24 @@
-import { TBase } from "~/api/types";
+import {TBase, TData} from "~/api/types";
+
+export type TCompaniesData = TData & {
+    data: TCompany[]
+};
+export type TCompanyData = TData & {
+    data: TCompany
+};
 
 export type TCompany = TBase & {
-  name: string;
-  url_address: string;
-  user_id: number;
+    name: string;
+    url_address: string;
+    slug: string;
+    user_id: number;
 };
 
 export type CompanyDto = {
-  name: string;
-  url_address: string;
+    name: string;
+    url_address: string;
+};
+
+export type CompanyParams = {
+    section_id: number;
 };
