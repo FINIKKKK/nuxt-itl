@@ -2,7 +2,7 @@
     <NuxtLayout name="main" title="Ваши компании">
         <ul class="companies">
             <li class="company" v-for="company in companies">
-                <NuxtLink @click="() => onActiveCompany(company)">{{ company.name }}</NuxtLink>
+                <NuxtLink :to="`/companies/${company.slug}`" @click="() => onActiveCompany(company)">{{ company.name }}</NuxtLink>
                 <p>Пользователей: <span>1</span></p>
                 <NuxtLink class="edit" to="edit_company">
                     <svg-icon name="edit"/>

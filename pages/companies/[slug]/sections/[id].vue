@@ -29,7 +29,7 @@
                 <li class="item" v-for="section in section.data.sections">
                     <svg-icon name="folder"/>
                     <div class="item__info">
-                        <NuxtLink :to="`/sections/${section.id}`">{{ section.title }}</NuxtLink>
+                        <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`">{{ section.title }}</NuxtLink>
                         <div class="date">Опубликовано: <span>{{ useFormatDate(section.created_at) }}</span></div>
                     </div>
                 </li>
@@ -38,7 +38,7 @@
                 <li class="item" v-for="post in section.data.posts">
                     <svg-icon name="document"/>
                     <div class="item__info">
-                        <NuxtLink :to="`/posts/${post.id}`">{{ post.title }}</NuxtLink>
+                        <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/posts/${post.id}`">{{ post.title }}</NuxtLink>
                         <div class="date">Опубликовано: <span>{{ useFormatDate(post.created_at) }}</span></div>
                     </div>
                 </li>
@@ -63,7 +63,7 @@ const {data: section} = useAsyncData(async () => {
     const {data} = await Api().section.getOne(Number(id));
     return data;
 });
-const {user} = useUserStore();
+const userStore = useUserStore();
 const isLoading = ref(false);
 const router = useRouter();
 

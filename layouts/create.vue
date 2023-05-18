@@ -15,6 +15,9 @@
         </div>
     </div>
     <div class="form">
+        <select name="" id="" v-model="selectValue">
+            <option v-for="section in sections" :value="section.id">{{ section.title }}</option>
+        </select>
         <div class="input">
             <input
                     v-model="titleValue"
@@ -49,7 +52,16 @@ const bodyValue = ref<OutputBlockData[]>([]);
 const errors = ref({});
 const isLoading = ref(false);
 const router = useRouter();
-const userStore = useUserStore()
+const userStore = useUserStore();
+const selectValue = ref(null);
+
+const {data: sections} = useAsyncData(async () => {
+    const params = {
+        company_id: userStore.activeCompany[0]?.id,
+    }
+    const {data} = await Api().section.getAll(params);
+    return data;
+});
 
 const onSubmit = async () => {
     try {
@@ -58,19 +70,23 @@ const onSubmit = async () => {
             const dto = {
                 title: titleValue.value,
                 body: bodyValue.value,
+                section_id: selectValue.value
             };
             await PostScheme.validate(dto, {abortEarly: false});
             const {data} = await Api().post.create(dto);
-            await router.push(`/posts/${data.id}`);
+            console.log(data);
+            // await router.push(`/posts/${data.id}`);
         } else {
             const dto = {
                 title: titleValue.value,
                 body: bodyValue.value,
-                company_id: 1
+                company_id: userStore.activeCompany[0].id,
+                ...(selectValue.value && {parent_id: selectValue.value})
             };
             await SectionScheme.validate(dto, {abortEarly: false});
             const {data} = await Api().section.create(dto);
-            await router.push(`/sections/${data.id}`);
+            console.log(data);
+            // await router.push(`/companies/${userStore.activeCompany[0].slug}/sections/${data.id}`);
         }
     } catch (err: any) {
         if (err) {

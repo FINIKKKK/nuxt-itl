@@ -72,12 +72,12 @@ const props = defineProps({
     }
 });
 
-const activeItem = ref<number | null>(null);
+const activeItem = ref<number | null>(1);
 const popupRef = ref(null);
-const isShowPopup = ref(false);
+const route = useRoute();
+const isShowPopup = ref(route.path.includes('/companies/') || false);
 const isShowPopup2 = useOutsideClick(popupRef, activeItem);
 const userStore = useUserStore();
-const route = useRoute();
 
 const setActiveItem = (id: number) => {
     if (activeItem.value === id) {

@@ -7,7 +7,7 @@ export const CompanyApi = (instance: AxiosInstance) => ({
         const {data} = await instance.get<TCompaniesData>("/companies");
         return data;
     },
-    async getOne(id: number) {
+    async getOne(id: string) {
         const {data} = await instance.get<TCompanyData>(`/companies/${id}`);
         return data;
     },

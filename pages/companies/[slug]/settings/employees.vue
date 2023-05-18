@@ -1,6 +1,5 @@
 <template>
     <NuxtLayout name="main" title="Пользователи">
-
     </NuxtLayout>
 </template>
 
