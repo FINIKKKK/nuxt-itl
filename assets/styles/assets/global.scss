@@ -59,6 +59,12 @@ svg {
   }
 }
 
+a.btn {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 .btn.btn2 {
   background-color: $blue5;
   color: $blue;
@@ -70,6 +76,17 @@ svg {
 
 .btn.btn3 {
   padding: 10px 16px;
+}
+
+.btn-inline {
+  position: relative;
+  font-size: 15px;
+  line-height: 18px;
+  color: $blue;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 // ---- Forms ----
@@ -138,7 +155,6 @@ svg {
     position: relative;
     color: $black;
 
-
     input,
     textarea {
       font-size: 20px;
@@ -146,12 +162,49 @@ svg {
       padding: 10px 13px;
       width: 100%;
       border-bottom: 1px solid $gray2;
+      transition: 0.3s;
 
       &::placeholder {
         color: $gray;
       }
+
+      &:hover, &:focus {
+        border-color: $black;
+      }
     }
   }
+}
+
+// ---- Blocks ----
+.block {
+  width: 490px;
+  &:not(:last-child) {
+    margin-bottom: 51px;
+  }
+  .title {
+    font-size: 20px;
+    line-height: 23px;
+    margin-bottom: 42px;
+  }
+  .input {
+    input {
+      font-size: 16px;
+    }
+    &:not(:last-child) {
+      margin-bottom: 40px;
+    }
+  }
+}
+
+.text {
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.pretext {
+  font-size: 11px;
+  line-height: 15px;
+  color: $gray;
 }
 
 // ScrollBar

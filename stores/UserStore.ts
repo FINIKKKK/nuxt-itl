@@ -11,7 +11,7 @@ export const useUserStore = defineStore("userStore", () => {
     const setUser = (obj: TUser) => {
         user.value = obj;
     };
-    const setCompany = (obj: TCompany[]) => {
+    const setCompanies = (obj: TCompany[]) => {
         companies.value = obj;
     };
     const setActiveCompany = (obj: TCompany) => {
@@ -23,7 +23,7 @@ export const useUserStore = defineStore("userStore", () => {
         companies,
         activeCompany,
         setUser,
-        setCompany,
+        setCompanies,
         setActiveCompany
     };
 });

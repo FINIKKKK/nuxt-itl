@@ -2,6 +2,14 @@ import {TCompany} from "../company/types";
 import {TUser} from "../user/types";
 import {TData} from "~/api/types";
 
+export type TLoginUserData = TData & {
+    data: {
+        user: TUser;
+        token: TToken;
+        companies: TCompany[]
+    }
+};
+
 export type TUserToken = TData & {
     data: {
         user: TUser;

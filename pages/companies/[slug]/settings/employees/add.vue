@@ -1,11 +1,14 @@
 <template>
-    <NuxtLayout name="main" title="Пользователи">
-    </NuxtLayout>
+  <NuxtLayout name="main" title="">
+
+  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
+
+
 definePageMeta({
-    layout: false,
+  layout: false,
 });
 
 </script>

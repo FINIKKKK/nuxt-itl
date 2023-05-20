@@ -7,7 +7,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (to.fullPath.includes('/companies/')) {
         if (!activeCompany) {
             const {data} = await Api().company.getOne(to.params.slug);
-            console.log(data);
             setActiveCompany(data)
         }
     }

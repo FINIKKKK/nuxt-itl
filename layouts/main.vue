@@ -1,75 +1,80 @@
 <template>
-    <main :class="{home: route.path === '/'}">
-        <aside class="sidebar" ref="popupRef">
-            <nav class="nav">
-                <div class="nav__main">
-                    <NuxtLink to="/" class="logo">
-                        <img src="~/assets/img/logo.svg" alt="logo"/>
-                    </NuxtLink>
-                    <div class="nav__lists">
-                        <ul
-                                class="nav__list"
-                                v-if="userStore.user"
-                                v-for="(itemsList, index) in items"
-                                :key="index"
-                        >
-                            <li
-                                    class="nav__item"
-                                    :class="{ active: activeItem === item.id && item.id !== 4, link: item.id === 4 }"
-                                    v-for="item in itemsList"
-                                    :key="item.id"
-                                    v-show="userStore.activeCompany || item.id === 4 || item.id === 6"
-                                    @click="() => setActiveItem(item.id)"
-                            >
-                                <a v-if="item.id === 4" href="https://help.itl.wiki/public/section/30" target="_blank">
-                                    <svg-icon :name="item.name"/>
-                                </a>
-                                <svg-icon v-else :name="item.name"/>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <SidebarPopup
-                        :isShow="isShowPopup && !isShowPopup2"
-                        :activeItem="activeItem"
-                />
-            </nav>
-        </aside>
-
-        <div class="content" :class="{section: props.type === 'section'}">
-            <h1 class="title">
-                <span>{{ props.title }}</span>
-                <span v-if="props.title2">{{ props.title2 }}</span>
-                <span v-if="props.title3">{{ props.title3 }}</span>
-            </h1>
-            <slot/>
+  <main :class="{home: route.path === '/'}">
+    <aside class="sidebar" ref="popupRef">
+      <nav class="nav">
+        <div class="nav__main">
+          <NuxtLink to="/" class="logo">
+            <img src="~/assets/img/logo.svg" alt="logo"/>
+          </NuxtLink>
+          <div class="nav__lists">
+            <ul
+                class="nav__list"
+                v-if="userStore.user"
+                v-for="(itemsList, index) in items"
+                :key="index"
+            >
+              <li
+                  class="nav__item"
+                  :class="{ active: activeItem === item.id && item.id !== 4, link: item.id === 4 }"
+                  v-for="item in itemsList"
+                  :key="item.id"
+                  v-show="route.path !== '/' && userStore.activeCompany || item.id === 4 || item.id === 6"
+                  @click="() => setActiveItem(item.id)"
+              >
+                <a v-if="item.id === 4" href="https://help.itl.wiki/public/section/30" target="_blank">
+                  <svg-icon :name="item.name"/>
+                </a>
+                <svg-icon v-else :name="item.name"/>
+              </li>
+            </ul>
+          </div>
         </div>
-    </main>
+
+        <SidebarPopup
+            :isShow="isShowPopup && !isShowPopup2"
+            :activeItem="activeItem"
+        />
+      </nav>
+    </aside>
+
+    <div class="content" :class="{section: props.type === 'section'}">
+      <h4 class="pretitle" v-if="props.isPreTitle">{{ props.title }}</h4>
+      <h1 class="title" v-else>
+        <span>{{ props.title }}</span>
+        <span v-if="props.title2">{{ props.title2 }}</span>
+        <span v-if="props.title3">{{ props.title3 }}</span>
+      </h1>
+      <slot/>
+    </div>
+  </main>
 </template>
 
 <script lang="ts" setup>
-import {useOutsideClick} from "~/hooks/useOutsideClick";
-import {useUserStore} from "~/stores/UserStore";
-import {items} from "~/utils/data/sidebar";
+import { useOutsideClick } from "~/hooks/useOutsideClick";
+import { useUserStore } from "~/stores/UserStore";
+import { items } from "~/utils/data/sidebar";
 
 const props = defineProps({
-    title: {
-        type: String,
-        required: true,
-    },
-    title2: {
-        type: String,
-        required: false,
-    },
-    title3: {
-        type: String,
-        required: false,
-    },
-    type: {
-        type: String,
-        required: false
-    }
+  title: {
+    type: String,
+    required: true,
+  },
+  title2: {
+    type: String,
+    required: false,
+  },
+  title3: {
+    type: String,
+    required: false,
+  },
+  type: {
+    type: String,
+    required: false
+  },
+  isPreTitle: {
+    type: Boolean,
+    required: false,
+  }
 });
 
 const activeItem = ref<number | null>(1);
@@ -80,13 +85,13 @@ const isShowPopup2 = useOutsideClick(popupRef, activeItem);
 const userStore = useUserStore();
 
 const setActiveItem = (id: number) => {
-    if (activeItem.value === id) {
-        isShowPopup.value = false;
-        activeItem.value = null;
-    } else {
-        activeItem.value = id;
-        isShowPopup.value = true;
-    }
+  if (activeItem.value === id) {
+    isShowPopup.value = false;
+    activeItem.value = null;
+  } else {
+    activeItem.value = id;
+    isShowPopup.value = true;
+  }
 };
 </script>
 
@@ -218,5 +223,11 @@ main {
       color: $gray !important;
     }
   }
+}
+
+.pretitle {
+  font-size: 13px;
+  color: $gray;
+  margin-bottom: 32px;
 }
 </style>

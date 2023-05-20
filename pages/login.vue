@@ -39,6 +39,11 @@ const userStore = useUserStore()
 
 const onSubmit = handleSubmit(async (values) => {
     try {
+        const token = useCookie("token");
+
+
+        token.value = "asdas";
+
         error.value = '';
         isLoading.value = true;
         const dto = {
@@ -51,6 +56,7 @@ const onSubmit = handleSubmit(async (values) => {
             path: "/",
         });
         userStore.setUser(data.user);
+        userStore.setCompanies(data.companies);
         await router.push("/");
     } catch (err: any) {
         error.value = err?.response?.data?.message;

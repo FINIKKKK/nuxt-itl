@@ -1,5 +1,5 @@
 import {AxiosInstance} from "axios";
-import {RegisterUserDto, LoginUserDto, TUserToken, TUserCompany} from "./types";
+import {RegisterUserDto, LoginUserDto, TUserToken, TUserCompany, TLoginUserData} from "./types";
 
 export const AuthApi = (instance: AxiosInstance) => ({
     async register(dto: RegisterUserDto) {
@@ -10,7 +10,7 @@ export const AuthApi = (instance: AxiosInstance) => ({
         return data;
     },
     async login(dto: LoginUserDto) {
-        const {data} = await instance.post<LoginUserDto, { data: TUserToken }>(
+        const {data} = await instance.post<LoginUserDto, { data: TLoginUserData }>(
             "/auth/login",
             dto
         );
