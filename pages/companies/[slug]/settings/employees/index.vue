@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="main" title="Настройки / Пользователи" isPreTitle>
+  <NuxtLayout name="main" title="Настройки / Пользователи" isMiniTitle>
     <div class="block">
       <h2 class="title">Добавление пользователей</h2>
       <div class="text">За каждым успехом стоит команда! Пригласите свою команду и начните создавать отличные вещи
@@ -31,7 +31,7 @@
           <td>16.03.2019 16:28:02</td>
           <td>Выдан доступ</td>
           <td class="table__select">
-            <Select :options="options" customClass="select"/>
+            <Select :options="options" className="select" isMini/>
           </td>
         </tr>
         </tbody>

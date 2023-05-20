@@ -37,8 +37,8 @@
       </nav>
     </aside>
 
-    <div class="content" :class="{section: props.type === 'section'}">
-      <h4 class="pretitle" v-if="props.isPreTitle">{{ props.title }}</h4>
+    <div class="content" :class="{section: isMiniTitle}">
+      <h4 class="pretitle" v-if="props.isMiniTitle">{{ props.title }}</h4>
       <h1 class="title" v-else>
         <span>{{ props.title }}</span>
         <span v-if="props.title2">{{ props.title2 }}</span>
@@ -69,6 +69,10 @@ const props = defineProps({
   },
   type: {
     type: String,
+    required: false
+  },
+  isMiniTitle: {
+    type: Boolean,
     required: false
   },
   isPreTitle: {

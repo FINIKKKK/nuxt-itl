@@ -5,8 +5,6 @@ export const useOutsideClick = (
   const handleClickOutside = (e: MouseEvent) => {
     if (elementRef.value && !elementRef.value.contains(e.target as Node)) {
       event.value = false;
-    } else {
-      event.value = true;
     }
   };
 
