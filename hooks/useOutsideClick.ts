@@ -1,15 +1,12 @@
 export const useOutsideClick = (
   elementRef: Ref<HTMLElement | null>,
-  extraEvent?: Ref<number | null>
+  event: Ref<Boolean | null>
 ) => {
-  const isOutside = ref(false);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (elementRef.value && !elementRef.value.contains(event.target as Node)) {
-      isOutside.value = true;
-      if (extraEvent) extraEvent.value = null;
+  const handleClickOutside = (e: MouseEvent) => {
+    if (elementRef.value && !elementRef.value.contains(e.target as Node)) {
+      event.value = false;
     } else {
-      isOutside.value = false;
+      event.value = true;
     }
   };
 
@@ -19,6 +16,4 @@ export const useOutsideClick = (
   onUnmounted(() => {
     document.removeEventListener("click", handleClickOutside);
   });
-
-  return isOutside;
 };
