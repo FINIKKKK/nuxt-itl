@@ -56,6 +56,10 @@ const props = defineProps({
     type: Function,
     required: false,
   },
+  customClass: {
+    class: String,
+    required: false,
+  }
 });
 const emits = defineEmits(["inputValue"]);
 
@@ -103,7 +107,7 @@ watch(value, () => {
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .input {
   &:not(:last-child) {
     margin-bottom: 60px;

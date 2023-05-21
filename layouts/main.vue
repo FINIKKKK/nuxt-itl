@@ -1,5 +1,4 @@
 <template>
-  activeItem {{ activeItem }}
   <main :class="{home: route.path === '/'}">
     <aside class="sidebar" ref="popupRef">
       <nav class="nav">
@@ -37,6 +36,7 @@ const props = defineProps<{
   isPreTitle?: string
 }>();
 
+const config = useRuntimeConfig()
 const route = useRoute();
 const userStore = useUserStore();
 

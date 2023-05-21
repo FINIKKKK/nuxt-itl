@@ -3,6 +3,7 @@
     <NuxtLink to="/" class="logo">
       <img src="~/assets/img/logo.svg" alt="logo"/>
     </NuxtLink>
+
     <div class="nav__lists">
       <ul
           class="nav__list"
