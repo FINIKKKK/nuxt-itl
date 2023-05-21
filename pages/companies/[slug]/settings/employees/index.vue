@@ -5,7 +5,7 @@
       <div class="text">За каждым успехом стоит команда! Пригласите свою команду и начните создавать отличные вещи
         вместе.
       </div>
-      <NuxtLink :to="`${route.path}/add`" class="btn">Пригласить пользователей</NuxtLink>
+      <NuxtLink to="add" class="btn">Пригласить пользователей</NuxtLink>
     </div>
 
     <div class="block block__table">
@@ -45,7 +45,6 @@ definePageMeta({
   layout: false,
 });
 
-const route = useRoute();
 const options = [
   {id: 1, value: 'Администратор'},
   {id: 2, value: 'Модератор'}
@@ -59,27 +58,6 @@ const options = [
   }
   .text {
     margin-bottom: 27px;
-  }
-}
-
-.block__table {
-  width: 100%;
-}
-
-.table {
-  width: 100%;
-  thead {
-    color: $gray;
-    text-align: left;
-    border-bottom: 1px solid $gray2;
-    font-size: 13px;
-    td, th {
-      padding-bottom: 10px;
-    }
-  }
-  tbody td, th {
-    padding-top: 19px;
-    vertical-align: middle;
   }
 }
 

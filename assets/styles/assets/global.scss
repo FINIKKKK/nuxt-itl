@@ -41,6 +41,25 @@ svg {
   height: auto;
 }
 
+// ScrollBar
+::-webkit-scrollbar {
+  width: 5px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $blue;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $white;
+}
+
+// Selection
+::selection {
+  background: rgba($blue, 0.2);
+}
+
 // ---- Buttons ----
 .btn {
   background-color: $blue;
@@ -149,6 +168,29 @@ a.btn {
 //  }
 //}
 
+.table {
+  width: 100%;
+  display: table;
+  vertical-align: middle;
+  td, th {
+    padding-left: 10px;
+  }
+  thead {
+    color: $gray;
+    text-align: left;
+    border-bottom: 1px solid $gray2;
+    font-size: 13px;
+    td, th {
+      padding-bottom: 10px;
+    }
+  }
+  tbody {
+    td, th {
+      padding-top: 19px;
+    }
+  }
+}
+
 // ---- Inputs ----
 .input {
   .inner {
@@ -196,6 +238,13 @@ a.btn {
   }
 }
 
+.block__table {
+  width: 100%;
+  .title {
+    margin-bottom: 34px;
+  }
+}
+
 .text {
   font-size: 13px;
   line-height: 20px;
@@ -207,22 +256,3 @@ a.btn {
   color: $gray;
 }
 
-// ScrollBar
-::-webkit-scrollbar {
-  width: 5px;
-  height: 7px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: $blue;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: $white;
-}
-
-// Selection
-::selection {
-  background: rgba($blue, 0.2);
-}

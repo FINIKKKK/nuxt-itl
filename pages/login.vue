@@ -1,36 +1,36 @@
 <template>
-    <NuxtLayout name="main" title="Авторизация">
-        <form class="form" @submit.prevent="onSubmit">
-            <p class="text">
-                Впервые здесь?
-                <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
-            </p>
-            <div v-if="error" class="error">{{ error }}</div>
-            <Input name="email" label="Email"/>
-            <Input name="password" label="Пароль" type="password"/>
-            <p class="link">
-                <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
-            </p>
-            <button type="submit" class="btn" :class="{ disabled: isLoading }">
-                Войти
-            </button>
-        </form>
-    </NuxtLayout>
+  <NuxtLayout name="main" title="Авторизация">
+    <form class="form" @submit.prevent="onSubmit">
+      <p class="text">
+        Впервые здесь?
+        <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
+      </p>
+      <div v-if="error" class="error">{{ error }}</div>
+      <Input name="email" label="Email"/>
+      <Input name="password" label="Пароль" type="password"/>
+      <p class="link">
+        <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
+      </p>
+      <button type="submit" class="btn" :class="{ disabled: isLoading }">
+        Войти
+      </button>
+    </form>
+  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import {useUserStore} from "~/stores/UserStore";
-import {useForm} from "vee-validate";
-import {Api} from "@/api";
-import {setCookie} from "nookies";
-import {LoginScheme} from "~/utils/validation/Scheme";
+import { useUserStore } from "~/stores/UserStore";
+import { useForm } from "vee-validate";
+import { Api } from "@/api";
+import { setCookie } from "nookies";
+import { LoginScheme } from "~/utils/validation/Schemes";
 
 definePageMeta({
-    layout: false,
+  layout: false,
 });
 
 const {handleSubmit} = useForm({
-    validationSchema: LoginScheme,
+  validationSchema: LoginScheme,
 });
 const error = ref("");
 const router = useRouter();
@@ -38,31 +38,31 @@ const isLoading = ref(false);
 const userStore = useUserStore()
 
 const onSubmit = handleSubmit(async (values) => {
-    try {
-        const token = useCookie("token");
+  try {
+    const token = useCookie("token");
 
 
-        token.value = "asdas";
+    token.value = "asdas";
 
-        error.value = '';
-        isLoading.value = true;
-        const dto = {
-            email: values.email,
-            password: values.password,
-        };
-        const {data} = await Api().auth.login(dto);
-        setCookie(null, "access_token", data.token.access_token, {
-            maxAge: data.token.expires_in,
-            path: "/",
-        });
-        userStore.setUser(data.user);
-        userStore.setCompanies(data.companies);
-        await router.push("/");
-    } catch (err: any) {
-        error.value = err?.response?.data?.message;
-    } finally {
-        isLoading.value = false;
-    }
+    error.value = '';
+    isLoading.value = true;
+    const dto = {
+      email: values.email,
+      password: values.password,
+    };
+    const {data} = await Api().auth.login(dto);
+    setCookie(null, "access_token", data.token.access_token, {
+      maxAge: data.token.expires_in,
+      path: "/",
+    });
+    userStore.setUser(data.user);
+    userStore.setCompanies(data.companies);
+    await router.push("/");
+  } catch (err: any) {
+    error.value = err?.response?.data?.message;
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>
 

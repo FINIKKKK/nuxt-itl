@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="main" title="Профиль / Редактирование" isPreTitle>
+  <NuxtLayout name="main" title="Профиль / Редактирование" isMiniTitle>
     <div class="flex">
       <div class="left">
         <div class="block">

@@ -16,4 +16,20 @@ export default defineNuxtConfig({
     output: "~/assets/sprite",
   },
   ssr: true,
+  runtimeConfig: {
+    public: {
+      sidebarMain: {
+        list1: {
+          home: 'home',
+          add: 'add',
+          search: 'search',
+        },
+        list2: {
+          tooltip: 'tooltip',
+          settings: 'settings',
+          user: 'user',
+        },
+      }
+    }
+  }
 });

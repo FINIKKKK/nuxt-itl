@@ -1,56 +1,56 @@
 <template>
-  <div class="popup" :class="{ active:  props.isShow && props.activeItem }">
-    <div class="popup__inner">
-      <div class="popup__main" v-if="!route.path.includes('/sections/') || props.activeItem !== 1">
-        <h3 class="popup__title">
-          {{ props.activeItem && innerItems.find(obj => obj.id === props.activeItem).title }}
-        </h3>
-        <ul>
-          <li
-              class="popup__item"
-              v-if="props.activeItem"
-              v-for="item in innerItems.find(obj => obj.id === props.activeItem).items"
-              :key="item.id"
-          >
-            <NuxtLink :to="item.link">
-              <svg-icon :name="item.icon"/>
-              <p>{{ item.label }}</p>
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
-      <div v-if="props.activeItem === 1" class="sections">
-        <h3>Разделы</h3>
-        <ul>
-          <li
-              class="popup__item"
-              v-if="props.activeItem"
-              v-for="section in sections"
-              :key="section.id"
-          >
-            <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`">
-              <svg-icon name="folder"/>
-              <p>{{ section.title }}</p>
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
-      <div v-if="posts && props.activeItem === 1" class="sections">
-        <h3>Статьи</h3>
-        <ul>
-          <li
-              class="popup__item post"
-              v-if="props.activeItem"
-              v-for="post in posts"
-              :key="post.id"
-          >
-            <NuxtLink :to="`/posts/${post.id}`">
-              <p>{{ post.title }}</p>
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <div class="popup" :class="{ active:  isShow && activeItem }">
+    <!--    <div class="popup__inner">-->
+    <!--      <div class="popup__main" v-if="!route.path.includes('/sections/') || props.activeItem !== 1">-->
+    <!--        <h3 class="popup__title">-->
+    <!--          {{ props.activeItem && innerItems.find(obj => obj.id === props.activeItem).title }}-->
+    <!--        </h3>-->
+    <!--        <ul>-->
+    <!--          <li-->
+    <!--              class="popup__item"-->
+    <!--              v-if="props.activeItem"-->
+    <!--              v-for="item in innerItems.find(obj => obj.id === props.activeItem).items"-->
+    <!--              :key="item.id"-->
+    <!--          >-->
+    <!--            <NuxtLink :to="item.link">-->
+    <!--              <svg-icon :name="item.icon"/>-->
+    <!--              <p>{{ item.label }}</p>-->
+    <!--            </NuxtLink>-->
+    <!--          </li>-->
+    <!--        </ul>-->
+    <!--      </div>-->
+    <!--&lt;!&ndash;      <div v-if="props.activeItem === 1" class="sections">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <h3>Разделы</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <ul>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <li&ndash;&gt;-->
+    <!--&lt;!&ndash;              class="popup__item"&ndash;&gt;-->
+    <!--&lt;!&ndash;              v-if="props.activeItem"&ndash;&gt;-->
+    <!--&lt;!&ndash;              v-for="section in sections"&ndash;&gt;-->
+    <!--&lt;!&ndash;              :key="section.id"&ndash;&gt;-->
+    <!--&lt;!&ndash;          >&ndash;&gt;-->
+    <!--&lt;!&ndash;            <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`">&ndash;&gt;-->
+    <!--&lt;!&ndash;              <svg-icon name="folder"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;              <p>{{ section.title }}</p>&ndash;&gt;-->
+    <!--&lt;!&ndash;            </NuxtLink>&ndash;&gt;-->
+    <!--&lt;!&ndash;          </li>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </ul>&ndash;&gt;-->
+    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
+    <!--&lt;!&ndash;      <div v-if="posts && props.activeItem === 1" class="sections">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <h3>Статьи</h3>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <ul>&ndash;&gt;-->
+    <!--&lt;!&ndash;          <li&ndash;&gt;-->
+    <!--&lt;!&ndash;              class="popup__item post"&ndash;&gt;-->
+    <!--&lt;!&ndash;              v-if="props.activeItem"&ndash;&gt;-->
+    <!--&lt;!&ndash;              v-for="post in posts"&ndash;&gt;-->
+    <!--&lt;!&ndash;              :key="post.id"&ndash;&gt;-->
+    <!--&lt;!&ndash;          >&ndash;&gt;-->
+    <!--&lt;!&ndash;            <NuxtLink :to="`/posts/${post.id}`">&ndash;&gt;-->
+    <!--&lt;!&ndash;              <p>{{ post.title }}</p>&ndash;&gt;-->
+    <!--&lt;!&ndash;            </NuxtLink>&ndash;&gt;-->
+    <!--&lt;!&ndash;          </li>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </ul>&ndash;&gt;-->
+    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -74,35 +74,30 @@ const userStore = useUserStore();
 const activeCompany = userStore.activeCompany ? userStore.activeCompany[0].slug : 0;
 const innerItems = [
   {
-    id: 1,
     title: "Ваша компания",
     items: [
-      {id: 1, icon: "activation", label: "Активность", link: `/companies/${activeCompany}`},
-      {id: 2, icon: "document", label: "Ваши работы", link: `/companies/${activeCompany}/my_works`},
-      {id: 3, icon: "favorite", label: "Закладки", link: `/companies/${activeCompany}/favorites`},
+      {icon: "activation", label: "Активность", link: `/companies/${activeCompany}`},
+      {icon: "document", label: "Ваши работы", link: `/companies/${activeCompany}/my_works`},
+      {icon: "favorite", label: "Закладки", link: `/companies/${activeCompany}/favorites`},
     ],
   },
   {
-    id: 2,
     title: "Посты",
     items: [
-      {id: 1, icon: "document", label: "Статью", link: `/companies/${activeCompany}/posts/create`},
-      {id: 2, icon: "folder", label: "Раздел", link: `/companies/${activeCompany}/sections/create`},
+      {icon: "document", label: "Статью", link: `/companies/${activeCompany}/posts/create`},
+      {icon: "folder", label: "Раздел", link: `/companies/${activeCompany}/sections/create`},
     ],
   },
   {
-    id: 3,
     title: "Поиск",
-    items: [{id: 1, icon: "search", label: "Поиск", link: "/"}],
+    items: [{icon: "search", label: "Поиск", link: "/"}],
   },
   {
-    id: 5,
     title: "Настройки",
     items: [
-      {id: 1, icon: "settings", label: "Общие", link: `/companies/${activeCompany}/settings/general`},
-      {id: 2, icon: "user", label: "Соотрудники", link: `/companies/${activeCompany}/settings/employees`},
+      {icon: "settings", label: "Общие", link: `/companies/${activeCompany}/settings/general`},
+      {icon: "user", label: "Соотрудники", link: `/companies/${activeCompany}/settings/employees`},
       {
-        id: 3,
         icon: "tag",
         label: "Внешние интеграции",
         link: `/companies/${activeCompany}/settings/integrations`
@@ -110,13 +105,12 @@ const innerItems = [
     ],
   },
   {
-    id: 6,
     title: "Профиль",
     items: [
-      {id: 1, icon: "favorite", label: "Закладки", link: "account/favorites"},
-      {id: 2, icon: "edit", label: "Редактировать", link: "account/profile"},
-      {id: 3, icon: "change", label: "Сменить компанию", link: "/"},
-      {id: 4, icon: "logout", label: "Выйти", link: "/"},
+      {icon: "favorite", label: "Закладки", link: "/account/favorites"},
+      {icon: "edit", label: "Редактировать", link: "/account/profile"},
+      {icon: "change", label: "Сменить компанию", link: "/"},
+      {icon: "logout", label: "Выйти", link: "/"},
     ],
   },
 ];

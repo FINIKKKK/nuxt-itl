@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { useField } from "vee-validate";
-import { AddUsersScheme } from "~/utils/validation/Scheme";
+import { AddUsersScheme } from "~/utils/validation/Schemes";
 
 const props = defineProps({
   name: {
