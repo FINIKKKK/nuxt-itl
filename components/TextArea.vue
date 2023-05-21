@@ -1,7 +1,7 @@
 <template>
   <div
     class="input"
-    :class="{ focus: isFocus || value, comment: props.isCommentInput }"
+    :class="{ focus: isFocus || value, comment: isCommentInput }"
   >
     <div class="inner">
       <label>{{ label }}</label>
@@ -10,26 +10,19 @@
         v-model="value"
         @focus="isFocus = true"
         @blur="isFocus = false"
-        :class="props.class"
+        :class="class"
       ></textarea>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
-  isCommentInput: {
-    type: Boolean,
-    required: false,
-  },
-});
-const emits = defineEmits(["value"]);
+const props = defineProps<{
+  label: string;
+  isCommentInput: boolean;
+}>();
 
-
+const emits = defineEmits(['value']);
 </script>
 
 <style lang="scss" scoped>

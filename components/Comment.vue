@@ -1,14 +1,14 @@
 <template>
   <div class="comment">
-    <Avatar :user="props.comment.user" class="avatar" />
+    <Avatar :user="comment.user" class="avatar" />
     <div class="content">
       <div class="info">
         <div class="name">
-          {{ `${props.comment.user.firstName} ${props.comment.user.lastName}` }}
+          {{ `${comment.user.firstName} ${comment.user.lastName}` }}
         </div>
-        <div class="date">{{ useFormatDate(props.comment.created_at) }}</div>
+        <div class="date">{{ useFormatDate(comment.created_at) }}</div>
       </div>
-      <p class="text">{{ props.comment.text }}</p>
+      <p class="text">{{ comment.text }}</p>
       <div class="controls">
         <div class="like">
           <svg-icon name="like" />
@@ -19,10 +19,10 @@
           @click="isAnswer = !isAnswer"
           :class="{ disabled: isLoading }"
         >
-          {{ !isAnswer ? "Ответить" : "Закрыть" }}
+          {{ !isAnswer ? 'Ответить' : 'Закрыть' }}
         </button>
         <button
-          v-if="user?.id === props.comment.user.id"
+          v-if="user?.id === comment.user.id"
           class="inline_btn"
           @click="onDeleteComment"
           :class="{ disabled: isLoading }"
@@ -39,28 +39,25 @@
         <button @click="onReplyComment" class="btn">Отправить</button>
       </div>
       <div class="children">
-        <Comment v-for="comment in props.comment.children" :comment="comment" />
+        <Comment v-for="comment in comment.children" :comment="comment" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useFormatDate } from "~/hooks/useFormatDate";
-import { Api } from "~/api";
-import { TComment } from "~/api/models/comment/types";
-import { useUserStore } from "~/stores/UserStore";
+import { useFormatDate } from '~/hooks/useFormatDate';
+import { Api } from '~/api';
+import { TComment } from '~/api/models/comment/types';
+import { useUserStore } from '~/stores/UserStore';
 
-const props = defineProps({
-  comment: {
-    type: Object as () => TComment,
-    required: true,
-  },
-});
+const props = defineProps<{
+  comment: TComment;
+}>();
 
 const isLoading = ref(false);
 const isAnswer = ref(false);
-const replyValue = ref("");
+const replyValue = ref('');
 const { user } = useUserStore();
 
 const setReplyValue = (value: string) => {
@@ -68,13 +65,13 @@ const setReplyValue = (value: string) => {
 };
 
 const onDeleteComment = async () => {
-  if (window.confirm("Вы точно хотите удалить комментарий?")) {
+  if (window.confirm('Вы точно хотите удалить комментарий?')) {
     try {
       isLoading.value = true;
       await Api().comment.remove(props.comment.id);
     } catch (err) {
       console.warn(err);
-      alert("Ошибка при удалении комментария");
+      alert('Ошибка при удалении комментария');
     } finally {
       isLoading.value = false;
     }
@@ -91,7 +88,7 @@ const onReplyComment = async () => {
     await Api().comment.create(dto);
   } catch (err) {
     console.warn(err);
-    alert("Ошибка при ответе на комментарий");
+    alert('Ошибка при ответе на комментарий');
   } finally {
     isLoading.value = false;
   }
@@ -107,21 +104,27 @@ const onReplyComment = async () => {
     margin-bottom: 40px;
   }
 }
+
 .avatar {
   margin-right: 16px;
 }
+
 .content {
   width: 100%;
 }
+
 .date {
   color: $gray;
 }
+
 .info {
   margin-bottom: 24px;
 }
+
 .text {
   margin-bottom: 32px;
 }
+
 .like {
   display: flex;
   align-items: center;
@@ -136,6 +139,7 @@ const onReplyComment = async () => {
     margin-right: 5px;
   }
 }
+
 .controls {
   display: flex;
   align-self: start;
@@ -146,6 +150,7 @@ const onReplyComment = async () => {
     }
   }
 }
+
 .reply {
   margin-top: 25px;
   position: relative;
@@ -163,6 +168,7 @@ const onReplyComment = async () => {
     }
   }
 }
+
 .children {
   margin-top: 35px;
 }

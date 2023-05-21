@@ -1,36 +1,33 @@
 <template>
-  <div ref="selectRef" class="select" :class="{className, active: isOpen, mini: isMini}">
+  <div
+    ref="selectRef"
+    class="select"
+    :class="{ active: isOpen, mini: isMini }"
+  >
     <div class="selected" @click="toggleDropdown">
       <span>{{ selectedOption }}</span>
-      <svg-icon :name="isMini ? 'down': 'triangle'"/>
+      <svg-icon :name="isMini ? 'down' : 'triangle'" />
     </div>
     <ul v-if="isOpen" class="dropdown">
-      <li v-for="option in options" :key="option.id" @click="selectOption(option.value)"
-          :class="{active: option.value === selectedOption}">
+      <li
+        v-for="option in options"
+        :key="option.id"
+        @click="selectOption(option.value)"
+        :class="{ active: option.value === selectedOption }"
+      >
         {{ option.value }}
       </li>
     </ul>
   </div>
 </template>
 
-<script setup>
-import {useOutsideClick} from "~/hooks/useOutsideClick";
+<script lang="ts" setup>
+import { useOutsideClick } from '~/hooks/useOutsideClick';
 
-const props = defineProps({
-  options: {
-    type: Array,
-    required: true,
-  },
-  className: {
-    type: String,
-    default: '',
-    required: false,
-  },
-  isMini: {
-    type: Boolean,
-    required: false,
-  },
-});
+const props = defineProps<{
+  options: { id: number; value: string };
+  isMini?: boolean;
+}>();
 
 const isOpen = ref(false);
 const selectedOption = ref(props.options[0].value);
@@ -38,11 +35,11 @@ const selectRef = ref(null);
 useOutsideClick(selectRef, isOpen);
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
-}
+};
 const selectOption = (option) => {
   selectedOption.value = option;
   isOpen.value = false;
-}
+};
 </script>
 
 <style lang="scss" scoped>

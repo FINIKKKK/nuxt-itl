@@ -1,21 +1,16 @@
 <template>
-  <div class="img" :class="props.class">
-    <img v-if="props.user.avatar" :src="props.user.avatar" alt="avatar"/>
+  <div class="img">
+    <img v-if="user.avatar" :src="user.avatar" alt="avatar" />
     <span v-else>{{ shortName }}</span>
   </div>
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
-  class: {
-    type: String,
-    required: false,
-  },
-});
+import { TUser } from '~/api/models/user/types';
+
+const props = defineProps<{
+  user: TUser;
+}>();
 
 const shortName = props.user.firstName[0] + props.user.lastName[0];
 </script>

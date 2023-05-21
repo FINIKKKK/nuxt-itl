@@ -6,12 +6,10 @@
 import {Api} from "~/api";
 import {OutputBlockData} from "@editorjs/editorjs";
 
-const props = defineProps({
-    initialValue: {
-        type: Array,
-        required: false,
-    },
-});
+const props = defineProps<{
+  initialValue?: OutputBlockData[];
+}>();
+
 const emits = defineEmits(["data-change"]);
 
 const refEditor = ref(undefined);

@@ -1,6 +1,6 @@
 <template>
-  <div class="body" :class="props.class">
-    <template v-for="obj in props.data?.body" :key="obj.id">
+  <div class="body" :class="class">
+    <template v-for="obj in data?.body" :key="obj.id">
       <!-- paragraph -->
       <p
           v-if="obj.type === 'paragraph'"
@@ -108,16 +108,12 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-  },
-  class: {
-    type: String,
-    required: false,
-  },
-});
+import { OutputBlockData } from "@editorjs/editorjs";
+
+const props = defineProps<{
+  data: OutputBlockData[];
+}>();
+
 </script>
 
 <style lang="scss">

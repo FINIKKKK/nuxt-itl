@@ -73,7 +73,6 @@ const onSubmit = handleSubmit(async (values) => {
   font-size: 14px;
   margin-top: -20px;
   margin-bottom: 25px;
-
   span {
     display: block;
   }

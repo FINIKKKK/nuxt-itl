@@ -38,7 +38,7 @@ definePageMeta({
   layout: false,
 });
 
-const inputValue = ref("");
+const inputValue = ref('');
 const emails = ref<string[]>([]);
 const router = useRouter();
 
@@ -57,11 +57,13 @@ const onSubmit = () => {};
 .form__btn1 {
   margin-right: 16px;
 }
+
 .users__list {
   display: flex;
   flex-wrap: wrap;
   margin-left: -8px;
 }
+
 .user {
   &:not(:last-child) {
     margin-right: 8px;
@@ -80,6 +82,7 @@ const onSubmit = () => {};
     fill: $blue;
   }
 }
+
 .form__btn2 {
   &:hover {
     text-decoration: none;

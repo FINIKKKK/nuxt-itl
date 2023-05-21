@@ -1,42 +1,39 @@
 <template>
-  <main :class="{home: route.path === '/'}">
+  <main :class="{ home: route.path === '/' }">
     <aside class="sidebar" ref="popupRef">
       <nav class="nav">
-        <SidebarMain @setActiveItem="setActiveItem"/>
+        <SidebarMain @setActiveItem="setActiveItem" />
 
-        <SidebarPopup
-            :isShow="isShowPopup"
-            :activeItem="activeItem"
-        />
+        <SidebarPopup :isShow="isShowPopup" :activeItem="activeItem" />
       </nav>
     </aside>
 
-    <div class="content" :class="{section: isMiniTitle}">
-      <h4 class="pretitle" v-if="props.isMiniTitle">{{ props.title }}</h4>
+    <div class="content" :class="{ section: isMiniTitle }">
+      <h4 class="pretitle" v-if="isMiniTitle">{{ title }}</h4>
       <h1 class="title" v-else>
-        <span>{{ props.title }}</span>
-        <span v-if="props.title2">{{ props.title2 }}</span>
-        <span v-if="props.title3">{{ props.title3 }}</span>
+        <span>{{ title }}</span>
+        <span v-if="title2">{{ title2 }}</span>
+        <span v-if="title3">{{ title3 }}</span>
       </h1>
-      <slot/>
+      <slot />
     </div>
   </main>
 </template>
 
 <script lang="ts" setup>
-import { useOutsideClick } from "~/hooks/useOutsideClick";
-import { useUserStore } from "~/stores/UserStore";
+import { useOutsideClick } from '~/hooks/useOutsideClick';
+import { useUserStore } from '~/stores/UserStore';
 
 const props = defineProps<{
-  title: string,
-  title2?: string,
-  title3?: string,
-  type?: string,
-  isMiniTitle?: string,
-  isPreTitle?: string
+  title: string;
+  title2?: string;
+  title3?: string;
+  type?: string;
+  isMiniTitle?: string;
+  isPreTitle?: string;
 }>();
 
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 const route = useRoute();
 const userStore = useUserStore();
 
@@ -47,8 +44,8 @@ const activeItem = ref<string | null>(null);
 useOutsideClick(popupRef, isShowPopup, activeItem);
 
 const setIsShowPopup = (value: boolean) => {
-  isShowPopup.value = value
-}
+  isShowPopup.value = value;
+};
 
 const setActiveItem = (item: string) => {
   if (activeItem.value === item) {
@@ -68,7 +65,6 @@ main {
 
   &.home {
     background-color: $blue3;
-
     .title {
       margin-bottom: 36px;
     }
@@ -110,7 +106,7 @@ main {
     margin-right: 20px;
 
     &::after {
-      content: url("~/assets/img/arrow.svg");
+      content: url('~/assets/img/arrow.svg');
       position: absolute;
       transform: translateY(-50%);
       top: 50%;
