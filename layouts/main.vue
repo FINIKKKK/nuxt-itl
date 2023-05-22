@@ -1,20 +1,38 @@
 <template>
-  <main :class="{ home: route.path === '/' }">
+  <main
+    :class="{
+      home: route.path === '/', // Если это главная страница
+    }"
+  >
+    <!-- Сайдбар -->
     <aside class="sidebar" ref="popupRef">
       <nav class="nav">
+        <!-- Главный сайдбар -->
         <SidebarMain @setActiveItem="setActiveItem" />
 
+        <!-- Внутрениий сайдбар -->
         <SidebarPopup :isShow="isShowPopup" :activeItem="activeItem" />
       </nav>
     </aside>
 
-    <div class="content" :class="{ section: isMiniTitle }">
+    <!-- Остальной контент на странице -->
+    <div
+      class="content"
+      :class="{
+        miniTitle: isMiniTitle, // Если заголовок маленький
+      }"
+    >
+      <!-- Заголовок -->
+      <!-- Либо маленький -->
       <h4 class="pretitle" v-if="isMiniTitle">{{ title }}</h4>
+      <!-- Либо большой -->
       <h1 class="title" v-else>
         <span>{{ title }}</span>
         <span v-if="title2">{{ title2 }}</span>
         <span v-if="title3">{{ title3 }}</span>
       </h1>
+
+      <!-- Слот шаблона -->
       <slot />
     </div>
   </main>
@@ -22,36 +40,49 @@
 
 <script lang="ts" setup>
 import { useOutsideClick } from '~/hooks/useOutsideClick';
-import { useUserStore } from '~/stores/UserStore';
 
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
   title: string;
   title2?: string;
   title3?: string;
-  type?: string;
   isMiniTitle?: string;
-  isPreTitle?: string;
 }>();
 
+/**
+ * Системные переменные ----------------
+ */
 const config = useRuntimeConfig();
 const route = useRoute();
-const userStore = useUserStore();
 
-const popupRef = ref(null);
-const isShowPopup = ref(route.path.includes('/companies/') || false);
-const activeItem = ref<string | null>(null);
+/**
+ * Пользовательские переменные ----------------
+ */
+const popupRef = ref(null); // Ссылка на html элемент попапа
+const isShowPopup = ref(route.path.includes('/companies/') || false); // Показывать попап сайдара или нет
+const activeItem = ref<string | null>(null); // Активный элемент в сайдаре
 
+/**
+ * Хуки ----------------
+ */
+// Скрывать попап, если нажатие было вне его области
+// + Обнулять активный элемент
 useOutsideClick(popupRef, isShowPopup, activeItem);
 
-const setIsShowPopup = (value: boolean) => {
-  isShowPopup.value = value;
-};
-
+/**
+ * Пользовательские переменные ----------------
+ */
+// Выбрать элемент в сайдбаре
 const setActiveItem = (item: string) => {
+  // Если он уже активный, то обнуляем его и закрываем попап
   if (activeItem.value === item) {
     isShowPopup.value = false;
     activeItem.value = null;
-  } else {
+  }
+  // Иначе делаем его активный и открываем попап
+  else {
     activeItem.value = item;
     isShowPopup.value = true;
   }
@@ -62,7 +93,6 @@ const setActiveItem = (item: string) => {
 main {
   position: relative;
   display: flex;
-
   &.home {
     background-color: $blue3;
     .title {
@@ -76,6 +106,10 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  .nav {
+    display: flex;
+    height: 100%;
+  }
 }
 
 .content {
@@ -84,27 +118,34 @@ main {
   height: 100vh;
   padding: 46px 50px;
   overflow: auto;
+  .pretitle {
+    font-size: 13px;
+    color: $gray;
+    margin-bottom: 32px;
+  }
 }
 
-.nav {
-  display: flex;
-  height: 100%;
+.content.miniTitle {
+  .title {
+    font-size: 14px;
+    margin-bottom: 40px;
+    span {
+      color: $gray !important;
+    }
+  }
 }
 
 .title {
   font-size: 24px;
   margin-bottom: 130px;
   color: $gray2;
-
   span:nth-child(1) {
     color: $black;
   }
-
   span:not(:last-child) {
     position: relative;
     padding-right: 32px;
     margin-right: 20px;
-
     &::after {
       content: url('~/assets/img/arrow.svg');
       position: absolute;
@@ -113,22 +154,5 @@ main {
       right: 0;
     }
   }
-}
-
-.section {
-  .title {
-    font-size: 14px;
-    margin-bottom: 40px;
-
-    span {
-      color: $gray !important;
-    }
-  }
-}
-
-.pretitle {
-  font-size: 13px;
-  color: $gray;
-  margin-bottom: 32px;
 }
 </style>

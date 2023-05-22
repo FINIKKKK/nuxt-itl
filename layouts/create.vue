@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { Api } from '~/api';
 import { OutputBlockData } from '@editorjs/editorjs';
-import { PostScheme, SectionScheme } from '~/utils/validation/Schemes';
+import { PostScheme, SectionScheme } from '~/utils/validation';
 import { useUserStore } from '~/stores/UserStore';
 
 const props = defineProps<{

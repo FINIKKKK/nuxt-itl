@@ -6,8 +6,8 @@
         <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
       </p>
       <div v-if="error" class="error">{{ error }}</div>
-      <Input name="email" label="Email"/>
-      <Input name="password" label="Пароль" type="password"/>
+      <Input name="email" label="Email" />
+      <Input name="password" label="Пароль" type="password" />
       <p class="link">
         <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
       </p>
@@ -19,45 +19,42 @@
 </template>
 
 <script lang="ts" setup>
-import { useUserStore } from "~/stores/UserStore";
-import { useForm } from "vee-validate";
-import { Api } from "@/api";
-import { setCookie } from "nookies";
-import { LoginScheme } from "~/utils/validation/Schemes";
+import { useUserStore } from '~/stores/UserStore';
+import { useForm } from 'vee-validate';
+import { Api } from '@/api';
+import { setCookie } from 'nookies';
+import { LoginScheme } from '~/utils/validation';
 
 definePageMeta({
   layout: false,
 });
 
-const {handleSubmit} = useForm({
+const { handleSubmit } = useForm({
   validationSchema: LoginScheme,
 });
-const error = ref("");
+const error = ref('');
 const router = useRouter();
 const isLoading = ref(false);
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    const token = useCookie("token");
-
-
-    token.value = "asdas";
-
+    const token = useCookie('token');
+    token.value = 'asdas';
     error.value = '';
     isLoading.value = true;
     const dto = {
       email: values.email,
       password: values.password,
     };
-    const {data} = await Api().auth.login(dto);
-    setCookie(null, "access_token", data.token.access_token, {
+    const { data } = await Api().auth.login(dto);
+    setCookie(null, 'access_token', data.token.access_token, {
       maxAge: data.token.expires_in,
-      path: "/",
+      path: '/',
     });
     userStore.setUser(data.user);
     userStore.setCompanies(data.companies);
-    await router.push("/");
+    await router.push('/');
   } catch (err: any) {
     error.value = err?.response?.data?.message;
   } finally {

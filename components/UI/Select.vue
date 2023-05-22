@@ -66,7 +66,7 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 // Выбрать нужный элемент из списка
-const selectOption = (option) => {
+const selectOption = (option: string) => {
   selectedOption.value = option;
   isOpen.value = false;
 };
@@ -91,7 +91,6 @@ const selectOption = (option) => {
   border-bottom: 1px solid $gray2;
   span {
     font-size: 16px;
-    //color: $blue;
     margin-right: 10px;
   }
   svg {

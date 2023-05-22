@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout
-      name="main"
-      title="Создание компании"
-      title2="Добавление пользователей"
+    name="main"
+    title="Создание компании"
+    title2="Добавление пользователей"
   >
     <form @submit.prevent="onSubmit" class="form">
       <div class="error" v-if="errors">
@@ -10,17 +10,12 @@
           {{ error[0] }}
         </span>
       </div>
-      <Input name="name" placeholder="Название вашей компании"/>
-      <Input
-          name="address"
-          placeholder="Адрес сайта"
-          type="url_address"
-      />
+      <Input name="name" placeholder="Название вашей компании" />
+      <Input name="address" placeholder="Адрес сайта" type="url_address" />
       <p class="link">
         Нажимая кнопку «Создать компанию» вы принимаете
         <NuxtLink to="#">Условия обслуживания</NuxtLink>
-        в отношении продуктов
-        ITL и соглашаетесь с
+        в отношении продуктов ITL и соглашаетесь с
         <NuxtLink to="#">Политикой конфиденциальности.</NuxtLink>
       </p>
       <button class="btn" :class="{ disabled: isLoading }">
@@ -31,18 +26,18 @@
 </template>
 
 <script lang="ts" setup>
-import { CompanyScheme } from "~/utils/validation/Schemes";
-import { useForm } from "vee-validate";
-import { Api } from "~/api";
+import { CompanyScheme } from '~/utils/validation';
+import { useForm } from 'vee-validate';
+import { Api } from '~/api';
 
 definePageMeta({
   layout: false,
 });
 
 const router = useRouter();
-const errors = ref("");
+const errors = ref('');
 const isLoading = ref(false);
-const {handleSubmit} = useForm({
+const { handleSubmit } = useForm({
   validationSchema: CompanyScheme,
 });
 
@@ -54,7 +49,7 @@ const onSubmit = handleSubmit(async (values) => {
       url_address: `http://${values.address.toLowerCase()}.itl.wiki`,
     };
     await Api().company.create(dto);
-    await router.push("/add_users");
+    await router.push('/add_users');
   } catch (err: any) {
     errors.value = err?.response?.data?.message;
   } finally {

@@ -84,7 +84,6 @@ const isShowItem = computed(() => {
     props.activeItem !== config.public.sidebar.list2.user
   );
 });
-
 // Если элемент это tooltip
 const isToolTip = computed(
   () => (item: string) => item === config.public.sidebar.list2.tooltip,
