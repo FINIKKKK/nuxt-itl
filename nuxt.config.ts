@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ["~/assets/styles/style.scss"],
-  modules: ["@pinia/nuxt", "@nuxtjs/svg-sprite"],
+  css: ['~/assets/styles/style.scss'],
+  modules: ['@pinia/nuxt', '@nuxtjs/svg-sprite'],
   vite: {
     css: {
       preprocessorOptions: {
@@ -12,13 +12,13 @@ export default defineNuxtConfig({
     },
   },
   svgSprite: {
-    input: "~/assets/img",
-    output: "~/assets/sprite",
+    input: '~/assets/img',
+    output: '~/assets/sprite',
   },
   ssr: true,
   runtimeConfig: {
     public: {
-      sidebarMain: {
+      sidebar: {
         list1: {
           home: 'home',
           add: 'add',
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
           settings: 'settings',
           user: 'user',
         },
-      }
-    }
-  }
+      },
+    },
+  },
 });

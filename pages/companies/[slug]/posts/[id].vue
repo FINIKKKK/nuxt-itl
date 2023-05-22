@@ -1,76 +1,80 @@
 <template>
-    <NuxtLayout name="main" :title="post?.title" type="section">
-        <div class="controls">
-            <svg-icon class="control" @click="router.push(`/posts/edit/${post?.id}`)" name="edit"/>
-            <svg-icon class="control" name="attach"/>
-            <svg-icon class="control" name="lock"/>
-            <svg-icon class="control" name="share"/>
-            <svg-icon class="control" @click="onDelete" name="remove"/>
-        </div>
+  <NuxtLayout name="main" :title="post?.title" type="section">
+    <div class="controls">
+      <svg-icon
+        class="control"
+        @click="router.push(`/posts/edit/${post?.id}`)"
+        name="edit"
+      />
+      <svg-icon class="control" name="attach" />
+      <svg-icon class="control" name="lock" />
+      <svg-icon class="control" name="share" />
+      <svg-icon class="control" @click="onDelete" name="remove" />
+    </div>
 
-        <div class="post__header">
-            <svg-icon class="favorite" name="favorite"/>
-            <h1 class="title">{{ post.title }}</h1>
-        </div>
+    <div class="post__header">
+      <svg-icon class="favorite" name="favorite" />
+      <h1 class="title">{{ post.title }}</h1>
+    </div>
 
-        <ul class="post__info">
-            <li class="post__info-item">
-                Автор:
-                <span>{{ `${post?.user.firstName} ${post?.user.lastName}` }}</span>
-            </li>
-            <li class="post__info-item">
-                Опубликовано:
-                <span>{{ post?.created_at && useFormatDate(post?.created_at) }}</span>
-            </li>
-        </ul>
-        <Body class="body" :data="post.body"/>
-        <div class="post__footer">
-            <div class="like">
-                <svg-icon name="like"/>
-                <p>Мне нравиться</p>
-            </div>
-            <ul class="tags">
-                <li class="tag">Мой тег</li>
-                <li class="tag">Мой тег</li>
-            </ul>
-        </div>
-        <Comments :post_id="id"/>
-    </NuxtLayout>
+    <ul class="post__info">
+      <li class="post__info-item">
+        Автор:
+        <span>{{ `${post?.user.firstName} ${post?.user.lastName}` }}</span>
+      </li>
+      <li class="post__info-item">
+        Опубликовано:
+        <span>{{ post?.created_at && useFormatDate(post?.created_at) }}</span>
+      </li>
+    </ul>
+    <Body class="body" :data="post.body" />
+    <div class="post__footer">
+      <div class="like">
+        <svg-icon name="like" />
+        <p>Мне нравиться</p>
+      </div>
+      <ul class="tags">
+        <li class="tag">Мой тег</li>
+        <li class="tag">Мой тег</li>
+      </ul>
+    </div>
+    <Comments :post_id="id" />
+  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-    layout: false,
+  layout: false,
 });
 
-import {Api} from "~/api";
-import {useFormatDate} from "~/hooks/useFormatDate";
-import Body from "~/components/Body.vue";
-import {useUserStore} from "~/stores/UserStore";
+import { Api } from '~/api';
+import { useFormatDate } from '~/hooks/useFormatDate';
+import Body from '~/components/Editor/Body.vue';
+import { useUserStore } from '~/stores/UserStore';
 
 const route = useRoute();
 const id = route.params.id;
-const {data: post} = useAsyncData(async () => {
-    const {data} = await Api().post.getOne(Number(id));
-    return data;
+const { data: post } = useAsyncData(async () => {
+  const { data } = await Api().post.getOne(Number(id));
+  return data;
 });
-const {user} = useUserStore();
+const { user } = useUserStore();
 const isLoading = ref(false);
 const router = useRouter();
 
 const onDelete = async () => {
-    if (window.confirm("Вы точно хотите удалить пост?")) {
-        try {
-            isLoading.value = true;
-            await Api().post.remove(Number(route.params.id));
-            router.push("/posts");
-        } catch (err) {
-            console.warn(err);
-            alert("Ошибка при удаление поста");
-        } finally {
-            isLoading.value = false;
-        }
+  if (window.confirm('Вы точно хотите удалить пост?')) {
+    try {
+      isLoading.value = true;
+      await Api().post.remove(Number(route.params.id));
+      router.push('/posts');
+    } catch (err) {
+      console.warn(err);
+      alert('Ошибка при удаление поста');
+    } finally {
+      isLoading.value = false;
     }
+  }
 };
 </script>
 
@@ -128,7 +132,6 @@ const onDelete = async () => {
   font-size: 24px;
   line-height: 28px;
 }
-
 
 .post__info {
   display: flex;

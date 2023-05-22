@@ -1,85 +1,103 @@
 <template>
-    <NuxtLayout name="main" :title="section?.title" type="section">
-        <div class="controls">
-            <svg-icon class="control" @click="router.push(`/sections/edit/${section?.id}`)" name="edit"/>
-            <svg-icon class="control" name="attach"/>
-            <svg-icon class="control" name="lock"/>
-            <svg-icon class="control" name="share"/>
-            <svg-icon class="control" @click="onDelete" name="remove"/>
-        </div>
+  <NuxtLayout name="main" :title="section?.title" type="section">
+    <div class="controls">
+      <svg-icon
+        class="control"
+        @click="router.push(`/sections/edit/${section?.id}`)"
+        name="edit"
+      />
+      <svg-icon class="control" name="attach" />
+      <svg-icon class="control" name="lock" />
+      <svg-icon class="control" name="share" />
+      <svg-icon class="control" @click="onDelete" name="remove" />
+    </div>
 
-        <div class="post__header">
-            <svg-icon class="favorite" name="favorite"/>
-            <h1 class="title">{{ section.title }}</h1>
-        </div>
-        <ul class="post__info">
-            <li class="post__info-item">
-                Автор:
-                <span>{{ `${section?.user.firstName} ${section?.user.lastName}` }}</span>
-            </li>
-            <li class="post__info-item">
-                Опубликовано:
-                <span>{{ section?.created_at && useFormatDate(section?.created_at) }}</span>
-            </li>
-        </ul>
-        <Body class="body" :data="section"/>
+    <div class="post__header">
+      <svg-icon class="favorite" name="favorite" />
+      <h1 class="title">{{ section.title }}</h1>
+    </div>
+    <ul class="post__info">
+      <li class="post__info-item">
+        Автор:
+        <span>{{
+          `${section?.user.firstName} ${section?.user.lastName}`
+        }}</span>
+      </li>
+      <li class="post__info-item">
+        Опубликовано:
+        <span>{{
+          section?.created_at && useFormatDate(section?.created_at)
+        }}</span>
+      </li>
+    </ul>
+    <Body class="body" :data="section" />
 
-        <div class="works">
-            <ul class="items">
-                <li class="item" v-for="section in section.data.sections">
-                    <svg-icon name="folder"/>
-                    <div class="item__info">
-                        <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`">{{ section.title }}</NuxtLink>
-                        <div class="date">Опубликовано: <span>{{ useFormatDate(section.created_at) }}</span></div>
-                    </div>
-                </li>
-            </ul>
-            <ul class="items">
-                <li class="item" v-for="post in section.data.posts">
-                    <svg-icon name="document"/>
-                    <div class="item__info">
-                        <NuxtLink :to="`/companies/${userStore.activeCompany[0].slug}/posts/${post.id}`">{{ post.title }}</NuxtLink>
-                        <div class="date">Опубликовано: <span>{{ useFormatDate(post.created_at) }}</span></div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </NuxtLayout>
+    <div class="works">
+      <ul class="items">
+        <li class="item" v-for="section in section.data.sections">
+          <svg-icon name="folder" />
+          <div class="item__info">
+            <NuxtLink
+              :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`"
+              >{{ section.title }}
+            </NuxtLink>
+            <div class="date">
+              Опубликовано: <span>{{ useFormatDate(section.created_at) }}</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <ul class="items">
+        <li class="item" v-for="post in section.data.posts">
+          <svg-icon name="document" />
+          <div class="item__info">
+            <NuxtLink
+              :to="`/companies/${userStore.activeCompany[0].slug}/posts/${post.id}`"
+              >{{ post.title }}</NuxtLink
+            >
+            <div class="date">
+              Опубликовано: <span>{{ useFormatDate(post.created_at) }}</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-    layout: false,
+  layout: false,
 });
 
-import {Api} from "~/api";
-import {useFormatDate} from "~/hooks/useFormatDate";
-import Body from "~/components/Body.vue";
-import {useUserStore} from "~/stores/UserStore";
+import { Api } from '~/api';
+import { useFormatDate } from '~/hooks/useFormatDate';
+import Body from '~/components/Editor/Body.vue';
+import { useUserStore } from '~/stores/UserStore';
 
 const route = useRoute();
-const {data: section} = useAsyncData(async () => {
-    const id = route.params.id;
-    const {data} = await Api().section.getOne(Number(id));
-    return data;
+const { data: section } = useAsyncData(async () => {
+  const id = route.params.id;
+  const { data } = await Api().section.getOne(Number(id));
+  return data;
 });
 const userStore = useUserStore();
 const isLoading = ref(false);
 const router = useRouter();
 
 const onDelete = async () => {
-    if (window.confirm("Вы точно хотите удалить пост?")) {
-        try {
-            isLoading.value = true;
-            await Api().post.remove(Number(route.params.id));
-            await router.push("/");
-        } catch (err) {
-            console.warn(err);
-            alert("Ошибка при удаление раздела");
-        } finally {
-            isLoading.value = false;
-        }
+  if (window.confirm('Вы точно хотите удалить пост?')) {
+    try {
+      isLoading.value = true;
+      await Api().post.remove(Number(route.params.id));
+      await router.push('/');
+    } catch (err) {
+      console.warn(err);
+      alert('Ошибка при удаление раздела');
+    } finally {
+      isLoading.value = false;
     }
+  }
 };
 </script>
 

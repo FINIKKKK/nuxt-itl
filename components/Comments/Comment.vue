@@ -98,7 +98,7 @@ const onReplyComment = async () => {
 <style lang="scss" scoped>
 .comment {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   width: 100%;
   &:not(:last-child) {
     margin-bottom: 40px;

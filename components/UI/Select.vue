@@ -2,18 +2,28 @@
   <div
     ref="selectRef"
     class="select"
-    :class="{ active: isOpen, mini: isMini }"
+    :class="{
+      active: isOpen, // Если открыт
+      mini: isMini, // Если тип - мальнький
+    }"
   >
+    <!-- Выбранный элемент -->
     <div class="selected" @click="toggleDropdown">
       <span>{{ selectedOption }}</span>
       <svg-icon :name="isMini ? 'down' : 'triangle'" />
     </div>
+    <!-- Список -->
     <ul v-if="isOpen" class="dropdown">
+      <!-- Элемент списка -->
       <li
         v-for="option in options"
         :key="option.id"
-        @click="selectOption(option.value)"
-        :class="{ active: option.value === selectedOption }"
+        @click="
+          selectOption(option.value) // Выбирает элемент
+        "
+        :class="{
+          active: option.value === selectedOption, // Активный элемент
+        }"
       >
         {{ option.value }}
       </li>
@@ -21,26 +31,49 @@
   </div>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
-  options: { id: number; value: string };
+  options: { id: number; value: string }[];
   isMini?: boolean;
 }>();
 
-const isOpen = ref(false);
-const selectedOption = ref(props.options[0].value);
-const selectRef = ref(null);
+/**
+ * Пользовательские переменные ----------------
+ */
+const isOpen = ref(false); // Открыт ли select
+const selectedOption = ref(props.options[0].value); // Выбранный элемент
+const selectRef = ref(null); // Ссылка на html элемент select'a
+
+/**
+ * Хуки ----------------
+ */
+// Закрыть select, при клике вне его области
 useOutsideClick(selectRef, isOpen);
+
+/**
+ * Методы ----------------
+ */
+// Переключение между открытием и закрытием select'a
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
+// Выбрать нужный элемент из списка
 const selectOption = (option) => {
   selectedOption.value = option;
   isOpen.value = false;
 };
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
 .select {
@@ -90,13 +123,13 @@ const selectOption = (option) => {
   }
 }
 
-.active {
+.select.active {
   .selected svg {
     transform: rotate(180deg);
   }
 }
 
-.mini {
+.select.mini {
   .selected {
     border: none;
     span {

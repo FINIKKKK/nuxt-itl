@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { Api } from '~/api';
-import Textarea from '~/components/Textarea.vue';
+import Textarea from '~/components/UI/Textarea.vue';
 
 const props = defineProps<{
   postId: number;
