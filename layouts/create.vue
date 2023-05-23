@@ -105,9 +105,8 @@ const onSubmit = async () => {
 const setBodyValue = (value: OutputBlockData[]) => {
   bodyValue.value = value;
 };
-</script>
-
-<style lang="scss" scoped>
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 .input {
   &:not(:last-child) {
     margin-bottom: 36px;

@@ -1,7 +1,7 @@
 <template>
   <form class="form block" @submit.prevent="onChangePassword">
     <h2 class="title">Безопасность</h2>
-    <div class="errors" v-if="errors">
+    <div class="errors" v-if="errors.length">
       <span v-for="error in errors">{{ error }}</span>
     </div>
     <Input placeholder="Текущий пароль" name="old_password" type="password" />
@@ -36,7 +36,7 @@ const { handleSubmit } = useForm({
 /**
  * Пользоватеьские переменные ----------------
  */
-const errors = ref(''); // Ошибки
+const errors = ref([]); // Ошибки
 const isLoading = ref(false); // Значение загрузки
 
 /**
@@ -45,7 +45,7 @@ const isLoading = ref(false); // Значение загрузки
 // Изменение пароля пользователя
 const onChangePassword = handleSubmit(async (values) => {
   try {
-    errors.value = ''; // Обнуляем ошибки
+    errors.value = []; // Обнуляем ошибки
     isLoading.value = true; // Ставим загрузку
     // Объект с данными
     const dto = {
@@ -53,7 +53,7 @@ const onChangePassword = handleSubmit(async (values) => {
       password: values.new_password,
       password_confirmation: values.password_confirmation,
     };
-    // Обновляем пароль на бэкенде
+    // Обновляем пароль
     await Api().user.updatePassword(dto);
   } catch (err: any) {
     errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть

@@ -3,7 +3,7 @@ import { TUserData, UserDataDto, UserPasswordDto } from './types';
 
 export const UserApi = (instance: AxiosInstance) => ({
   async updateData(dto: UserDataDto) {
-    const { data } = await instance.patch<UserDataDto, { data: TUserData }>(
+    const { data } = await instance.post<UserDataDto, { data: TUserData }>(
       `/users`,
       dto,
     );

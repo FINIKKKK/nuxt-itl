@@ -33,7 +33,7 @@ const onChageUserData = handleSubmit(async (values) => {
       lastName: values.lastName,
       email: values.email,
     };
-    const { data } = await Api().user.updateData(userStore.user.id, dto);
+    const { data } = await Api().user.updateData(dto);
     console.log(data);
   } catch (err: any) {
     errors.value = err?.response?.data?.message;

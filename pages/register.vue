@@ -9,10 +9,12 @@
         У вас уже есть аккаунт?
         <NuxtLink to="/login">Войдите в систему</NuxtLink>
       </p>
-      <div v-if="errors.email" class="error">{{ errors.email[0] }}</div>
+      <div class="errors" v-if="errors.length">
+        <span v-for="error in errors">{{ error }}</span>
+      </div>
       <div class="inputs">
-        <Input name="firstName" placeholder="Имя" />
-        <Input name="lastName" placeholder="Фамилия" />
+        <Input name="firstName" placeholder="Имя" class="input" />
+        <Input name="lastName" placeholder="Фамилия" class="input" />
       </div>
       <Input name="email" placeholder="Email" />
       <Input name="password" placeholder="Пароль" type="password" />
@@ -34,6 +36,9 @@
   </NuxtLayout>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
 import { useForm } from 'vee-validate';
@@ -42,22 +47,38 @@ import { setCookie } from 'nookies';
 import { RegisterScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
 
+/**
+ * Мета данные ----------------
+ */
 definePageMeta({
   layout: false,
 });
 
-const errors = ref<any>([]);
-const router = useRouter();
-const isLoading = ref(false);
+/**
+ * Системные переменные ----------------
+ */
+const router = useRouter(); // Роутер
+// Фукция обработки отправки формы
 const { handleSubmit } = useForm({
-  validationSchema: RegisterScheme,
+  validationSchema: RegisterScheme, // Схема валидации
 });
-const userStore = useUserStore();
+const userStore = useUserStore(); // Хранилище пользователя
 
+/**
+ * Пользовательские переменные ----------------
+ */
+const errors = ref([]); // Ошибки
+const isLoading = ref(false); // Загрузка
+
+/**
+ * Методы ----------------
+ */
+// Регистрация пользователя
 const onSubmit = handleSubmit(async (values) => {
   try {
-    errors.value = '';
-    isLoading.value = true;
+    errors.value = []; // Обнуляем ошибки
+    isLoading.value = true; // Ставим загрузку
+    // Объект с данными
     const dto = {
       firstName: values.firstName,
       lastName: values.lastName,
@@ -65,39 +86,38 @@ const onSubmit = handleSubmit(async (values) => {
       password: values.password,
       password_confirmation: values.password_confirmation,
     };
+    // Регистрация пользователя
     const { data } = await Api().auth.register(dto);
+    // Сохраняем токен в куки
     setCookie(null, 'access_token', data.token.access_token, {
-      maxAge: data.token.expires_in,
+      maxAge: data.token.expires_in, // Время жизни
       path: '/',
     });
-    userStore.setUser(data.user);
-    await router.push('/create_company');
+    userStore.setUser(data.user); // Сохраняем в хранилище данные о пользователе
+    await router.push('/create_company'); // Перенаправляем на страницу создания компании
   } catch (err: any) {
-    errors.value = err?.response?.data?.message;
+    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
-    isLoading.value = false;
+    isLoading.value = false; // Убираем загрузку
   }
 });
 </script>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <style lang="scss" scoped>
 .form {
-  width: 380px;
-}
-
-.text {
-  margin-bottom: 40px;
-}
-
-.error {
-  color: $red;
-  font-size: 14px;
-  margin-top: -20px;
-  margin-bottom: 25px;
+  width: 390px;
 }
 
 .inputs {
   display: flex;
   justify-content: space-between;
+  .input {
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+  }
 }
 </style>

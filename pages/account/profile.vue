@@ -11,7 +11,17 @@
 
       <!-- Изменяем аватар пользователя -->
       <div class="avatar">
-        <svg-icon name="avatar" />
+        <!-- Аватар -->
+        <div class="img">
+          <!-- Если, есть аватарка -->
+          <img
+            :src="userStore.user?.avatar"
+            alt=""
+            v-if="userStore.user?.avatar"
+          />
+          <!-- Если, нет аватарки -->
+          <svg-icon name="avatar" v-else />
+        </div>
         <div class="btn-inline" :class="{ disabled: isLoading }">
           <span>Загрузить фото</span>
           <input type="file" v-on:change="onChangeAvatar" />
@@ -32,6 +42,7 @@
 import FormUserData from '~/components/ProfileForms/FormUserData.vue';
 import FormPassword from '~/components/ProfileForms/FormPassword.vue';
 import { Api } from '~/api';
+import { useUserStore } from '~/stores/UserStore';
 
 /**
  * Мета данные ----------------
@@ -39,8 +50,6 @@ import { Api } from '~/api';
 definePageMeta({
   layout: false,
 });
-
-function useUserStore() {}
 
 /**
  * Системные переменные ----------------
@@ -63,6 +72,8 @@ const onChangeAvatar = async (e: any) => {
     isLoading.value = true; // Ставим загрузку
     // Обновляем аватар на бэкенде
     const { data } = await Api().user.updateAvatar(e.target.files[0]);
+    // Обновляем аватар в хранилище
+    userStore.setUserAvatar(data.avatar);
   } catch (err: any) {
     errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
@@ -84,11 +95,20 @@ const onChangeAvatar = async (e: any) => {
   width: 203px;
   text-align: center;
   margin-right: 50px;
-  svg {
+  .img {
     width: 100px;
     height: 100px;
-    fill: $blue4;
-    margin-bottom: 25px;
+    border-radius: 50%;
+    margin: 0 auto 25px;
+    overflow: hidden;
+    img,
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+    svg {
+      fill: $blue4;
+    }
   }
   .btn-inline {
     margin-bottom: 21px;

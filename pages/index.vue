@@ -1,17 +1,24 @@
 <template>
   <NuxtLayout name="main" title="Ваши компании">
+    <!-- Список компаний -->
     <ul class="companies">
-      <li class="company" v-for="company in companies">
+      <!-- Компаний -->
+      <li class="company" v-for="company in userStore.companies">
         <NuxtLink
           :to="`/companies/${company.slug}`"
           @click="() => onActiveCompany(company)"
           >{{ company.name }}
         </NuxtLink>
         <p>Пользователей: <span>1</span></p>
-        <NuxtLink class="edit" to="edit_company">
+        <NuxtLink
+          class="edit"
+          :to="`/companies/${company.slug}/settings/general`"
+        >
           <svg-icon name="edit" />
         </NuxtLink>
       </li>
+
+      <!-- Кнопка добавления новой компании -->
       <li class="company add_company">
         <NuxtLink to="/create_company">
           <svg-icon name="add2" />
@@ -22,20 +29,36 @@
   </NuxtLayout>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
 import { TCompany } from '~/api/models/company/types';
 
+/**
+ * Мета данные ----------------
+ */
 definePageMeta({
   layout: false,
 });
 
-const { companies, setActiveCompany } = useUserStore();
+/**
+ * Системные переменные ----------------
+ */
+const userStore = useUserStore(); // Хранилище пользователя
 
+/**
+ * Методы ----------------
+ */
+// Установление активной компании в хранилище
 const onActiveCompany = (company: TCompany) => {
-  setActiveCompany(company);
+  userStore.setActiveCompany(company);
 };
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
 .companies {

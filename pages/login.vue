@@ -5,9 +5,11 @@
         Впервые здесь?
         <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
       </p>
-      <div v-if="error" class="error">{{ error }}</div>
-      <Input name="email" label="Email" />
-      <Input name="password" label="Пароль" type="password" />
+      <div class="errors" v-if="errors.length">
+        <span v-for="error in errors">{{ error }}</span>
+      </div>
+      <Input name="email" placeholder="Email" />
+      <Input name="password" placeholder="Пароль" type="password" />
       <p class="link">
         <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
       </p>
@@ -18,61 +20,76 @@
   </NuxtLayout>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
 import { useForm } from 'vee-validate';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
 import { LoginScheme } from '~/utils/validation';
+import Input from '~/components/UI/Input.vue';
 
+/**
+ * Мета данные ----------------
+ */
 definePageMeta({
   layout: false,
 });
 
+/**
+ * Системные переменные ----------------
+ */
+// Фукция обработки отправки формы
 const { handleSubmit } = useForm({
-  validationSchema: LoginScheme,
+  validationSchema: LoginScheme, // Схема валидации данных
 });
-const error = ref('');
-const router = useRouter();
-const isLoading = ref(false);
-const userStore = useUserStore();
+const router = useRouter(); // Роутер
+const userStore = useUserStore(); // Хранилище данных пользователя
 
+/**
+ * Пользовательские переменные ----------------
+ */
+const errors = ref([]); // Ошибки
+const isLoading = ref(false); // Загрузка
+
+/**
+ * Методы ----------------
+ */
+// Авторизация пользователя
 const onSubmit = handleSubmit(async (values) => {
   try {
-    const token = useCookie('token');
-    token.value = 'asdas';
-    error.value = '';
-    isLoading.value = true;
+    errors.value = []; // Обнуляем ошибки
+    isLoading.value = true; // Ставим загрузку
+    // Объект с данными
     const dto = {
       email: values.email,
       password: values.password,
     };
+    // Авторизуем пользователя
     const { data } = await Api().auth.login(dto);
+    // Сохраняем токен в куки
     setCookie(null, 'access_token', data.token.access_token, {
-      maxAge: data.token.expires_in,
+      maxAge: data.token.expires_in, // Время куки
       path: '/',
     });
-    userStore.setUser(data.user);
-    userStore.setCompanies(data.companies);
-    await router.push('/');
+    userStore.setUser(data.user); // Сохраняем в хранилище данные пользователя
+    userStore.setCompanies(data.companies); // Сохраняем в хранилище данные компаний пользователя
+    await router.push('/'); // Перенаправляем пользователя на главную страницу
   } catch (err: any) {
-    error.value = err?.response?.data?.message;
+    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
-    isLoading.value = false;
+    isLoading.value = false; // Убираем загрузку
   }
 });
 </script>
 
-<style lang="scss" scoped>
-.text {
-  display: block;
-  margin-bottom: 40px;
-}
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
-.error {
-  color: $red;
-  font-size: 14px;
-  margin-top: -20px;
-  margin-bottom: 25px;
+<style lang="scss" scoped>
+.form {
+  width: 390px;
 }
 </style>
