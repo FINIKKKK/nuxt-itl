@@ -11,14 +11,14 @@
       </p>
       <div v-if="errors.email" class="error">{{ errors.email[0] }}</div>
       <div class="inputs">
-        <Input name="firstName" label="Имя" />
-        <Input name="lastName" label="Фамилия" />
+        <Input name="firstName" placeholder="Имя" />
+        <Input name="lastName" placeholder="Фамилия" />
       </div>
-      <Input name="email" label="Email" />
-      <Input name="password" label="Пароль" type="password" />
+      <Input name="email" placeholder="Email" />
+      <Input name="password" placeholder="Пароль" type="password" />
       <Input
         name="password_confirmation"
-        label="Подтвердите пароль"
+        placeholder="Подтвердите пароль"
         type="password"
       />
       <p class="link">
@@ -40,6 +40,7 @@ import { useForm } from 'vee-validate';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
 import { RegisterScheme } from '~/utils/validation';
+import Input from '~/components/UI/Input.vue';
 
 definePageMeta({
   layout: false,

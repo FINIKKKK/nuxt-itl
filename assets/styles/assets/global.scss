@@ -129,6 +129,16 @@ a.btn {
       text-decoration: underline;
     }
   }
+
+  .errors {
+    margin-top: -30px;
+    margin-bottom: 25px;
+    font-size: 12px;
+    color: $red;
+    span {
+      display: block;
+    }
+  }
 }
 
 .error {

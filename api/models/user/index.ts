@@ -1,31 +1,28 @@
 import { AxiosInstance } from 'axios';
-import {
-  TUserData,
-  UserAvatarDto,
-  UserDataDto,
-  UserPasswordDto,
-} from './types';
+import { TUserData, UserDataDto, UserPasswordDto } from './types';
 
 export const UserApi = (instance: AxiosInstance) => ({
-  async updateData(id: number, dto: UserDataDto) {
+  async updateData(dto: UserDataDto) {
     const { data } = await instance.patch<UserDataDto, { data: TUserData }>(
-      `/users/${id}`,
+      `/users`,
       dto,
     );
     return data;
   },
-  async updatePassword(id: number, dto: UserPasswordDto) {
+  async updatePassword(dto: UserPasswordDto) {
     const { data } = await instance.patch<UserPasswordDto, { data: TUserData }>(
-      `/users/${id}`,
+      `/users/password`,
       dto,
     );
     return data;
   },
-  async updateAvatar(id: number, dto: UserAvatarDto) {
-    const { data } = await instance.patch<UserAvatarDto, { data: TUserData }>(
-      `/users/${id}`,
-      dto,
-    );
+  async updateAvatar(file: any) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    const { data } = await instance.post(`/users`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return data;
   },
 });

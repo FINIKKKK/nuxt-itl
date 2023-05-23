@@ -1,7 +1,9 @@
 <template>
-  <form class="block" @submit.prevent="onChagePassword">
-    <span class="error" v-if="errors">{{ errors }}</span>
+  <form class="form block" @submit.prevent="onChangePassword">
     <h2 class="title">Безопасность</h2>
+    <div class="errors" v-if="errors">
+      <span v-for="error in errors">{{ error }}</span>
+    </div>
     <Input placeholder="Текущий пароль" name="old_password" type="password" />
     <Input placeholder="Новый пароль" name="new_password" type="password" />
     <Input
@@ -9,36 +11,59 @@
       name="password_confirmation"
       type="password"
     />
-    <button class="btn">Сохранить настройки</button>
+    <button class="btn" :class="{ disabled: isLoading }">
+      Сохранить настройки
+    </button>
   </form>
 </template>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
 import { useForm } from 'vee-validate';
 import Input from '~/components/UI/Input.vue';
+import { Api } from '~/api';
 
+/**
+ * Системные переменные ----------------
+ */
+// Фукция обработки отправки формы
 const { handleSubmit } = useForm({
-  validationSchema: PasswordScheme,
+  validationSchema: PasswordScheme, // Схема валидации данных
 });
-const errors = ref('');
-const isLoading = ref(false);
 
-const onChagePassword = handleSubmit(async (values) => {
+/**
+ * Пользоватеьские переменные ----------------
+ */
+const errors = ref(''); // Ошибки
+const isLoading = ref(false); // Значение загрузки
+
+/**
+ * Методы ----------------
+ */
+// Изменение пароля пользователя
+const onChangePassword = handleSubmit(async (values) => {
   try {
-    errors.value = '';
-    isLoading.value = true;
+    errors.value = ''; // Обнуляем ошибки
+    isLoading.value = true; // Ставим загрузку
+    // Объект с данными
     const dto = {
       old_password: values.old_password,
-      new_password: values.new_password,
+      password: values.new_password,
       password_confirmation: values.password_confirmation,
     };
-    // const { data } = await Api().user.updatePassword(dto);
+    // Обновляем пароль на бэкенде
+    await Api().user.updatePassword(dto);
   } catch (err: any) {
-    errors.value = err?.response?.data?.message;
+    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
-    isLoading.value = false;
+    isLoading.value = false; // Убираем загрузку
   }
 });
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped></style>

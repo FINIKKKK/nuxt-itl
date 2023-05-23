@@ -29,6 +29,7 @@
 import { CompanyScheme } from '~/utils/validation';
 import { useForm } from 'vee-validate';
 import { Api } from '~/api';
+import Input from '~/components/UI/Input.vue';
 
 definePageMeta({
   layout: false,

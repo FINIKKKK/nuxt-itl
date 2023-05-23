@@ -1,12 +1,15 @@
 <template>
   <NuxtLayout name="main" title="Профиль / Редактирование" :isMiniTitle="true">
+    <!-- Формы -->
     <div class="flex">
       <div class="left">
+        <!-- Форма для изменения данных пользователя -->
         <FormUserData />
-
+        <!-- Форма для изменения пароля пользователя -->
         <FormPassword />
       </div>
 
+      <!-- Изменяем аватар пользователя -->
       <div class="avatar">
         <svg-icon name="avatar" />
         <div class="btn-inline" :class="{ disabled: isLoading }">
@@ -22,37 +25,54 @@
   </NuxtLayout>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
 import FormUserData from '~/components/ProfileForms/FormUserData.vue';
 import FormPassword from '~/components/ProfileForms/FormPassword.vue';
 import { Api } from '~/api';
-import { useUserStore } from '~/stores/UserStore';
 
+/**
+ * Мета данные ----------------
+ */
 definePageMeta({
   layout: false,
 });
 
+function useUserStore() {}
+
+/**
+ * Системные переменные ----------------
+ */
 const userStore = useUserStore();
 
-const avatarValue = ref(null);
-const errors = ref('');
-const isLoading = ref(false);
+/**
+ * Пользовательские переменные ----------------
+ */
+const errors = ref(''); // Ошибки
+const isLoading = ref(false); // Загрузка
 
+/**
+ * Пропсы ----------------
+ */
+// Метод изменения аватара пользователя
 const onChangeAvatar = async (e: any) => {
   try {
-    errors.value = '';
-    isLoading.value = true;
-    const dto = {
-      avatar: e.target.files[0],
-    };
-    const { data } = await Api().user.updateAvatar(userStore?.user?.id, dto);
+    errors.value = ''; // Обнуляем ошибки
+    isLoading.value = true; // Ставим загрузку
+    // Обновляем аватар на бэкенде
+    const { data } = await Api().user.updateAvatar(e.target.files[0]);
   } catch (err: any) {
-    errors.value = err?.response?.data?.message;
+    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
-    isLoading.value = false;
+    isLoading.value = false; // Убираем загрузку
   }
 };
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
 .flex {
