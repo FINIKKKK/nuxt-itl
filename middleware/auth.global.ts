@@ -1,26 +1,46 @@
-import {Api} from "~/api";
-import {useUserStore} from "~/stores/UserStore";
+import { Api } from '~/api';
+import { useUserStore } from '~/stores/UserStore';
 
+/**
+ * ------------------------------------------------------------
+ * Глобальный middleware для проверки аутефикации пользователя
+ * ------------------------------------------------------------
+ */
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    const excludedRoutes = ["/register", "/login"];
-    const router = useRouter();
-    const userStore = useUserStore();
-    const token = useCookie("access_token");
+  /**
+   * Переменные ----------------
+   */
+  const router = useRouter(); // Роутер
+  const userStore = useUserStore(); // Хранилище пользователя
+  const excludedRoutes = ['/register', '/login']; // Исключенные маршруты
+  const token = useCookie('access_token'); // Токен
 
-    if (!token.value && !excludedRoutes.includes(to.fullPath)) {
-        await router.push("/login");
-    } else if (token.value) {
-        console.log(userStore.companies.length);
-        if (!userStore.user) {
-            const {data} = await Api().auth.me();
-            userStore.setUser(data.user);
-            userStore.setCompanies(data.companies);
-        } else if (
-            !userStore.companies.length &&
-            to.fullPath !== "/create_company" &&
-            !excludedRoutes.includes(to.fullPath)
-        ) {
-            await router.push("/create_company");
-        }
+  /**
+   * Проверка аутефикации пользователя ----------------
+   */
+  // Если нет токена
+  if (!token.value && !excludedRoutes.includes(to.fullPath)) {
+    // Перенаправляем пользователя на страницу регистрации
+    // + При этом разрешая заходить на страницу регистрации
+    await router.push('/login');
+  }
+  // Если есть токен
+  else if (token.value) {
+    // Если в хранилище нету данных пользователя
+    if (userStore.user) {
+      return;
     }
+    try {
+      // Получаем данные пользователя
+      const { data } = await Api().auth.me();
+      // Сохраняем в хранилище данные пользователя
+      userStore.setUser(data.user);
+      // Сохраняем в хранилище компании пользователя
+      userStore.setCompanies(data.companies);
+    } catch (err: any) {
+      // Если токен не валидный
+      // Обнуляем токен
+      token.value = '';
+    }
+  }
 });

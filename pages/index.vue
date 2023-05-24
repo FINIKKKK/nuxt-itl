@@ -33,8 +33,9 @@
 <!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
-import { useUserStore } from '~/stores/UserStore';
 import { TCompany } from '~/api/models/company/types';
+import { useActiveCompanyStore } from '~/stores/ActiveCompanyStore';
+import { useUserStore } from '~/stores/UserStore';
 
 /**
  * Мета данные ----------------
@@ -47,13 +48,14 @@ definePageMeta({
  * Системные переменные ----------------
  */
 const userStore = useUserStore(); // Хранилище пользователя
+const activeCompanyStore = useActiveCompanyStore(); // Хранилище активной компании
 
 /**
  * Методы ----------------
  */
 // Установление активной компании в хранилище
 const onActiveCompany = (company: TCompany) => {
-  userStore.setActiveCompany(company);
+  activeCompanyStore.setActiveCompany(company);
 };
 </script>
 

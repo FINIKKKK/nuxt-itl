@@ -7,7 +7,7 @@
 
     <!-- Список навигации -->
     <div class="lists">
-      <!-- 
+      <!--
         Верхний и нижний список
         + Если пользователь вошел
        -->
@@ -17,12 +17,12 @@
         v-for="(itemsList, index) in items"
         :key="index"
       >
-        <!-- 
+        <!--
           Элемент навигации в списке
           + Если
          -->
         <li
-          v-show="isShowItem"
+          v-show="isShowItem(item)"
           v-for="(item, index) in itemsList"
           class="item"
           :class="{
@@ -53,6 +53,7 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
+import { useActiveCompanyStore } from '~/stores/ActiveCompanyStore';
 
 /**
  * Пропсы ----------------
@@ -69,19 +70,23 @@ const emits = defineEmits(['setActiveItem']);
 /**
  * Системные переменные ----------------
  */
-const config = useRuntimeConfig();
-const userStore = useUserStore();
-const route = useRoute();
+const config = useRuntimeConfig(); // Конфиг
+const userStore = useUserStore(); // Хранилище пользователя
+const activeCompanyStore = useActiveCompanyStore(); // Хранилище активной компании
+const route = useRoute(); // Роут
 
 /**
  * Вычисляемые значения ----------------
  */
-// Если элемент не tooltip, не user, пользователь не находиться на главной станице и нет активной компании
-const isShowItem = computed(() => {
+// Показываеть элемент сайдбара
+const isShowItem = computed(() => (item: string) => {
   return (
-    (route.path !== '/' && userStore.activeCompany) ||
-    props.activeItem !== config.public.sidebar.list2.tooltip ||
-    props.activeItem !== config.public.sidebar.list2.user
+    // Если есть активная компания
+    // Если элемент tooltip
+    // Если элемент user
+    activeCompanyStore.activeCompany ||
+    item === config.public.sidebar.list2.tooltip ||
+    item === config.public.sidebar.list2.user
   );
 });
 // Если элемент это tooltip

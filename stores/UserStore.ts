@@ -3,20 +3,30 @@ import { ref, Ref } from 'vue';
 import { TCompany } from '~/api/models/company/types';
 import { TUser } from '~/api/models/user/types';
 
+/**
+ * --------------------------------
+ * Хранилище пользователя
+ * --------------------------------
+ */
 export const useUserStore = defineStore('userStore', () => {
-  const user: Ref<TUser | null> = ref(null);
-  const companies: Ref<TCompany[]> = ref([]);
-  const activeCompany: Ref<TCompany | null> = ref(null);
+  /**
+   * Свойства ----------------
+   */
+  const user: Ref<TUser | null> = ref(null); // Пользователь
+  const companies: Ref<TCompany[]> = ref([]); // Компании пользователя
 
+  /**
+   * Методы ----------------
+   */
+  // Установить пользователя
   const setUser = (obj: TUser) => {
     user.value = obj;
   };
+  // Установить компании
   const setCompanies = (obj: TCompany[]) => {
     companies.value = obj;
   };
-  const setActiveCompany = (obj: TCompany) => {
-    activeCompany.value = obj;
-  };
+  // Установить аватарку пользователя
   const setUserAvatar = (avatar: string) => {
     if (user.value) {
       user.value.avatar = avatar;
@@ -26,10 +36,8 @@ export const useUserStore = defineStore('userStore', () => {
   return {
     user,
     companies,
-    activeCompany,
     setUser,
     setCompanies,
-    setActiveCompany,
     setUserAvatar,
   };
 });
