@@ -54,7 +54,7 @@
             :key="section.id"
           >
             <NuxtLink
-              :to="`/companies/${userStore.activeCompany[0].slug}/sections/${section.id}`"
+              :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
             >
               <svg-icon name="folder" />
               <p>{{ section.title }}</p>
@@ -62,24 +62,24 @@
           </li>
         </ul>
       </div>
-      <div
-        v-if="posts && activeItem === config.public.sidebar.list1.home"
-        class="sections"
-      >
-        <h3>Статьи</h3>
-        <ul>
-          <li
-            class="item post"
-            v-if="activeItem"
-            v-for="post in posts"
-            :key="post.id"
-          >
-            <NuxtLink :to="`/posts/${post.id}`">
-              <p>{{ post.title }}</p>
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
+      <!--      <div-->
+      <!--        v-if="posts && activeItem === config.public.sidebar.list1.home"-->
+      <!--        class="sections"-->
+      <!--      >-->
+      <!--        <h3>Статьи</h3>-->
+      <!--        <ul>-->
+      <!--          <li-->
+      <!--            class="item post"-->
+      <!--            v-if="activeItem"-->
+      <!--            v-for="post in posts"-->
+      <!--            :key="post.id"-->
+      <!--          >-->
+      <!--            <NuxtLink :to="`/posts/${post.id}`">-->
+      <!--              <p>{{ post.title }}</p>-->
+      <!--            </NuxtLink>-->
+      <!--          </li>-->
+      <!--        </ul>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -88,6 +88,7 @@
 import { Api } from '~/api';
 import { useUserStore } from '~/stores/UserStore';
 import Input from '~/components/UI/Input.vue';
+import { useCompanyStore } from '~/stores/CompanyStore';
 
 const props = defineProps<{
   isShow: boolean;
@@ -98,17 +99,10 @@ const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
-
-const activeCompany = userStore.activeCompany
-  ? userStore.activeCompany[0].slug
-  : null;
+const companyStore = useCompanyStore();
 
 const onLogout = () => {
   console.log('logout');
-};
-const changeCompany = async () => {
-  userStore.activeCompany = null;
-  await router.push('/');
 };
 
 const innerItems = [
@@ -119,17 +113,17 @@ const innerItems = [
       {
         icon: 'activation',
         label: 'Активность',
-        link: `/companies/${activeCompany}`,
+        link: `/${companyStore.activeCompanySlug}`,
       },
       {
         icon: 'document',
         label: 'Ваши работы',
-        link: `/companies/${activeCompany}/my_works`,
+        link: `${companyStore.activeCompanySlug}/my_works`,
       },
       {
         icon: 'favorite',
         label: 'Закладки',
-        link: `/companies/${activeCompany}/favorites`,
+        link: `${companyStore.activeCompanySlug}/favorites`,
       },
     ],
   },
@@ -140,18 +134,18 @@ const innerItems = [
       {
         icon: 'document',
         label: 'Статью',
-        link: `/companies/${activeCompany}/posts/create`,
+        link: `${companyStore.activeCompanySlug}/posts/create`,
       },
       {
         icon: 'folder',
         label: 'Раздел',
-        link: `/companies/${activeCompany}/sections/create`,
+        link: `${companyStore.activeCompanySlug}/sections/create`,
       },
     ],
   },
   {
     name: config.public.sidebar.list1.search,
-    title: `Поиск по ${userStore?.activeCompany?.name}.itl.wiki`,
+    title: `Поиск по ${companyStore.activeCompany?.name}.itl.wiki`,
   },
   {
     name: config.public.sidebar.list2.settings,
@@ -160,17 +154,17 @@ const innerItems = [
       {
         icon: 'settings',
         label: 'Общие',
-        link: `/companies/${activeCompany}/settings/general`,
+        link: `${companyStore.activeCompanySlug}/settings/general`,
       },
       {
         icon: 'user',
         label: 'Соотрудники',
-        link: `/companies/${activeCompany}/settings/employees`,
+        link: `${companyStore.activeCompanySlug}/settings/employees`,
       },
       {
         icon: 'tag',
         label: 'Внешние интеграции',
-        link: `/companies/${activeCompany}/settings/integrations`,
+        link: `${companyStore.activeCompanySlug}/settings/integrations`,
       },
     ],
   },
@@ -180,7 +174,7 @@ const innerItems = [
     items: [
       { icon: 'favorite', label: 'Закладки', link: '/account/favorites' },
       { icon: 'edit', label: 'Редактировать', link: '/account/profile' },
-      { icon: 'change', label: 'Сменить компанию', method: changeCompany },
+      { icon: 'change', label: 'Сменить компанию', link: '/' },
       { icon: 'logout', label: 'Выйти', method: onLogout },
     ],
   },
@@ -190,19 +184,21 @@ const activeItemInList = ref(
 );
 
 const { data: sections } = useAsyncData(async () => {
-  const params = {
-    company_id: userStore.activeCompany[0]?.id,
-  };
-  const { data } = await Api().section.getAll(params);
-  return data;
+  if (route.path.includes('/companies')) {
+    const params = {
+      company_id: companyStore.activeCompany?.id,
+    };
+    const { data } = await Api().section.getAll(params);
+    return data;
+  }
 });
-const { data: posts } = useAsyncData(async () => {
-  const params = {
-    section_id: route.fullPath.includes('/sections/') && route.params.id,
-  };
-  const { data } = await Api().post.getAll(params);
-  return data;
-});
+// const { data: posts } = useAsyncData(async () => {
+//   const params = {
+//     section_id: route.fullPath.includes('/sections/') && route.params.id,
+//   };
+//   const { data } = await Api().post.getAll(params);
+//   return data;
+// });
 </script>
 
 <style lang="scss" scoped>

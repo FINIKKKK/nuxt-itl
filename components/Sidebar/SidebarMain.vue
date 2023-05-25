@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
-import { useActiveCompanyStore } from '~/stores/ActiveCompanyStore';
+import { useCompanyStore } from '~/stores/CompanyStore';
 
 /**
  * Пропсы ----------------
@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 /**
- * События (эмиты) ----------------
+ * События ----------------
  */
 const emits = defineEmits(['setActiveItem']);
 
@@ -72,7 +72,7 @@ const emits = defineEmits(['setActiveItem']);
  */
 const config = useRuntimeConfig(); // Конфиг
 const userStore = useUserStore(); // Хранилище пользователя
-const activeCompanyStore = useActiveCompanyStore(); // Хранилище активной компании
+const companyStore = useCompanyStore(); // Хранилище активной компании
 const route = useRoute(); // Роут
 
 /**
@@ -84,7 +84,7 @@ const isShowItem = computed(() => (item: string) => {
     // Если есть активная компания
     // Если элемент tooltip
     // Если элемент user
-    activeCompanyStore.activeCompany ||
+    companyStore.activeCompany ||
     item === config.public.sidebar.list2.tooltip ||
     item === config.public.sidebar.list2.user
   );

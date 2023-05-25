@@ -1,5 +1,5 @@
 import { Api } from '~/api';
-import { useActiveCompanyStore } from '~/stores/ActiveCompanyStore';
+import { useCompanyStore } from '~/stores/CompanyStore';
 
 /**
  * ------------------------------------------------------------
@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   /**
    * Переменные ----------------
    */
-  const activeCompanyStore = useActiveCompanyStore(); // Хранилище активной компании
+  const companyStore = useCompanyStore(); // Хранилище активной компании
 
   /**
    * Проверка компании ----------------
@@ -18,19 +18,19 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Если пользователь находиться на страницах компании
   if (to.fullPath.includes('/companies/')) {
     // Если нет активной компании
-    if (!activeCompanyStore.activeCompany) {
+    if (!companyStore.activeCompany) {
       // Получаем данные текущей компании
-      const { data } = await Api().company.getOne(to.params.slug[0]);
+      const { data } = await Api().company.getOne(to.params.slug);
       // Сохраняем в хранилище данные компании
-      activeCompanyStore.setActiveCompany(data);
+      companyStore.setActiveCompany(data);
     }
   }
   // Если пользователь не находиться на страницах компании
   else {
     // Если установлена активная компания
-    if (activeCompanyStore.activeCompany) {
+    if (companyStore.activeCompany) {
       // Тогда ее обнуляем
-      activeCompanyStore.setActiveCompany(null);
+      companyStore.setActiveCompany(null);
     }
   }
 });

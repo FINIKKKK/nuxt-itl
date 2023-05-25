@@ -1,16 +1,11 @@
 <template>
-    <NuxtLayout name="create">
-
-    </NuxtLayout>
+  <NuxtLayout name="create" type="section" :isEdit="true"></NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-    layout: false,
+  layout: false,
 });
-
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

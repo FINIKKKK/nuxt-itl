@@ -1,18 +1,11 @@
 <template>
-  <NuxtLayout name="create" type="post">
-
-  </NuxtLayout>
+  <NuxtLayout name="create" type="post"></NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
   layout: false,
 });
-
-
-
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

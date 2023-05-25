@@ -7,7 +7,7 @@ import { TCompany } from '~/api/models/company/types';
  * Хранилище автивной компании
  * --------------------------------
  */
-export const useActiveCompanyStore = defineStore('activeCompanyStore', () => {
+export const useCompanyStore = defineStore('companyStore', () => {
   /**
    * Свойства ----------------
    */
@@ -21,8 +21,17 @@ export const useActiveCompanyStore = defineStore('activeCompanyStore', () => {
     activeCompany.value = obj;
   };
 
+  /**
+   * Вычисляемые значения ----------------
+   */
+  // Slug активной компании
+  const activeCompanySlug = computed(() => {
+    return `/companies/${activeCompany.value?.slug}`;
+  });
+
   return {
     activeCompany,
     setActiveCompany,
+    activeCompanySlug,
   };
 });

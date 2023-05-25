@@ -27,20 +27,19 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Если есть токен
   else if (token.value) {
     // Если в хранилище нету данных пользователя
-    if (userStore.user) {
-      return;
-    }
-    try {
-      // Получаем данные пользователя
-      const { data } = await Api().auth.me();
-      // Сохраняем в хранилище данные пользователя
-      userStore.setUser(data.user);
-      // Сохраняем в хранилище компании пользователя
-      userStore.setCompanies(data.companies);
-    } catch (err: any) {
-      // Если токен не валидный
-      // Обнуляем токен
-      token.value = '';
+    if (!userStore.user) {
+      try {
+        // Получаем данные пользователя
+        const { data } = await Api().auth.me();
+        // Сохраняем в хранилище данные пользователя
+        userStore.setUser(data.user);
+        // Сохраняем в хранилище компании пользователя
+        userStore.setCompanies(data.companies);
+      } catch (err: any) {
+        // Если токен не валидный
+        // Обнуляем токен
+        token.value = '';
+      }
     }
   }
 });
