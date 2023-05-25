@@ -121,10 +121,10 @@ const { data: sections } = useAsyncData(async () => {
 const { data: elem } = useAsyncData(async () => {
   if (props.isEdit) {
     if (props.type == 'post') {
-      const { data } = await Api().post.getOne(route.params.id);
+      const { data } = await Api().post.getOne(Number(route.params.id));
       return data;
     } else {
-      const { data } = await Api().section.getOne(route.params.id);
+      const { data } = await Api().section.getOne(Number(route.params.id));
       return data;
     }
   }
@@ -180,7 +180,7 @@ const onSubmit = async () => {
       // Если это редактирование
       if (props.isEdit) {
         // Редактируем пост
-        const { data } = await Api().post.update(route.params.id, dto);
+        const { data } = await Api().post.update(Number(route.params.id), dto);
         // Перенапрвляем пользователя на страницу поста
         await router.push(`${companyStore.activeCompanySlug}/posts/${data.id}`);
       } else {
@@ -204,7 +204,10 @@ const onSubmit = async () => {
       // Если это редактирование
       if (props.isEdit) {
         // Редактируем раздел
-        const { data } = await Api().section.update(route.params.id, dto);
+        const { data } = await Api().section.update(
+          Number(route.params.id),
+          dto,
+        );
         // Перенапрвляем пользователя на страницу раздела
         await router.push(
           `${companyStore.activeCompanySlug}/sections/${data.id}`,

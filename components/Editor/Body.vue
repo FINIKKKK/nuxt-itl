@@ -1,18 +1,18 @@
 <template>
-  <div class="body" :class="class">
-    <template v-for="obj in data?.body" :key="obj.id">
+  <div class="body">
+    <template v-for="obj in data" :key="obj.id">
       <!-- paragraph -->
       <p
-          v-if="obj.type === 'paragraph'"
-          class="el text"
-          v-html="obj.data.text"
+        v-if="obj.type === 'paragraph'"
+        class="el text"
+        v-html="obj.data.text"
       ></p>
 
       <!-- list -->
       <ul
-          v-else-if="obj.type === 'list'"
-          class="el list"
-          :class="{ ordered: obj.data.style === 'ordered' }"
+        v-else-if="obj.type === 'list'"
+        class="el list"
+        :class="{ ordered: obj.data.style === 'ordered' }"
       >
         <li v-for="(item, index) in obj.data.items" :key="index">
           {{ item }}
@@ -24,38 +24,38 @@
 
       <!-- headers -->
       <h6
-          v-else-if="obj.type === 'header' && obj.data.level === 6"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 6"
+        class="title"
       >
         {{ obj.data.text }}
       </h6>
       <h5
-          v-else-if="obj.type === 'header' && obj.data.level === 5"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 5"
+        class="title"
       >
         {{ obj.data.text }}
       </h5>
       <h4
-          v-else-if="obj.type === 'header' && obj.data.level === 4"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 4"
+        class="title"
       >
         {{ obj.data.text }}
       </h4>
       <h3
-          v-else-if="obj.type === 'header' && obj.data.level === 3"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 3"
+        class="title"
       >
         {{ obj.data.text }}
       </h3>
       <h2
-          v-else-if="obj.type === 'header' && obj.data.level === 2"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 2"
+        class="title"
       >
         {{ obj.data.text }}
       </h2>
       <h1
-          v-else-if="obj.type === 'header' && obj.data.level === 1"
-          class="title"
+        v-else-if="obj.type === 'header' && obj.data.level === 1"
+        class="title"
       >
         {{ obj.data.text }}
       </h1>
@@ -63,14 +63,14 @@
       <!-- codebox -->
       <div v-else-if="obj.type === 'codeBox'" class="el code">
         <div class="code__lg">
-          {{ obj.data.language !== "Auto-detect" ? obj.data.language : " " }}
+          {{ obj.data.language !== 'Auto-detect' ? obj.data.language : ' ' }}
         </div>
         <code v-html="obj.data.code"></code>
       </div>
 
       <!-- quote -->
       <div v-else-if="obj.type === 'quote'" class="el quote">
-        <svg-icon name="document"/>
+        <svg-icon name="document" />
         <div class="quote__content">
           <h3>{{ obj.data.text }}</h3>
           <p>{{ obj.data.caption }}</p>
@@ -79,20 +79,20 @@
 
       <!-- image -->
       <div v-else-if="obj.type === 'image'" class="el img">
-        <img :src="obj.data.file.url" alt="img"/>
+        <img :src="obj.data.file.url" alt="img" />
       </div>
 
       <!-- checklist -->
       <div v-else-if="obj.type === 'checklist'" class="el checkbox">
         <input
-            type="checkbox"
-            :id="obj.data.items[0].text"
-            :name="obj.data.items[0].text"
-            :checked="obj.data.items[0].checked"
+          type="checkbox"
+          :id="obj.data.items[0].text"
+          :name="obj.data.items[0].text"
+          :checked="obj.data.items[0].checked"
         />
         <label :for="obj.data.items[0].text">{{
-            obj.data.items[0].text
-          }}</label>
+          obj.data.items[0].text
+        }}</label>
       </div>
 
       <!-- table -->
@@ -108,12 +108,14 @@
 </template>
 
 <script lang="ts" setup>
-import { OutputBlockData } from "@editorjs/editorjs";
+import { OutputBlockData } from '@editorjs/editorjs';
 
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
   data: OutputBlockData[];
 }>();
-
 </script>
 
 <style lang="scss">
@@ -121,6 +123,7 @@ const props = defineProps<{
   .el:not(:last-child) {
     margin-bottom: 15px;
   }
+
   // text ###############
   b {
     font-weight: 700;
@@ -128,15 +131,17 @@ const props = defineProps<{
   i {
     font-style: italic;
   }
+
   // inline-code ###############
   code.inline-code {
     font-size: 14px !important;
     padding: 3px 4px;
     border-radius: 5px;
-    font-family: "Consolas";
+    font-family: 'Consolas', serif;
     background-color: $blue4;
     color: $blue3;
   }
+
   // list ###############
   .list {
     counter-reset: list;
@@ -144,7 +149,7 @@ const props = defineProps<{
       padding-left: 40px;
       position: relative;
       &::before {
-        content: "";
+        content: '';
         position: absolute;
         width: 6px;
         height: 6px;
@@ -161,7 +166,7 @@ const props = defineProps<{
       li {
         &::before {
           counter-increment: list;
-          content: counter(list) ".";
+          content: counter(list) '.';
           width: auto;
           height: auto;
           background: none;
@@ -171,6 +176,7 @@ const props = defineProps<{
       }
     }
   }
+
   // delimiter ###############
   .delimiter {
     font-size: 40px;
@@ -179,6 +185,7 @@ const props = defineProps<{
     letter-spacing: 10px;
     margin-top: 25px;
   }
+
   // headers ###############
   .title {
     font-weight: 700;
@@ -207,6 +214,7 @@ const props = defineProps<{
     font-size: 16px;
     line-height: 26px;
   }
+
   // code ###############
   .code {
     padding: 55px 15px 10px;
@@ -231,6 +239,7 @@ const props = defineProps<{
       font-size: 14px;
     }
   }
+
   // quote ###############
   .quote {
     display: flex;
@@ -257,6 +266,7 @@ const props = defineProps<{
       font-weight: 700;
     }
   }
+
   // img ###############
   .img {
     width: 100%;
@@ -267,6 +277,7 @@ const props = defineProps<{
       object-fit: cover;
     }
   }
+
   // checkbox ###############
   .checkbox {
     pointer-events: none;
@@ -282,7 +293,7 @@ const props = defineProps<{
     }
     input + label::before {
       transition: 0.3s;
-      content: "";
+      content: '';
       display: inline-block;
       width: 17px;
       height: 17px;
@@ -298,9 +309,10 @@ const props = defineProps<{
     input:checked + label::before {
       border-color: $blue;
       background-color: $blue;
-      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2210%22%20viewBox%3D%220%200%2012%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M10%202L4.5%208L2%205.27273%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22square%22%2F%3E%0A%3C%2Fsvg%3E%0A");
+      background-image: url('data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2210%22%20viewBox%3D%220%200%2012%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M10%202L4.5%208L2%205.27273%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22square%22%2F%3E%0A%3C%2Fsvg%3E%0A');
     }
   }
+
   // table ###############
   .table {
     tr {
