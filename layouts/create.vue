@@ -24,9 +24,21 @@
         {{ buttonTitle }}
       </button>
       <!-- Кнопка отмены -->
-      <button class="btn btn2">Отменить</button>
+      <NuxtLink :to="`${companyStore.activeCompanySlug}`" class="btn btn2"
+        >Отменить
+      </NuxtLink>
       <!-- Настройки -->
       <svg-icon name="options" class="options" v-if="type === 'post'" />
+    </div>
+  </div>
+
+  <!--------------------------------------
+    Ошибки
+  ---------------------------------------->
+  <div class="errors" v-if="errors.length">
+    <svg-icon name="warning" />
+    <div class="items">
+      <span v-for="error in errors">{{ error }}</span>
     </div>
   </div>
 
@@ -35,11 +47,12 @@
   ---------------------------------------->
   <div class="form">
     <!-- Селект элемента -->
-    <select name="" id="" v-model="selectValue">
-      <option v-for="section in sections" :value="section.id">
-        {{ section.title }}
-      </option>
-    </select>
+    <Select
+      :options="sections"
+      type="page_create"
+      class="select"
+      @selectedOption="setSelectValue"
+    />
     <!-- Заголовок жлемента -->
     <div class="input">
       <input
@@ -67,6 +80,7 @@ import { OutputBlockData } from '@editorjs/editorjs';
 import { PostScheme, SectionScheme } from '~/utils/validation';
 import { useUserStore } from '~/stores/UserStore';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import Select from '~/components/UI/Select.vue';
 
 /**
  * Пропсы ----------------
@@ -87,6 +101,14 @@ const companyStore = useCompanyStore(); // Хранилище активной �
 /**
  * Хуки ----------------
  */
+// Предупреждение прежде чем покинуть страницу
+onBeforeRouteLeave((to, from, next) => {
+  if (confirm('Вы уверены, что хотите покинуть эту страницу?')) {
+    next();
+  } else {
+    next(false);
+  }
+});
 // Получение разделов для списка
 const { data: sections } = useAsyncData(async () => {
   const params = {
@@ -115,7 +137,7 @@ const errors = ref([]); // Ошибки
 const isLoading = ref(false); // Загрузка
 const titleValue = ref(elem.value?.title || ''); // Заголовок элемента
 const bodyValue = ref<OutputBlockData[]>(elem.value?.body || []); // Тело элемента
-const selectValue = ref(null); // Селект элемента
+const selectValue = ref<number | null>(null); // Селект элемента
 
 /**
  * Вычисляемые значения ----------------
@@ -131,9 +153,13 @@ const buttonTitle = computed(() => {
 /**
  * Методы ----------------
  */
-// Метод изменения тела элемента (через событие)
+// Установление значения тела элемента (через событие)
 const setBodyValue = (value: OutputBlockData[]) => {
   bodyValue.value = value;
+};
+// Установление значения селекта элемента (через событие)
+const setSelectValue = (value: number) => {
+  selectValue.value = value;
 };
 // Метод создания или редактирования элемента
 const onSubmit = async () => {
@@ -193,7 +219,7 @@ const onSubmit = async () => {
       }
     }
   } catch (err: any) {
-    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
+    errors.value = err.errors; // Выводим ошибки, если они есть
   } finally {
     isLoading.value = false; // Убираем загрузку
   }
@@ -207,6 +233,7 @@ const onSubmit = async () => {
 .form {
   width: 900px;
   margin: 0 auto;
+  padding-top: 60px;
   .input {
     &:not(:last-child) {
       margin-bottom: 36px;
@@ -223,7 +250,7 @@ const onSubmit = async () => {
 }
 
 .controls {
-  padding: 17px 40px 60px;
+  padding: 17px 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -262,6 +289,26 @@ const onSubmit = async () => {
   .options {
     width: 20px;
     height: 20px;
+  }
+}
+
+.errors {
+  background-color: $red2;
+  display: flex;
+  align-items: center;
+  padding: 21px 50px;
+  svg {
+    width: 23px;
+    height: 23px;
+    margin-right: 16px;
+    fill: $red;
+  }
+  .items span {
+    display: block;
+    color: $red;
+    &:not(:last-child) {
+      margin-bottom: 3px;
+    }
   }
 }
 </style>

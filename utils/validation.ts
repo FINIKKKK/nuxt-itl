@@ -47,15 +47,16 @@ export const PostScheme = yup.object().shape({
   title: yup
     .string()
     .min(5, 'Заголовок должен быть как минимум из 5 символов')
-    .required('Поле обязательно для заполнения'),
-  body: yup.array().min(1, 'Поле обязательно для заполнения'),
+    .required('Вы не ввели название статьи'),
+  body: yup.array().min(1, 'Вы не ввели информацию о статье'),
+  section_id: yup.number().required('Вы не выбрали раздел'),
 });
 
 export const SectionScheme = yup.object().shape({
   title: yup
     .string()
     .min(5, 'Заголовок должен быть как минимум из 5 символов')
-    .required('Поле обязательно для заполнения'),
+    .required('Вы не ввели название раздела'),
 });
 
 export const ResetPasswordScheme = yup.object().shape({

@@ -4,13 +4,17 @@
     class="select"
     :class="{
       active: isOpen, // Если открыт
-      mini: isMini, // Если тип - мальнький
+      page_add_users: type === 'page_add_users', // Если тип - мальнький
+      page_create: type === 'page_create', // Если тип - мальнький
     }"
   >
     <!-- Выбранный элемент -->
     <div class="selected" @click="toggleDropdown">
-      <span>{{ selectedOption }}</span>
-      <svg-icon :name="isMini ? 'down' : 'triangle'" />
+      <span class="placeholder" v-if="type === 'page_create' && !selectedOption"
+        >Выберите раздел</span
+      >
+      <span v-else>{{ selectedOption.value || selectedOption.title }}</span>
+      <svg-icon :name="type === 'page_add_users' ? 'down' : 'triangle'" />
     </div>
     <!-- Список -->
     <ul v-if="isOpen" class="dropdown">
@@ -19,13 +23,13 @@
         v-for="option in options"
         :key="option.id"
         @click="
-          selectOption(option.value) // Выбирает элемент
+          selectOption(option) // Выбирает элемент
         "
         :class="{
-          active: option.value === selectedOption, // Активный элемент
+          active: option === selectedOption, // Активный элемент
         }"
       >
-        {{ option.value }}
+        {{ option.value || option.title }}
       </li>
     </ul>
   </div>
@@ -37,19 +41,29 @@
 <script lang="ts" setup>
 import { useOutsideClick } from '~/hooks/useOutsideClick';
 
+export type TSelect = {
+  id: number;
+  value?: string;
+  title?: string;
+};
+
 /**
  * Пропсы ----------------
  */
 const props = defineProps<{
-  options: { id: number; value: string }[];
-  isMini?: boolean;
+  options: TSelect[];
+  type?: string;
 }>();
+
+const emits = defineEmits(['selectedOption']);
 
 /**
  * Пользовательские переменные ----------------
  */
 const isOpen = ref(false); // Открыт ли select
-const selectedOption = ref(props.options[0].value); // Выбранный элемент
+const selectedOption = ref<TSelect | null>(
+  props.type === 'page_create' ? null : props.options[0],
+); // Выбранный элемент
 const selectRef = ref(null); // Ссылка на html элемент select'a
 
 /**
@@ -61,12 +75,17 @@ useOutsideClick(selectRef, isOpen);
 /**
  * Методы ----------------
  */
+watch(selectedOption, () => {
+  if (selectedOption.value !== null) {
+    emits('selectedOption', selectedOption.value?.id);
+  }
+});
 // Переключение между открытием и закрытием select'a
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 // Выбрать нужный элемент из списка
-const selectOption = (option: string) => {
+const selectOption = (option: TSelect) => {
   selectedOption.value = option;
   isOpen.value = false;
 };
@@ -128,7 +147,7 @@ const selectOption = (option: string) => {
   }
 }
 
-.select.mini {
+.select.page_add_users {
   .selected {
     border: none;
     span {
@@ -137,6 +156,36 @@ const selectOption = (option: string) => {
     svg {
       width: 10px;
       height: 10px;
+    }
+  }
+}
+
+.select.page_create {
+  width: 300px;
+  .selected {
+    border: none;
+    padding: 0;
+    margin-bottom: 20px;
+    .placeholder {
+      font-size: 14px;
+      color: $gray;
+      transition: 0.3s;
+      &:hover {
+        color: $blue;
+      }
+    }
+    span {
+      font-size: 14px;
+    }
+    svg {
+      display: none;
+    }
+  }
+  .dropdown {
+    margin-top: 15px;
+    box-shadow: 0 0 3rem 0 rgba(0, 0, 0, 0.08);
+    li {
+      font-size: 14px;
     }
   }
 }
