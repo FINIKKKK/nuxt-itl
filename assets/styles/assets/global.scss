@@ -60,6 +60,10 @@ svg {
   background: rgba($blue, 0.2);
 }
 
+.disabled {
+  pointer-events: none;
+}
+
 // ---- Buttons ----
 .btn {
   background-color: $blue;
@@ -186,7 +190,8 @@ a.btn {
   width: 100%;
   display: table;
   vertical-align: middle;
-  td, th {
+  td,
+  th {
     padding-left: 10px;
   }
   thead {
@@ -194,12 +199,14 @@ a.btn {
     text-align: left;
     border-bottom: 1px solid $gray2;
     font-size: 13px;
-    td, th {
+    td,
+    th {
       padding-bottom: 10px;
     }
   }
   tbody {
-    td, th {
+    td,
+    th {
       padding-top: 19px;
     }
   }
@@ -224,7 +231,8 @@ a.btn {
         color: $gray;
       }
 
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         border-color: $black;
       }
     }
@@ -269,4 +277,3 @@ a.btn {
   line-height: 15px;
   color: $gray;
 }
-

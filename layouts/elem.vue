@@ -28,7 +28,13 @@
     ---------------------------------------->
     <div class="post__header">
       <!-- Кнопка добавления в избранное -->
-      <svg-icon v-if="type === 'post'" class="favorite" name="favorite" />
+      <svg-icon
+        v-if="type === 'post'"
+        class="favorite"
+        :name="isFavorite || elem.isFavorite ? 'favorite2' : 'favorite'"
+        @click="onFavorite"
+        :class="{ disabled: isLoading }"
+      />
       <!-- Заголовок -->
       <h1 class="title">{{ elem.title }}</h1>
     </div>
@@ -59,8 +65,8 @@
     ---------------------------------------->
     <div v-if="type === 'post'" class="post__footer">
       <!-- Кнопка лайка" -->
-      <div class="like">
-        <svg-icon name="like" />
+      <div class="like" @click="onLike" :class="{ disabled: isLoading }">
+        <svg-icon :name="isLike || elem.isLike ? 'like2' : 'like'" />
         <p>Мне нравиться</p>
       </div>
       <!-- Тэги -->
@@ -147,6 +153,7 @@ const companyStore = useCompanyStore(); // Роутер
  * Пользовательские переменные ----------------
  */
 const isLoading = ref(false); // Загрузка
+const postId = Number(route.params.id); // id поста
 
 /**
  * Хуки ----------------
@@ -154,13 +161,19 @@ const isLoading = ref(false); // Загрузка
 // Получение данных элемента
 const { data: elem } = useAsyncData(async () => {
   if (props.type == 'post') {
-    const { data } = await Api().post.getOne(Number(route.params.id));
+    const { data } = await Api().post.getOne(postId);
     return data;
   } else {
-    const { data } = await Api().section.getOne(Number(route.params.id));
+    const { data } = await Api().section.getOne(postId);
     return data;
   }
 });
+
+/**
+ * Пользовательские переменные ----------------
+ */
+const isFavorite = ref(elem.value?.isFavorite); // Избранное
+const isLike = ref(elem.value?.isLike); // Лайк
 
 /**
  * Вычисляемые значения ----------------
@@ -196,12 +209,12 @@ const onDelete = async () => {
       // Проверка типа элемента
       if (props.type === 'post') {
         // Удаляем элемент
-        await Api().post.remove(Number(route.params.id));
+        await Api().post.remove(postId);
         // Перенапрвляем пользователя
         await router.push('/posts');
       } else if (props.type === 'section') {
         // Удаляем элемент
-        await Api().section.remove(Number(route.params.id));
+        await Api().section.remove(postId);
         // Перенапрвляем пользователя
         await router.push('/posts');
       }
@@ -210,6 +223,46 @@ const onDelete = async () => {
     } finally {
       isLoading.value = false; // Убираем загрузку
     }
+  }
+};
+
+// Добавление в избранное
+const onFavorite = async () => {
+  try {
+    isLoading.value = true; // Ставим загрузку
+    // Объект с данными
+    const dto = {
+      item_id: postId,
+      type: 'post',
+    };
+    // Добавить в избранное
+    await Api().favorite.addOrRemove(dto);
+    // Установить, как отмеченное
+    isFavorite.value = !isFavorite.value;
+  } catch (err) {
+    console.warn(err);
+  } finally {
+    isLoading.value = false; // Убираем загрузку
+  }
+};
+
+// Лайкнуть или убрать лайк
+const onLike = async () => {
+  try {
+    isLoading.value = true; // Ставим загрузку
+    // Объект с данными
+    const dto = {
+      item_id: postId,
+      type: 'post',
+    };
+    // Добавить в понравившееся
+    await Api().like.addOrRemove(dto);
+    // Установить, как отмеченное
+    isLike.value = !isLike.value;
+  } catch (err) {
+    console.warn(err);
+  } finally {
+    isLoading.value = false; // Убираем загрузку
   }
 };
 </script>

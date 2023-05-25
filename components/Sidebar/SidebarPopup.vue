@@ -211,6 +211,7 @@ const { data: sections } = useAsyncData(async () => {
   background-color: $blue3;
   transition: 0.3s;
   transform: translateX(-100%);
+  pointer-events: none;
   box-shadow: 0 0 10px rgba($blue, 0.2);
   .inner {
     padding: 41px 50px;
@@ -225,6 +226,7 @@ const { data: sections } = useAsyncData(async () => {
   &.active {
     width: 300px;
     transform: translateX(0px);
+    pointer-events: visible;
     .inner {
       opacity: 1;
     }
