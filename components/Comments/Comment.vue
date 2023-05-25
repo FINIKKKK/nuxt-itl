@@ -8,14 +8,14 @@
         </div>
         <div class="date">{{ useFormatDate(comment.created_at) }}</div>
       </div>
-      <p class="text">{{ comment.text }}</p>
-      <div class="controls">
+      <p class="comment__text">{{ comment.text }}</p>
+      <div class="comment__controls">
         <div class="like">
           <svg-icon name="like" />
           0
         </div>
         <button
-          class="inline_btn"
+          class="btn-inline"
           @click="isAnswer = !isAnswer"
           :class="{ disabled: isLoading }"
         >
@@ -23,7 +23,7 @@
         </button>
         <button
           v-if="user?.id === comment.user.id"
-          class="inline_btn"
+          class="btn-inline"
           @click="onDeleteComment"
           :class="{ disabled: isLoading }"
         >
@@ -50,6 +50,8 @@ import { useFormatDate } from '~/hooks/useFormatDate';
 import { Api } from '~/api';
 import { TComment } from '~/api/models/comment/types';
 import { useUserStore } from '~/stores/UserStore';
+import Textarea from '~/components/UI/Textarea.vue';
+import Avatar from '~/components/UI/Avatar.vue';
 
 const props = defineProps<{
   comment: TComment;
@@ -121,7 +123,7 @@ const onReplyComment = async () => {
   margin-bottom: 24px;
 }
 
-.text {
+.comment__text {
   margin-bottom: 32px;
 }
 
@@ -140,9 +142,9 @@ const onReplyComment = async () => {
   }
 }
 
-.controls {
+.comment__controls {
   display: flex;
-  align-self: start;
+  align-self: center;
   width: 100%;
   button {
     &:not(:last-child) {

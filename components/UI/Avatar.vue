@@ -22,6 +22,12 @@ const shortName = props.user.firstName[0] + props.user.lastName[0];
   border-radius: 50%;
   width: 40px;
   height: 40px;
+  flex: 0 0 auto;
+  overflow: auto;
+  img {
+    width: 100%;
+    height: 100%;
+  }
   span {
     text-transform: uppercase;
     position: absolute;

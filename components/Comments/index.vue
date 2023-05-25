@@ -1,16 +1,21 @@
 <template>
+  <!--------------------------------------
+   Поле ввода 
+  -------------------------------------->
   <div class="field">
+    <!-- Поле ввода -->
     <div class="input">
       <div class="inner">
         <textarea
           placeholder="Добавить комментарий"
           ref="textareaRef"
-          v-model="value"
+          v-model="commentValue"
           maxlength="250"
         ></textarea>
       </div>
     </div>
 
+    <!-- Элементы управления -->
     <div class="field__controls">
       <svg-icon class="set_user" name="@" />
       <button
@@ -23,50 +28,62 @@
     </div>
   </div>
 
-  <!--    <Comment v-for="comment in comments" :key="comment.id" :comment="comment"/>-->
+  <!--------------------------------------
+   Список комментариев
+  -------------------------------------->
+  <Comment v-for="comment in comments" :key="comment.id" :comment="comment" />
 </template>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
 import { Api } from '~/api';
 import Textarea from '~/components/UI/Textarea.vue';
+import Comment from '~/components/Comments/Comment.vue';
 
-const props = defineProps<{
-  postId: number;
-}>();
+const route = useRoute();
 
+/**
+ * Пользовательские переменные ----------------
+ */
+const isLoading = ref(false); // Загрузка
+const textareaRef = ref<HTMLTextAreaElement | null>(null); // Ссылка на html элемент поле ввода
 const commentValue = ref('');
-const isLoading = ref(false);
-const value = ref('');
-const textareaRef = ref<HTMLTextAreaElement | null>(null);
+const postId = Number(route.params.id);
 
-watch(value, () => {
+watch(commentValue, () => {
   if (textareaRef.value) {
     textareaRef.value.style.height = '65px';
     textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`;
   }
 });
 
+/**
+ * Хуки ----------------
+ */
+// Получение комментариев
 const { data: comments } = useAsyncData(async () => {
   const params = {
-    post_id: props.postId,
+    post_id: postId,
   };
-  const comments = await Api().comment.getAll(params);
-  return comments;
+  const { data } = await Api().comment.getAll(params);
+  return data;
 });
 
-const setCommentValue = (value: string) => {
-  commentValue.value = value;
-};
-
+/**
+ * Методы ----------------
+ */
+// Создание комментария
 const onCreateComment = async () => {
   try {
     isLoading.value = true;
     const dto = {
       text: commentValue.value,
-      post_id: props.post_id,
+      post_id: postId,
     };
-    const comment = await Api().comment.create(dto);
-    comments.value && comments.value.unshift(comment);
+    const { data } = await Api().comment.create(dto);
+    comments.value && comments.value.unshift(data);
     commentValue.value = '';
   } catch (err) {
     console.warn(err);
@@ -76,6 +93,9 @@ const onCreateComment = async () => {
   }
 };
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
 .field {

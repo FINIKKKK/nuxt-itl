@@ -27,8 +27,8 @@
     Шапка элемента
     ---------------------------------------->
     <div class="post__header">
-      <!-- Кпонка для добавления в избранное -->
-      <svg-icon class="favorite" name="favorite" />
+      <!-- Кнопка добавления в избранное -->
+      <svg-icon v-if="type === 'post'" class="favorite" name="favorite" />
       <!-- Заголовок -->
       <h1 class="title">{{ elem.title }}</h1>
     </div>
@@ -74,8 +74,47 @@
     Комментарии
     ---------------------------------------->
     <Comments v-if="type === 'post'" :post_id="route.params.id" />
+
+    <!--------------------------------------
+    Разделы и статьи в текущем разделе
+    ---------------------------------------->
+    <div v-if="type === 'section'" class="works">
+      <ul class="items">
+        <li class="item" v-for="section in elem.data.sections">
+          <svg-icon name="folder" />
+          <div class="item__info">
+            <NuxtLink
+              :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
+              >{{ section.title }}
+            </NuxtLink>
+            <div
+              class="date"
+              v-html="useDateString(section.created_at, section.updated_at)"
+            ></div>
+            ё
+          </div>
+        </li>
+      </ul>
+      <ul class="items">
+        <li class="item" v-for="post in elem.data.posts">
+          <svg-icon name="document" />
+          <div class="item__info">
+            <NuxtLink :to="`${companyStore.activeCompanySlug}/posts/${post.id}`"
+              >{{ post.title }}
+            </NuxtLink>
+            <div
+              class="date"
+              v-html="useDateString(post.created_at, post.updated_at)"
+            ></div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </NuxtLayout>
 </template>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
 import { Api } from '~/api';
@@ -175,6 +214,9 @@ const onDelete = async () => {
 };
 </script>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <style lang="scss">
 .controls {
   position: absolute;
@@ -271,23 +313,54 @@ const onDelete = async () => {
 
 .tags {
   display: flex;
+  .tag {
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 16px;
+    padding: 8px 16px;
+    border: 1px solid $blue6;
+    border-radius: 2px;
+    transition: 0.3s;
+    &:hover {
+      background-color: $blue4;
+      border-color: transparent;
+      color: $blue;
+    }
+  }
 }
 
-.tag {
-  &:not(:last-child) {
-    margin-right: 16px;
-  }
-  cursor: pointer;
-  font-size: 13px;
-  line-height: 16px;
-  padding: 8px 16px;
-  border: 1px solid $blue6;
-  border-radius: 2px;
-  transition: 0.3s;
-  &:hover {
-    background-color: $blue4;
-    border-color: transparent;
-    color: $blue;
+.works {
+  margin-top: 33px;
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 9px 12px;
+    transition: 0.3s;
+    border-radius: 3px;
+    &:hover {
+      background-color: $blue3;
+    }
+    svg {
+      width: 32px;
+      height: 32px;
+      margin-right: 15px;
+    }
+    a {
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    .date {
+      font-size: 12px;
+      line-height: 14px;
+      color: $gray;
+      span {
+        color: $black;
+      }
+    }
   }
 }
 </style>
