@@ -14,7 +14,7 @@ export type TSection = TBase & {
   title: string;
   body?: OutputBlockData[];
   user: TUser;
-  parentSection?: TSection;
+  parent?: TSection;
   data: {
     sections?: TSection[];
     posts?: TPost[];
@@ -31,4 +31,3 @@ export type SectionDto = {
 export type SectionParams = {
   company_id: number;
 };
-

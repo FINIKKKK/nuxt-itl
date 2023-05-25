@@ -169,13 +169,13 @@ const { data: elem } = useAsyncData(async () => {
 const navTitle = computed(() => {
   // Если тип - пост
   if (props.type === 'post') {
-    // return elem.value?.section.title;
+    return elem.value?.section.title;
   }
   // Если тип - раздел
   else {
-    // return elem.value.parent;
+    // Если есть родительский раздел или его нет
+    return elem.value?.parent ? elem.value?.parent.title : elem.value?.title;
   }
-  return elem.value?.title;
 });
 
 /**

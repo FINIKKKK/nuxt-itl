@@ -6,6 +6,8 @@ import { CommentApi } from './models/comment';
 import { FilesApi } from './models/files';
 import { SectionApi } from '~/api/models/section';
 import { UserApi } from '~/api/models/user';
+import { LikeApi } from '~/api/models/like';
+import { FavoriteApi } from '~/api/models/favorite';
 
 export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
@@ -15,6 +17,8 @@ export type ApiReturnTypes = {
   files: ReturnType<typeof FilesApi>;
   section: ReturnType<typeof SectionApi>;
   user: ReturnType<typeof UserApi>;
+  favorite: ReturnType<typeof FavoriteApi>;
+  like: ReturnType<typeof LikeApi>;
 };
 
 export const Api = (): ApiReturnTypes => {
@@ -35,5 +39,7 @@ export const Api = (): ApiReturnTypes => {
     files: FilesApi(instance),
     section: SectionApi(instance),
     user: UserApi(instance),
+    favorite: FavoriteApi(instance),
+    like: LikeApi(instance),
   };
 };

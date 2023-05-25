@@ -13,6 +13,7 @@ export type TComment = TBase & {
   post_id: number;
   user: TUser;
   children: TComment[];
+  isLike: boolean;
 };
 
 export type CommentDto = {

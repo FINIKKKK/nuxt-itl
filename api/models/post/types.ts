@@ -15,6 +15,8 @@ export type TPost = TBase & {
   body: OutputBlockData[];
   user: TUser;
   section: TSection;
+  isFavorite: boolean;
+  isLike: boolean;
 };
 
 export type PostDto = {

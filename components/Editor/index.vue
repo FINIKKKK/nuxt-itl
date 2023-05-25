@@ -65,7 +65,7 @@ onMounted(async () => {
           buttonContent: 'Выберите изображение',
           uploader: {
             async uploadByFile(file: any) {
-              const { data } = await Api().files.upload(file);
+              const data = await Api().files.upload(file);
               return {
                 success: 1,
                 file: {
