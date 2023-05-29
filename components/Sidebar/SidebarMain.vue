@@ -59,7 +59,7 @@ import { useCompanyStore } from '~/stores/CompanyStore';
  * Пропсы ----------------
  */
 const props = defineProps<{
-  activeItem: string;
+  activeItem: string | null;
 }>();
 
 /**

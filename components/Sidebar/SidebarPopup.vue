@@ -17,22 +17,26 @@
             innerItems.find((obj) => obj.name === activeItem)?.items
           "
         >
-          <li
-            class="item"
+          <template
             v-for="(item, index) in innerItems.find(
               (obj) => obj.name === activeItem,
             ).items"
             :key="index"
           >
-            <NuxtLink v-if="item.link" :to="item.link">
-              <svg-icon :name="item.icon" />
-              <p>{{ item.label }}</p>
-            </NuxtLink>
-            <a v-else @click="item.method">
-              <svg-icon :name="item.icon" />
-              <p>{{ item.label }}</p>
-            </a>
-          </li>
+            <li
+              class="item"
+              v-if="item.hasOwnProperty('isShow') ? item.isShow : true"
+            >
+              <NuxtLink v-if="item.link" :to="item.link">
+                <svg-icon :name="item.icon" />
+                <p>{{ item.label }}</p>
+              </NuxtLink>
+              <a v-else @click="item.method">
+                <svg-icon :name="item.icon" />
+                <p>{{ item.label }}</p>
+              </a>
+            </li>
+          </template>
         </ul>
         <Input
           v-if="activeItem === config.public.sidebar.list1.search"
@@ -92,7 +96,7 @@ import { useCompanyStore } from '~/stores/CompanyStore';
 
 const props = defineProps<{
   isShow: boolean;
-  activeItem: string;
+  activeItem: string | null;
 }>();
 
 const config = useRuntimeConfig();
@@ -100,9 +104,34 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const companyStore = useCompanyStore();
+const token = useCookie('access_token');
 
-const onLogout = () => {
-  console.log('logout');
+/**
+ * Пользовательские переменные ----------------
+ */
+const errors = ref([]); // Ошибки
+const isLoading = ref(false); // Загрузка
+
+/**
+ * Методы ----------------
+ */
+// Выход из аккаунта
+const onLogout = async () => {
+  try {
+    isLoading.value = true; // Ставим загрузку
+    await Api().auth.logout(); // Выходим с аккаунта
+    token.value = ''; // Обнуляем токен
+    // Удаляем информацию из хранилища
+    userStore.user = null;
+    userStore.companies = [];
+    // Перенаправляем пользователя на страницу авторизации
+    await router.push('/login');
+  } catch (err: any) {
+    alert('Ошибка при выходе из аккаунта');
+    console.warn(err);
+  } finally {
+    isLoading.value = false; // Убираем загрузку
+  }
 };
 
 const innerItems = [
@@ -113,7 +142,7 @@ const innerItems = [
       {
         icon: 'activation',
         label: 'Активность',
-        link: `/${companyStore.activeCompanySlug}`,
+        link: `${companyStore.activeCompanySlug}`,
       },
       {
         icon: 'document',
@@ -174,7 +203,12 @@ const innerItems = [
     items: [
       { icon: 'favorite', label: 'Закладки', link: '/account/favorites' },
       { icon: 'edit', label: 'Редактировать', link: '/account/profile' },
-      { icon: 'change', label: 'Сменить компанию', link: '/' },
+      {
+        icon: 'change',
+        label: 'Сменить компанию',
+        link: '/',
+        isShow: route.path !== '/',
+      },
       { icon: 'logout', label: 'Выйти', method: onLogout },
     ],
   },

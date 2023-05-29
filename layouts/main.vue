@@ -8,7 +8,7 @@
     <aside class="sidebar" ref="popupRef">
       <nav class="nav">
         <!-- Главный сайдбар -->
-        <SidebarMain @setActiveItem="setActiveItem" />
+        <SidebarMain :activeItem="activeItem" @setActiveItem="setActiveItem" />
 
         <!-- Внутрениий сайдбар -->
         <SidebarPopup :isShow="isShowPopup" :activeItem="activeItem" />

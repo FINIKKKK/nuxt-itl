@@ -9,7 +9,9 @@
           @click="() => onActiveCompany(company)"
           >{{ company.name }}
         </NuxtLink>
-        <p>Пользователей: <span>1</span></p>
+        <p>
+          Пользователей: <span>{{ company.users_count }}</span>
+        </p>
         <NuxtLink
           class="edit"
           :to="`/companies/${company.slug}/settings/general`"
@@ -36,13 +38,6 @@
 import { TCompany } from '~/api/models/company/types';
 import { useUserStore } from '~/stores/UserStore';
 import { useCompanyStore } from '~/stores/CompanyStore';
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
 
 /**
  * Системные переменные ----------------

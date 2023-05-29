@@ -3,7 +3,7 @@ import { TUserData, UserDataDto, UserPasswordDto } from './types';
 
 export const UserApi = (instance: AxiosInstance) => ({
   async updateData(dto: UserDataDto) {
-    const { data } = await instance.post<UserDataDto, { data: TUserData }>(
+    const { data } = await instance.patch<UserDataDto, { data: TUserData }>(
       `/users`,
       dto,
     );
@@ -20,7 +20,7 @@ export const UserApi = (instance: AxiosInstance) => ({
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const { data } = await instance.post(`/users`, formData, {
+    const { data } = await instance.post(`/users/avatar`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data;

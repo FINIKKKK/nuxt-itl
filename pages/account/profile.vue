@@ -1,5 +1,8 @@
 <template>
   <NuxtLayout name="main" title="Профиль / Редактирование" :isMiniTitle="true">
+    <!-- Отображение ошибок -->
+    <Warning class="warning" v-if="errors.length" :errors="errors" />
+
     <!-- Формы -->
     <div class="flex">
       <div class="left">
@@ -43,6 +46,7 @@ import FormUserData from '~/components/ProfileForms/FormUserData.vue';
 import FormPassword from '~/components/ProfileForms/FormPassword.vue';
 import { Api } from '~/api';
 import { useUserStore } from '~/stores/UserStore';
+import Warning from '~/components/UI/Warning.vue';
 
 /**
  * Мета данные ----------------
@@ -59,7 +63,7 @@ const userStore = useUserStore();
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref(''); // Ошибки
+const errors = ref([]); // Ошибки
 const isLoading = ref(false); // Загрузка
 
 /**
@@ -68,13 +72,14 @@ const isLoading = ref(false); // Загрузка
 // Метод изменения аватара пользователя
 const onChangeAvatar = async (e: any) => {
   try {
-    errors.value = ''; // Обнуляем ошибки
+    errors.value = []; // Обнуляем ошибки
     isLoading.value = true; // Ставим загрузку
     // Обновляем аватар на бэкенде
     const { data } = await Api().user.updateAvatar(e.target.files[0]);
     // Обновляем аватар в хранилище
-    userStore.setUserAvatar(data.avatar);
+    userStore.setUserAvatar(data);
   } catch (err: any) {
+    console.log(err);
     errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
     isLoading.value = false; // Убираем загрузку
@@ -86,6 +91,10 @@ const onChangeAvatar = async (e: any) => {
 <!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
+.warning {
+  margin: 0 -50px 50px;
+}
+
 .flex {
   display: flex;
   justify-content: space-between;
@@ -98,11 +107,13 @@ const onChangeAvatar = async (e: any) => {
   .img {
     width: 100px;
     height: 100px;
-    border-radius: 50%;
     margin: 0 auto 25px;
-    overflow: hidden;
+    img {
+      border: 2px solid $blue;
+    }
     img,
     svg {
+      border-radius: 50%;
       width: 100%;
       height: 100%;
     }

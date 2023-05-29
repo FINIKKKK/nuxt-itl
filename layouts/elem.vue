@@ -1,120 +1,123 @@
 <template>
   <NuxtLayout name="main" :title="navTitle" :isMiniTitle="true">
-    <!--------------------------------------
-    Элементы управления 
-    ---------------------------------------->
-    <div class="controls">
-      <!-- Редактировать -->
-      <NuxtLink
-        class="control"
-        :to="`${companyStore.activeCompanySlug}/${
-          props.type === 'post' ? 'posts' : 'sections'
-        }/edit/${elem?.id}`"
-      >
-        <svg-icon name="edit" />
-      </NuxtLink>
-      <!-- Прикрепить -->
-      <svg-icon class="control" name="attach" />
-      <!-- Доступ -->
-      <svg-icon class="control" name="lock" />
-      <!-- Поделиться -->
-      <svg-icon class="control" name="share" />
-      <!-- Удалить -->
-      <svg-icon class="control" name="remove" @click="onDelete" />
-    </div>
-
-    <!--------------------------------------
-    Шапка элемента
-    ---------------------------------------->
-    <div class="post__header">
-      <!-- Кнопка добавления в избранное -->
-      <svg-icon
-        v-if="type === 'post'"
-        class="favorite"
-        :name="isFavorite || elem.isFavorite ? 'favorite2' : 'favorite'"
-        @click="onFavorite"
-        :class="{ disabled: isLoading }"
-      />
-      <!-- Заголовок -->
-      <h1 class="title">{{ elem.title }}</h1>
-    </div>
-
-    <!--------------------------------------
-    Информация об элементе
-    ---------------------------------------->
-    <ul class="post__info">
-      <!-- Автор -->
-      <li class="post__info-item">
-        Автор:
-        <span>{{ `${elem?.user.firstName} ${elem?.user.lastName}` }}</span>
-      </li>
-      <!-- Время -->
-      <li
-        class="post__info-item"
-        v-html="useDateString(elem.created_at, elem.updated_at)"
-      ></li>
-    </ul>
-
-    <!--------------------------------------
-    Тело элемента
-    ---------------------------------------->
-    <Body class="body" :data="elem.body" />
-
-    <!--------------------------------------
-    Дополнительные элементы
-    ---------------------------------------->
-    <div v-if="type === 'post'" class="post__footer">
-      <!-- Кнопка лайка" -->
-      <div class="like" @click="onLike" :class="{ disabled: isLoading }">
-        <svg-icon :name="isLike || elem.isLike ? 'like2' : 'like'" />
-        <p>Мне нравиться</p>
+    <div v-if="elem">
+      <!--------------------------------------
+      Элементы управления 
+      ---------------------------------------->
+      <div class="controls">
+        <!-- Редактировать -->
+        <NuxtLink
+          class="control"
+          :to="`${companyStore.activeCompanySlug}/${
+            type === 'post' ? 'posts' : 'sections'
+          }/edit/${elem?.id}`"
+        >
+          <svg-icon name="edit" />
+        </NuxtLink>
+        <!-- Прикрепить -->
+        <svg-icon class="control" name="attach" />
+        <!-- Доступ -->
+        <svg-icon class="control" name="lock" />
+        <!-- Поделиться -->
+        <svg-icon class="control" name="share" />
+        <!-- Удалить -->
+        <svg-icon class="control" name="remove" @click="onDelete" />
       </div>
-      <!-- Тэги -->
-      <ul class="tags">
-        <li class="tag">Мой тег</li>
-        <li class="tag">Мой тег</li>
-      </ul>
-    </div>
 
-    <!--------------------------------------
-    Комментарии
-    ---------------------------------------->
-    <Comments v-if="type === 'post'" :post_id="route.params.id" />
+      <!--------------------------------------
+      Шапка элемента
+      ---------------------------------------->
+      <div class="post__header">
+        <!-- Кнопка добавления в избранное -->
+        <svg-icon
+          v-if="type === 'post'"
+          class="favorite"
+          :name="isFavorite || elem.isFavorite ? 'favorite2' : 'favorite'"
+          @click="onFavorite"
+          :class="{ disabled: isLoading }"
+        />
+        <!-- Заголовок -->
+        <h1 class="title">{{ elem.title }}</h1>
+      </div>
 
-    <!--------------------------------------
-    Разделы и статьи в текущем разделе
-    ---------------------------------------->
-    <div v-if="type === 'section'" class="works">
-      <ul class="items">
-        <li class="item" v-for="section in elem.data.sections">
-          <svg-icon name="folder" />
-          <div class="item__info">
-            <NuxtLink
-              :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
-              >{{ section.title }}
-            </NuxtLink>
-            <div
-              class="date"
-              v-html="useDateString(section.created_at, section.updated_at)"
-            ></div>
-            ё
-          </div>
+      <!--------------------------------------
+      Информация об элементе
+      ---------------------------------------->
+      <ul class="post__info">
+        <!-- Автор -->
+        <li class="post__info-item">
+          Автор:
+          <span>{{ `${elem?.user.firstName} ${elem?.user.lastName}` }}</span>
         </li>
+        <!-- Время -->
+        <li
+          class="post__info-item"
+          v-html="useDateString(elem.created_at, elem.updated_at)"
+        ></li>
       </ul>
-      <ul class="items">
-        <li class="item" v-for="post in elem.data.posts">
-          <svg-icon name="document" />
-          <div class="item__info">
-            <NuxtLink :to="`${companyStore.activeCompanySlug}/posts/${post.id}`"
-              >{{ post.title }}
-            </NuxtLink>
-            <div
-              class="date"
-              v-html="useDateString(post.created_at, post.updated_at)"
-            ></div>
-          </div>
-        </li>
-      </ul>
+
+      <!--------------------------------------
+      Тело элемента
+      ---------------------------------------->
+      <Body class="body" :data="elem.body" />
+
+      <!--------------------------------------
+      Дополнительные элементы
+      ---------------------------------------->
+      <div v-if="type === 'post'" class="post__footer">
+        <!-- Кнопка лайка" -->
+        <div class="like" @click="onLike" :class="{ disabled: isLoading }">
+          <svg-icon :name="isLike || elem.isLike ? 'like2' : 'like'" />
+          <p>Мне нравиться</p>
+        </div>
+        <!-- Тэги -->
+        <ul class="tags">
+          <li class="tag">Мой тег</li>
+          <li class="tag">Мой тег</li>
+        </ul>
+      </div>
+
+      <!--------------------------------------
+      Комментарии
+      ---------------------------------------->
+      <Comments v-if="type === 'post'" :post_id="route.params.id" />
+
+      <!--------------------------------------
+      Разделы и статьи в текущем разделе
+      ---------------------------------------->
+      <div v-if="type === 'section'" class="works">
+        <ul class="items">
+          <li class="item" v-for="section in elem.data.sections">
+            <svg-icon name="folder" />
+            <div class="item__info">
+              <NuxtLink
+                :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
+                >{{ section.title }}
+              </NuxtLink>
+              <div
+                class="date"
+                v-html="useDateString(section.created_at, section.updated_at)"
+              ></div>
+              ё
+            </div>
+          </li>
+        </ul>
+        <ul class="items">
+          <li class="item" v-for="post in elem.data.posts">
+            <svg-icon name="document" />
+            <div class="item__info">
+              <NuxtLink
+                :to="`${companyStore.activeCompanySlug}/posts/${post.id}`"
+                >{{ post.title }}
+              </NuxtLink>
+              <div
+                class="date"
+                v-html="useDateString(post.created_at, post.updated_at)"
+              ></div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </NuxtLayout>
 </template>
@@ -134,13 +137,6 @@ import { useCompanyStore } from '~/stores/CompanyStore';
 const props = defineProps<{
   type: 'post' | 'section';
 }>();
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
 
 /**
  * Системные переменные ----------------
