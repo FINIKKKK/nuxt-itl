@@ -1,6 +1,6 @@
 <template>
   <div
-    class="popup"
+    class="sidebar__popup"
     :class="{
       active: isShow && activeItem,
       search: activeItem === config.public.sidebar.list1.search,
@@ -236,7 +236,7 @@ const { data: sections } = useAsyncData(async () => {
 </script>
 
 <style lang="scss" scoped>
-.popup {
+.sidebar__popup {
   user-select: none;
   white-space: nowrap;
   z-index: 30;

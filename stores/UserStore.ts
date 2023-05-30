@@ -26,6 +26,10 @@ export const useUserStore = defineStore('userStore', () => {
   const setCompanies = (obj: TCompany[]) => {
     companies.value = obj;
   };
+  // Добавить компанию
+  const addCompany = (obj: TCompany) => {
+    companies.value.push(obj);
+  };
   // Установить аватарку пользователя
   const setUserAvatar = (avatar: string) => {
     if (user.value) {
@@ -38,6 +42,7 @@ export const useUserStore = defineStore('userStore', () => {
     companies,
     setUser,
     setCompanies,
+    addCompany,
     setUserAvatar,
   };
 });

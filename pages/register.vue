@@ -2,8 +2,13 @@
   <NuxtLayout
     name="main"
     title="Регистрация"
-    titleSpan=">  Создание компании  >  Добавление пользователей"
+    title2="Создание компании"
+    title3="Добавление пользователей"
   >
+    <!-- Отображение ошибок -->
+    <Warning v-if="errors.length" :errors="errors as string[]" />
+
+    <!-- Форма -->
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">
         У вас уже есть аккаунт?
@@ -37,7 +42,7 @@
       <Input
         name="password_confirmation"
         placeholder="Подтвердите пароль"
-        :isPassword="true"
+        type="password"
         v-model="passwordConfirmValue"
         :errors="errorsValidate['password_confirmation']"
       />
@@ -64,7 +69,7 @@ import { setCookie } from 'nookies';
 import { RegisterScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
 import { useFormValidation } from '~/hooks/useFormValidation';
-import Register from '~/pages/register.vue';
+import Warning from '~/components/UI/Warning.vue';
 
 /**
  * Системные переменные ----------------

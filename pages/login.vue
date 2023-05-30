@@ -1,13 +1,14 @@
 <template>
   <NuxtLayout name="main" title="Авторизация">
+    <!-- Отображение ошибок -->
+    <Warning v-if="errors.length" :errors="errors as string[]" />
+
+    <!-- Форма -->
     <form class="form" @submit.prevent="onSubmit">
       <p class="text">
         Впервые здесь?
         <NuxtLink to="/register">Создайте аккаунт</NuxtLink>
       </p>
-      <div class="errors" v-if="errors.length">
-        <span v-for="error in errors">{{ error }}</span>
-      </div>
       <Input
         placeholder="Email"
         v-model="emailValue"
@@ -17,7 +18,7 @@
         placeholder="Пароль"
         v-model="passwordValue"
         :errors="errorsValidate['password']"
-        :isPassword="true"
+        type="password"
       />
       <p class="link">
         <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
@@ -36,8 +37,10 @@
 import { useUserStore } from '~/stores/UserStore';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
-import { LoginScheme, UserDataScheme } from '~/utils/validation';
+import { LoginScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
+import Warning from '~/components/UI/Warning.vue';
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 /**
  * Системные переменные ----------------
@@ -48,29 +51,27 @@ const userStore = useUserStore(); // Хранилище данных польз�
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const errorsValidate = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
-const emailValue = ref(''); // Значения поля email
-const passwordValue = ref(''); // Значения поля пароля
+const emailValue = ref(''); // Значение email
+const passwordValue = ref(''); // Значение пароля
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 
 /**
  * Методы ----------------
  */
 // Авторизация пользователя
 const onSubmit = async () => {
-  try {
-    errors.value = []; // Обнуляем ошибки
-    isLoading.value = true; // Ставим загрузку
-    // Объект с данными
-    const dto = {
-      email: emailValue.value,
-      password: passwordValue.value,
-    };
-
-    await LoginScheme.validate(dto, {
-      abortEarly: false,
-    });
+  // Объект с данными
+  const dto = {
+    email: emailValue.value,
+    password: passwordValue.value,
+  };
+  // Вызываем хук для валидации формы
+  await validateForm(dto, LoginScheme, async () => {
     // Авторизуем пользователя
     const { data } = await Api().auth.login(dto);
     // Сохраняем токен в куки
@@ -81,22 +82,7 @@ const onSubmit = async () => {
     userStore.setUser(data.user); // Сохраняем в хранилище данные пользователя
     userStore.setCompanies(data.companies); // Сохраняем в хранилище данные компаний пользователя
     await router.push('/'); // Перенаправляем пользователя на главную страницу
-  } catch (err: any) {
-    if (err.inner) {
-      // Ошибки валидации Yup доступны в свойстве "inner"
-      err.inner.forEach((error) => {
-        // Проверяем, существует ли уже массив ошибок для данного поля
-        if (!errorsValidate.value[error.path]) {
-          errorsValidate.value[error.path] = [];
-        }
-        // Добавляем ошибку в массив для данного поля
-        errorsValidate.value[error.path].push(error.message);
-      });
-    }
-    // errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-  } finally {
-    isLoading.value = false; // Убираем загрузку
-  }
+  });
 };
 </script>
 

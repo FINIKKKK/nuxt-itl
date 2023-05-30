@@ -30,7 +30,7 @@ export const CompanyScheme = yup.object().shape({
     .string()
     .min(3, 'Поле должно быть не менее 3 символов')
     .required('Поле является обязательным'),
-  address: yup
+  url_address: yup
     .string()
     .min(3, 'Поле должно быть не менее 3 символов')
     .required('Поле является обязательным'),

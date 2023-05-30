@@ -10,19 +10,19 @@ export const useFormValidation = () => {
   const errors = ref([]); // Ошибки колбека
   const isLoading = ref(false); // Загрузка
 
-  const validateForm = async (
-    dto: Record<string, unknown>,
-    schema: any,
-    callback: any,
-  ) => {
+  const validateForm = async (dto?: any, schema?: any, callback?: any) => {
     try {
       errorsValidate.value = {}; // Обнуляем ошибки
       errors.value = []; // Обнуляем ошибки
       isLoading.value = true; // Ставим загрузку
       // Валидируем данные
-      await schema.validate(dto, { abortEarly: false });
+      if (schema) {
+        await schema.validate(dto, { abortEarly: false });
+      }
       // Выполняем дополнительную логику
-      await callback();
+      if (callback) {
+        await callback();
+      }
     } catch (err: any) {
       // Обрабатываем ошибки валидации
       if (err.inner) {
@@ -37,6 +37,7 @@ export const useFormValidation = () => {
       }
       // Обрабатываем ошибки колбека
       errors.value = err.response.data.message;
+      console.log(err);
     } finally {
       isLoading.value = false; // Убираем загрузку
     }

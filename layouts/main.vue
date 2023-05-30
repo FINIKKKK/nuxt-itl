@@ -8,10 +8,16 @@
     <aside class="sidebar" ref="popupRef">
       <nav class="nav">
         <!-- Главный сайдбар -->
-        <SidebarMain :activeItem="activeItem" @setActiveItem="setActiveItem" />
+        <SidebarMain
+          :activeItem="activeItem as string | null"
+          @setActiveItem="setActiveItem"
+        />
 
         <!-- Внутрениий сайдбар -->
-        <SidebarPopup :isShow="isShowPopup" :activeItem="activeItem" />
+        <SidebarPopup
+          :isShow="isShowPopup as boolean"
+          :activeItem="activeItem as string | null"
+        />
       </nav>
     </aside>
 
@@ -20,17 +26,17 @@
       id="scroll"
       class="content"
       :class="{
-        miniTitle: isMiniTitle, // Если заголовок маленький
+        miniTitle: props.isMiniTitle, // Если заголовок маленький
       }"
     >
       <!-- Заголовок -->
       <!-- Либо маленький -->
-      <h4 class="pretitle" v-if="isMiniTitle">{{ title }}</h4>
+      <h4 class="pretitle" v-if="isMiniTitle">{{ props.title }}</h4>
       <!-- Либо большой -->
       <h1 class="title" v-else>
-        <span>{{ title }}</span>
-        <span v-if="title2">{{ title2 }}</span>
-        <span v-if="title3">{{ title3 }}</span>
+        <span>{{ props.title }}</span>
+        <span v-if="title2">{{ props.title2 }}</span>
+        <span v-if="title3">{{ props.title3 }}</span>
       </h1>
 
       <!-- Слот шаблона -->
@@ -61,8 +67,8 @@ const route = useRoute();
 /**
  * Пользовательские переменные ----------------
  */
-const popupRef = ref(null); // Ссылка на html элемент попапа
-const isShowPopup = ref(route.path.includes('/companies/') || false); // Показывать попап сайдара или нет
+const popupRef = ref(null); // Ref-cсылка на элемент попапа
+const isShowPopup = ref<boolean>(route.path.includes('/companies/') || true); // Показывать попап сайдара или нет
 const activeItem = ref<string | null>(null); // Активный элемент в сайдаре
 
 /**
@@ -73,7 +79,7 @@ const activeItem = ref<string | null>(null); // Активный элемент 
 useOutsideClick(popupRef, isShowPopup, activeItem);
 
 /**
- * Пользовательские переменные ----------------
+ * Методы ----------------
  */
 // Выбрать элемент в сайдбаре
 const setActiveItem = (item: string) => {
@@ -138,7 +144,7 @@ main {
 
 .title {
   font-size: 24px;
-  margin-bottom: 130px;
+  margin-bottom: 60px;
   color: $gray2;
   span:nth-child(1) {
     color: $black;

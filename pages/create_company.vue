@@ -1,18 +1,25 @@
 <template>
   <NuxtLayout
-      name="main"
-      title="Создание компании"
-      title2="Добавление пользователей"
+    name="main"
+    title="Создание компании"
+    title2="Добавление пользователей"
   >
+    <!-- Отображение ошибок -->
+    <Warning v-if="errors.length" :errors="errors as string[]" />
+
     <!-- Форма для создания компании -->
     <form @submit.prevent="onSubmit" class="form">
-      <div class="error" v-if="errors">
-        <span v-for="error in errors">
-          {{ error[0] }}
-        </span>
-      </div>
-      <Input name="name" placeholder="Название вашей компании"/>
-      <Input name="address" placeholder="Адрес сайта" type="url_address"/>
+      <Input
+        placeholder="Название вашей компании"
+        v-model="nameValue"
+        :errors="errorsValidate['name']"
+      />
+      <Input
+        placeholder="Адрес сайта"
+        type="url_address"
+        v-model="addressValue"
+        :errors="errorsValidate['url_address']"
+      />
       <p class="link">
         Нажимая кнопку «Создать компанию» вы принимаете
         <NuxtLink to="#">Условия обслуживания</NuxtLink>
@@ -22,6 +29,7 @@
       <button class="btn" :class="{ disabled: isLoading }">
         Создать компанию
       </button>
+      <NuxtLink class="btn btn2" to="/">Пропустить</NuxtLink>
     </form>
   </NuxtLayout>
 </template>
@@ -31,56 +39,50 @@
 
 <script lang="ts" setup>
 import { CompanyScheme } from '~/utils/validation';
-import { useForm } from 'vee-validate';
 import { Api } from '~/api';
 import Input from '~/components/UI/Input.vue';
 import { useUserStore } from '~/stores/UserStore';
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
+import Warning from '~/components/UI/Warning.vue';
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 /**
  * Системные переменные ----------------
  */
-    // Фукция обработки отправки формы
-const {handleSubmit} = useForm({
-      validationSchema: CompanyScheme, // Схема валидации данных
-    });
 const router = useRouter(); // Роутер
-const userStore = useUserStore(); // Хранилище данных пользователя
+const userStore = useUserStore(); // Хранилище пользователя
+
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
+const nameValue = ref(''); // Значение имени компании
+const addressValue = ref(''); // Значение адресса компании
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 
 /**
  * Методы ----------------
  */
-    // Создание компании
-const onSubmit = handleSubmit(async (values) => {
-      try {
-        errors.value = []; // Обнуляем ошибки
-        isLoading.value = true; // Ставим загрузку
-        // Объект с данными
-        const dto = {
-          name: values.name,
-          url_address: `http://${values.address.toLowerCase()}.itl.wiki`,
-        };
-        // Создаем компанию
-        const {data} = await Api().company.create(dto);
-        userStore.setCompanies([data]); // Сохраняем в хранилище компании
-        await router.push('/add_users'); // Перенаправляем на страницу добавления пользователей
-      } catch (err: any) {
-        errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-      } finally {
-        isLoading.value = false; // Убираем загрузку
-      }
-    });
+// Создание компании
+const onSubmit = async () => {
+  // Объект с данными
+  const dto = {
+    name: nameValue.value,
+    url_address: addressValue.value,
+  };
+  // Вызываем хук для обработки валидации
+  await validateForm(dto, CompanyScheme, async () => {
+    // Создаем компанию
+    const { data } = await Api().company.create(dto);
+    // Сохраняем в хранилище компании
+    userStore.addCompany(data);
+    // Перенаправляем на страницу добавления пользователей
+    await router.push('/add_users');
+  });
+};
 </script>
 
 <!-- ----------------------------------------------------- -->
@@ -89,5 +91,9 @@ const onSubmit = handleSubmit(async (values) => {
 <style lang="scss" scoped>
 .form {
   width: 390px;
+}
+
+.btn2 {
+  margin-left: 20px;
 }
 </style>

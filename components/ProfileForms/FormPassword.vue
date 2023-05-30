@@ -3,19 +3,19 @@
     <h2 class="title">Безопасность</h2>
     <Input
       placeholder="Текущий пароль"
-      :isPassword="true"
+      type="password"
       v-model="oldPasswordValue"
       :errors="errorsValidate['old_password']"
     />
     <Input
       placeholder="Новый пароль"
-      :isPassword="true"
+      type="password"
       v-model="newPasswordValue"
       :errors="errorsValidate['password']"
     />
     <Input
       placeholder="Повторить пароль"
-      :isPassword="true"
+      type="password"
       v-model="passwordConfirmValue"
       :errors="errorsValidate['password_confirmation']"
     />

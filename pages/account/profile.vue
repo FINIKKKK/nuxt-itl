@@ -2,10 +2,9 @@
   <NuxtLayout name="main" title="Профиль / Редактирование" :isMiniTitle="true">
     <!-- Отображение ошибок -->
     <Warning
-      class="warning"
       v-if="errors.length || successMessage"
-      :errors="errors"
-      :successMessage="successMessage"
+      :errors="errors as string[]"
+      :successMessage="successMessage as string"
     />
 
     <!-- Формы -->
@@ -58,51 +57,50 @@ import FormPassword from '~/components/ProfileForms/FormPassword.vue';
 import { Api } from '~/api';
 import { useUserStore } from '~/stores/UserStore';
 import Warning from '~/components/UI/Warning.vue';
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 /**
  * Системные переменные ----------------
  */
-const userStore = useUserStore();
+const userStore = useUserStore(); // Хранилище пользователя
 
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
-const successMessage = ref('');
+const successMessage = ref<string>(''); // Сообщение об успешном действии
 
 /**
- * Пропсы ----------------
+ * Хуки ----------------
  */
-const setErrors = (value) => {
+// Для обработки ошибок
+const { errors, isLoading, validateForm } = useFormValidation();
+
+/**
+ * Методы ----------------
+ */
+// Установление значения ошибок (событие)
+const setErrors = (value: any) => {
   errors.value = value;
 };
+// Установление значения сообщение об успешном действии (событие)
 const setSuccessMessage = (value: string) => {
   successMessage.value = value;
 };
 // Метод изменения аватара пользователя
 const onChangeAvatar = async (e: any) => {
   if (e.target.files[0]) {
-    try {
-      errors.value = []; // Обнуляем ошибки
-      isLoading.value = true; // Ставим загрузку
+    // Убираем warning
+    errors.value = [];
+    successMessage.value = '';
+    // Вызываем хук для обработки валидации
+    await validateForm(undefined, undefined, async () => {
       // Обновляем аватар на бэкенде
       const { data } = await Api().user.updateAvatar(e.target.files[0]);
       // Обновляем аватар в хранилище
       userStore.setUserAvatar(data);
-    } catch (err: any) {
-      console.log(err);
-      errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-    } finally {
-      isLoading.value = false; // Убираем загрузку
-    }
+    });
+    // Вызываем warning с сообщением об успешной загрузке
+    successMessage.value = 'Аватар успешно изменен';
   }
 };
 </script>
