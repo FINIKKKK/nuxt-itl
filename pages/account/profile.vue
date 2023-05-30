@@ -7,7 +7,7 @@
     <div class="flex">
       <div class="left">
         <!-- Форма для изменения данных пользователя -->
-        <FormUserData />
+        <FormUserData @showWarning="setErrors" />
         <!-- Форма для изменения пароля пользователя -->
         <FormPassword />
       </div>
@@ -69,20 +69,25 @@ const isLoading = ref(false); // Загрузка
 /**
  * Пропсы ----------------
  */
+const setErrors = (value) => {
+  errors.value = value;
+};
 // Метод изменения аватара пользователя
 const onChangeAvatar = async (e: any) => {
-  try {
-    errors.value = []; // Обнуляем ошибки
-    isLoading.value = true; // Ставим загрузку
-    // Обновляем аватар на бэкенде
-    const { data } = await Api().user.updateAvatar(e.target.files[0]);
-    // Обновляем аватар в хранилище
-    userStore.setUserAvatar(data);
-  } catch (err: any) {
-    console.log(err);
-    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-  } finally {
-    isLoading.value = false; // Убираем загрузку
+  if (e.target.files[0]) {
+    try {
+      errors.value = []; // Обнуляем ошибки
+      isLoading.value = true; // Ставим загрузку
+      // Обновляем аватар на бэкенде
+      const { data } = await Api().user.updateAvatar(e.target.files[0]);
+      // Обновляем аватар в хранилище
+      userStore.setUserAvatar(data);
+    } catch (err: any) {
+      console.log(err);
+      errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
+    } finally {
+      isLoading.value = false; // Убираем загрузку
+    }
   }
 };
 </script>
@@ -110,6 +115,7 @@ const onChangeAvatar = async (e: any) => {
     margin: 0 auto 25px;
     img {
       border: 2px solid $blue;
+      object-fit: cover;
     }
     img,
     svg {

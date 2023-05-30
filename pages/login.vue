@@ -8,8 +8,17 @@
       <div class="errors" v-if="errors.length">
         <span v-for="error in errors">{{ error }}</span>
       </div>
-      <Input name="email" placeholder="Email" />
-      <Input name="password" placeholder="Пароль" type="password" />
+      <Input
+        placeholder="Email"
+        v-model="emailValue"
+        :errors="errorsValidate['email']"
+      />
+      <Input
+        placeholder="Пароль"
+        v-model="passwordValue"
+        :errors="errorsValidate['password']"
+        :isPassword="true"
+      />
       <p class="link">
         <NuxtLink to="/reset_password">Забыли пароль?</NuxtLink>
       </p>
@@ -28,7 +37,7 @@ import { useUserStore } from '~/stores/UserStore';
 import { useForm } from 'vee-validate';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
-import { LoginScheme } from '~/utils/validation';
+import { LoginScheme, UserDataScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
 
 /**
@@ -41,10 +50,6 @@ definePageMeta({
 /**
  * Системные переменные ----------------
  */
-// Фукция обработки отправки формы
-const { handleSubmit } = useForm({
-  validationSchema: LoginScheme, // Схема валидации данных
-});
 const router = useRouter(); // Роутер
 const userStore = useUserStore(); // Хранилище данных пользователя
 
@@ -52,21 +57,28 @@ const userStore = useUserStore(); // Хранилище данных польз�
  * Пользовательские переменные ----------------
  */
 const errors = ref([]); // Ошибки
+const errorsValidate = ref([]); // Ошибки
 const isLoading = ref(false); // Загрузка
+const emailValue = ref('');
+const passwordValue = ref('');
 
 /**
  * Методы ----------------
  */
 // Авторизация пользователя
-const onSubmit = handleSubmit(async (values) => {
+const onSubmit = async () => {
   try {
     errors.value = []; // Обнуляем ошибки
     isLoading.value = true; // Ставим загрузку
     // Объект с данными
     const dto = {
-      email: values.email,
-      password: values.password,
+      email: emailValue.value,
+      password: passwordValue.value,
     };
+
+    await LoginScheme.validate(dto, {
+      abortEarly: false,
+    });
     // Авторизуем пользователя
     const { data } = await Api().auth.login(dto);
     // Сохраняем токен в куки
@@ -78,11 +90,22 @@ const onSubmit = handleSubmit(async (values) => {
     userStore.setCompanies(data.companies); // Сохраняем в хранилище данные компаний пользователя
     await router.push('/'); // Перенаправляем пользователя на главную страницу
   } catch (err: any) {
-    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
+    if (err.inner) {
+      // Ошибки валидации Yup доступны в свойстве "inner"
+      err.inner.forEach((error) => {
+        // Проверяем, существует ли уже массив ошибок для данного поля
+        if (!errorsValidate.value[error.path]) {
+          errorsValidate.value[error.path] = [];
+        }
+        // Добавляем ошибку в массив для данного поля
+        errorsValidate.value[error.path].push(error.message);
+      });
+    }
+    // errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
   } finally {
     isLoading.value = false; // Убираем загрузку
   }
-});
+};
 </script>
 
 <!-- ----------------------------------------------------- -->
