@@ -1,93 +1,99 @@
 <template>
-  <form class="block" @submit.prevent="onChageUserData">
-    <span class="error" v-if="errors">{{ errors }}</span>
+  <form class="block" @submit.prevent="onChangeUserData">
     <h2 class="title">Личные данные</h2>
     <Input
       placeholder="Имя"
       name="firstName"
-      v-model="firstName"
+      v-model="firstNameValue"
       :errors="errorsValidate['firstName']"
     />
     <Input
       placeholder="Фамилия"
       name="lastName"
-      v-model="lastName"
+      v-model="lastNameValue"
       :errors="errorsValidate['lastName']"
     />
     <Input
       placeholder="Email"
       name="email"
-      v-model="email"
+      v-model="emailValue"
       :errors="errorsValidate['email']"
     />
     <button class="btn" :class="{ disabled: isLoading }">
       Сохранить настройки
     </button>
-    errors: {{ errors }}
   </form>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
-import { useForm } from 'vee-validate';
 import { UserDataScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
 import { useUserStore } from '~/stores/UserStore';
 import { Api } from '~/api';
 import { useFormValidation } from '~/hooks/useFormValidation';
 
-type FormError = {
-  [key: string]: string[];
-};
-const { handleSubmit, resetForm } = useForm({
-  validationSchema: UserDataScheme,
-});
-// const errorsValidate = ref<FormError[]>([]);
-// const errors = ref([]);
-// const isLoading = ref(false);
-const userStore = useUserStore();
-const firstName = ref(userStore.user?.firstName);
-const lastName = ref(userStore.user?.lastName);
-const email = ref(userStore.user?.email);
+/**
+ * События ----------------
+ */
+const emits = defineEmits(['showWarning', 'showWarningSuccess']);
+
+/**
+ * Системные переменные ----------------
+ */
+const userStore = useUserStore(); // Хранилище пользователя
+
+/**
+ * Пользовательские переменные ----------------
+ */
+const firstNameValue = ref(userStore.user?.firstName); // Значене имени
+const lastNameValue = ref(userStore.user?.lastName); // Значене фамилии
+const emailValue = ref(userStore.user?.email); // Значене email
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
 const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 
-const emits = defineEmits(['showWarning']);
+/**
+ * Отслеживание переменных ----------------
+ */
+// Следить за errors
+watch(errors, () => {
+  // Показать warning c ошибками
+  emits('showWarning', errors.value);
+});
 
-const onChageUserData = async () => {
+/**
+ * Методы ----------------
+ */
+// Изменить данные пользователя
+const onChangeUserData = async () => {
+  // Убираем warning
+  emits('showWarning', []);
+  emits('showWarningSuccess', '');
+  // Данные объекта
   const dto = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value,
+    firstName: firstNameValue.value,
+    lastName: lastNameValue.value,
+    email: emailValue.value,
   };
+  // Вызываем хук для валидации формы
   await validateForm(dto, UserDataScheme, async () => {
+    // Обновляем данные пользователя
     const { data } = await Api().user.updateData(dto);
-    console.log(data);
+    // Обновляем в хранилище
+    userStore.setUser(data);
+    // Отображаем сообщение об успешном изменении
+    emits('showWarningSuccess', 'Данные успешно изменены');
   });
-  // try {
-  //   // emits('showWarning', []);
-  //   // errorsValidate.value = [];
-  //   // isLoading.value = true;
-  // } catch (err: any) {
-  //   if (err.inner) {
-  //     // Ошибки валидации Yup доступны в свойстве "inner"
-  //     err.inner.forEach((error) => {
-  //       // Проверяем, существует ли уже массив ошибок для данного поля
-  //       if (!errorsValidate.value[error.path]) {
-  //         errorsValidate.value[error.path] = [];
-  //       }
-  //       // Добавляем ошибку в массив для данного поля
-  //       errorsValidate.value[error.path].push(error.message);
-  //     });
-  //     useErrorsValidate(err, errorsValidate);
-  //
-  //     if (err.response.data.message) {
-  //       emits('showWarning', err.response.data.message);
-  //     }
-  //   }
-  // finally
-  //   {
-  //     isLoading.value = false;
-  //   }
 };
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped></style>

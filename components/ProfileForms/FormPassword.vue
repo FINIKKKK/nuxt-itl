@@ -1,15 +1,23 @@
 <template>
   <form class="form block" @submit.prevent="onChangePassword">
     <h2 class="title">Безопасность</h2>
-    <div class="errors" v-if="errors.length">
-      <span v-for="error in errors">{{ error }}</span>
-    </div>
-    <Input placeholder="Текущий пароль" name="old_password" type="password" />
-    <Input placeholder="Новый пароль" name="new_password" type="password" />
+    <Input
+      placeholder="Текущий пароль"
+      :isPassword="true"
+      v-model="oldPasswordValue"
+      :errors="errorsValidate['old_password']"
+    />
+    <Input
+      placeholder="Новый пароль"
+      :isPassword="true"
+      v-model="newPasswordValue"
+      :errors="errorsValidate['password']"
+    />
     <Input
       placeholder="Повторить пароль"
-      name="password_confirmation"
-      type="password"
+      :isPassword="true"
+      v-model="passwordConfirmValue"
+      :errors="errorsValidate['password_confirmation']"
     />
     <button class="btn" :class="{ disabled: isLoading }">
       Сохранить настройки
@@ -21,46 +29,65 @@
 <!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
-import { useForm } from 'vee-validate';
 import Input from '~/components/UI/Input.vue';
 import { Api } from '~/api';
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 /**
- * Системные переменные ----------------
+ * События ----------------
  */
-// Фукция обработки отправки формы
-const { handleSubmit } = useForm({
-  validationSchema: PasswordScheme, // Схема валидации данных
-});
+const emits = defineEmits(['showWarning', 'showWarningSuccess']);
 
 /**
  * Пользоватеьские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Значение загрузки
+const oldPasswordValue = ref(''); // Значение старого пароля
+const newPasswordValue = ref(''); // Значение нового пароля
+const passwordConfirmValue = ref(''); // Значение подтвежденного пароля
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
+
+/**
+ * Отслеживание переменных ----------------
+ */
+// Следить за значением ошибок
+watch(errors, () => {
+  // Показать warning c ошибками
+  emits('showWarning', errors.value);
+});
 
 /**
  * Методы ----------------
  */
 // Изменение пароля пользователя
-const onChangePassword = handleSubmit(async (values) => {
-  try {
-    errors.value = []; // Обнуляем ошибки
-    isLoading.value = true; // Ставим загрузку
-    // Объект с данными
-    const dto = {
-      old_password: values.old_password,
-      password: values.new_password,
-      password_confirmation: values.password_confirmation,
-    };
+const onChangePassword = async () => {
+  emits('showWarning', []); // Убираем warning
+  // Объект с данными
+  const dto = {
+    old_password: oldPasswordValue.value,
+    password: newPasswordValue.value,
+    password_confirmation: passwordConfirmValue.value,
+  };
+  // Вызываем хук для валидации формы
+  await validateForm(dto, PasswordScheme, async () => {
     // Обновляем пароль
     await Api().user.updatePassword(dto);
-  } catch (err: any) {
-    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-  } finally {
-    isLoading.value = false; // Убираем загрузку
+    // Отображаем сообщение об успешном изменении
+    emits('showWarningSuccess', 'Пароль успешно изменен');
+    // Перемещаем пользователя на вверх
+    const block = document.getElementById('scroll');
+    block?.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  // Если, есть ошибки при отправке формы, то перемещаем пользователя на вверх
+  if (errors.value.length) {
+    const block = document.getElementById('scroll');
+    block?.scrollTo({ top: 0, behavior: 'smooth' });
   }
-});
+};
 </script>
 
 <!-- ----------------------------------------------------- -->

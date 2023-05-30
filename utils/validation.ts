@@ -77,14 +77,12 @@ export const UserDataScheme = yup.object().shape({
 
 export const PasswordScheme = yup.object().shape({
   old_password: yup.string().required('Поле является обязательным'),
-  new_password: yup
+  password: yup
     .string()
     .required('Поле является обязательным')
     .min(6, 'Пароль должен состоять минимум из 6 символов'),
   password_confirmation: yup
     .string()
     .required('Поле является обязательным')
-    .oneOf([yup.ref('new_password')], 'Пароли должны совпадать'),
+    .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
 });
-
-

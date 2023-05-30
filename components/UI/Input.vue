@@ -93,5 +93,8 @@ const setShowPassword = (value: boolean) => {
       opacity: 1;
     }
   }
+  .error {
+    display: block;
+  }
 }
 </style>

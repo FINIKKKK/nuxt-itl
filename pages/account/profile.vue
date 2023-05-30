@@ -1,15 +1,26 @@
 <template>
   <NuxtLayout name="main" title="Профиль / Редактирование" :isMiniTitle="true">
     <!-- Отображение ошибок -->
-    <Warning class="warning" v-if="errors.length" :errors="errors" />
+    <Warning
+      class="warning"
+      v-if="errors.length || successMessage"
+      :errors="errors"
+      :successMessage="successMessage"
+    />
 
     <!-- Формы -->
     <div class="flex">
       <div class="left">
         <!-- Форма для изменения данных пользователя -->
-        <FormUserData @showWarning="setErrors" />
+        <FormUserData
+          @showWarning="setErrors"
+          @showWarningSuccess="setSuccessMessage"
+        />
         <!-- Форма для изменения пароля пользователя -->
-        <FormPassword />
+        <FormPassword
+          @showWarning="setErrors"
+          @showWarningSuccess="setSuccessMessage"
+        />
       </div>
 
       <!-- Изменяем аватар пользователя -->
@@ -65,12 +76,16 @@ const userStore = useUserStore();
  */
 const errors = ref([]); // Ошибки
 const isLoading = ref(false); // Загрузка
+const successMessage = ref('');
 
 /**
  * Пропсы ----------------
  */
 const setErrors = (value) => {
   errors.value = value;
+};
+const setSuccessMessage = (value: string) => {
+  successMessage.value = value;
 };
 // Метод изменения аватара пользователя
 const onChangeAvatar = async (e: any) => {

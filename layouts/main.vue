@@ -17,6 +17,7 @@
 
     <!-- Остальной контент на странице -->
     <div
+      id="scroll"
       class="content"
       :class="{
         miniTitle: isMiniTitle, // Если заголовок маленький

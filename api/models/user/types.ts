@@ -20,11 +20,10 @@ export type UserDataDto = {
 
 export type UserPasswordDto = {
   old_password: string;
-  new_password: string;
+  password: string;
   password_confirmation: string;
 };
 
 export type UserAvatarDto = {
   avatar: any;
 };
-

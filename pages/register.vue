@@ -9,19 +9,37 @@
         У вас уже есть аккаунт?
         <NuxtLink to="/login">Войдите в систему</NuxtLink>
       </p>
-      <div class="errors" v-if="errors.length">
-        <span v-for="error in errors">{{ error }}</span>
-      </div>
       <div class="inputs">
-        <Input name="firstName" placeholder="Имя" class="input" />
-        <Input name="lastName" placeholder="Фамилия" class="input" />
+        <Input
+          placeholder="Имя"
+          class="input"
+          v-model="firstNameValue"
+          :errors="errorsValidate['firstName']"
+        />
+        <Input
+          placeholder="Фамилия"
+          class="input"
+          v-model="lastNameValue"
+          :errors="errorsValidate['lastName']"
+        />
       </div>
-      <Input name="email" placeholder="Email" />
-      <Input name="password" placeholder="Пароль" type="password" />
+      <Input
+        placeholder="Email"
+        v-model="emailValue"
+        :errors="errorsValidate['email']"
+      />
+      <Input
+        placeholder="Пароль"
+        :isPassword="true"
+        v-model="passwordValue"
+        :errors="errorsValidate['password']"
+      />
       <Input
         name="password_confirmation"
         placeholder="Подтвердите пароль"
-        type="password"
+        :isPassword="true"
+        v-model="passwordConfirmValue"
+        :errors="errorsValidate['password_confirmation']"
       />
       <p class="link">
         Нажимая кнопку «Зарегистроваться» вы принимаете
@@ -41,51 +59,49 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
-import { useForm } from 'vee-validate';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
 import { RegisterScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
+import { useFormValidation } from '~/hooks/useFormValidation';
+import Register from '~/pages/register.vue';
 
 /**
  * Системные переменные ----------------
  */
 const router = useRouter(); // Роутер
-// Фукция обработки отправки формы
-const { handleSubmit } = useForm({
-  validationSchema: RegisterScheme, // Схема валидации
-});
 const userStore = useUserStore(); // Хранилище пользователя
 
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
+const firstNameValue = ref(''); // Значение имени
+const lastNameValue = ref(''); // Значение фамилии
+const emailValue = ref(''); // Значение email
+const passwordValue = ref(''); // Значение пароля
+const passwordConfirmValue = ref(''); // Значение подтверждения пароля
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 
 /**
  * Методы ----------------
  */
 // Регистрация пользователя
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    errors.value = []; // Обнуляем ошибки
-    isLoading.value = true; // Ставим загрузку
-    // Объект с данными
-    const dto = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-      password_confirmation: values.password_confirmation,
-    };
+const onSubmit = async () => {
+  // Объект с данными
+  const dto = {
+    firstName: firstNameValue.value,
+    lastName: lastNameValue.value,
+    email: emailValue.value,
+    password: passwordValue.value,
+    password_confirmation: passwordConfirmValue.value,
+  };
+  // Вызываем хук для валидации форм
+  await validateForm(dto, RegisterScheme, async () => {
     // Регистрация пользователя
     const { data } = await Api().auth.register(dto);
     // Сохраняем токен в куки
@@ -95,12 +111,8 @@ const onSubmit = handleSubmit(async (values) => {
     });
     userStore.setUser(data.user); // Сохраняем в хранилище данные о пользователе
     await router.push('/create_company'); // Перенаправляем на страницу создания компании
-  } catch (err: any) {
-    errors.value = err?.response?.data?.message; // Выводим ошибки, если они есть
-  } finally {
-    isLoading.value = false; // Убираем загрузку
-  }
-});
+  });
+};
 </script>
 
 <!-- ----------------------------------------------------- -->
