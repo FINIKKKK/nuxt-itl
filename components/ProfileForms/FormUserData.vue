@@ -20,16 +20,20 @@
       v-model="email"
       :errors="errorsValidate['email']"
     />
-    <button class="btn">Сохранить настройки</button>
+    <button class="btn" :class="{ disabled: isLoading }">
+      Сохранить настройки
+    </button>
+    errors: {{ errors }}
   </form>
 </template>
 
 <script lang="ts" setup>
 import { useForm } from 'vee-validate';
-import { SectionScheme, UserDataScheme } from '~/utils/validation';
+import { UserDataScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
 import { useUserStore } from '~/stores/UserStore';
 import { Api } from '~/api';
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 type FormError = {
   [key: string]: string[];
@@ -37,49 +41,52 @@ type FormError = {
 const { handleSubmit, resetForm } = useForm({
   validationSchema: UserDataScheme,
 });
-const errorsValidate = ref<FormError[]>([]);
-const errors = ref([]);
-const isLoading = ref(false);
+// const errorsValidate = ref<FormError[]>([]);
+// const errors = ref([]);
+// const isLoading = ref(false);
 const userStore = useUserStore();
 const firstName = ref(userStore.user?.firstName);
 const lastName = ref(userStore.user?.lastName);
 const email = ref(userStore.user?.email);
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 
 const emits = defineEmits(['showWarning']);
 
 const onChageUserData = async () => {
-  try {
-    emits('showWarning', []);
-    errorsValidate.value = [];
-    isLoading.value = true;
-    const dto = {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-    };
-    await UserDataScheme.validate(dto, {
-      abortEarly: false,
-    });
+  const dto = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: email.value,
+  };
+  await validateForm(dto, UserDataScheme, async () => {
     const { data } = await Api().user.updateData(dto);
     console.log(data);
-  } catch (err: any) {
-    if (err.inner) {
-      // Ошибки валидации Yup доступны в свойстве "inner"
-      err.inner.forEach((error) => {
-        // Проверяем, существует ли уже массив ошибок для данного поля
-        if (!errorsValidate.value[error.path]) {
-          errorsValidate.value[error.path] = [];
-        }
-        // Добавляем ошибку в массив для данного поля
-        errorsValidate.value[error.path].push(error.message);
-      });
-    }
-    if (err.response.data.message) {
-      emits('showWarning', err.response.data.message);
-    }
-  } finally {
-    isLoading.value = false;
-  }
+  });
+  // try {
+  //   // emits('showWarning', []);
+  //   // errorsValidate.value = [];
+  //   // isLoading.value = true;
+  // } catch (err: any) {
+  //   if (err.inner) {
+  //     // Ошибки валидации Yup доступны в свойстве "inner"
+  //     err.inner.forEach((error) => {
+  //       // Проверяем, существует ли уже массив ошибок для данного поля
+  //       if (!errorsValidate.value[error.path]) {
+  //         errorsValidate.value[error.path] = [];
+  //       }
+  //       // Добавляем ошибку в массив для данного поля
+  //       errorsValidate.value[error.path].push(error.message);
+  //     });
+  //     useErrorsValidate(err, errorsValidate);
+  //
+  //     if (err.response.data.message) {
+  //       emits('showWarning', err.response.data.message);
+  //     }
+  //   }
+  // finally
+  //   {
+  //     isLoading.value = false;
+  //   }
 };
 </script>
 

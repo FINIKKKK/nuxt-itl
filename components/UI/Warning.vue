@@ -1,8 +1,8 @@
 <template>
-  <div class="errors" v-if="errors.length">
+  <div class="errors" v-if="props.errors.length">
     <svg-icon name="warning" />
     <div class="items">
-      <span v-for="error in errors">{{ error }}</span>
+      <span v-for="error in props.errors">{{ error }}</span>
     </div>
   </div>
 </template>
@@ -11,6 +11,9 @@
 <!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
   errors: string[];
 }>();

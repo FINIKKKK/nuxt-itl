@@ -34,18 +34,10 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/UserStore';
-import { useForm } from 'vee-validate';
 import { Api } from '@/api';
 import { setCookie } from 'nookies';
 import { LoginScheme, UserDataScheme } from '~/utils/validation';
 import Input from '~/components/UI/Input.vue';
-
-/**
- * Мета данные ----------------
- */
-definePageMeta({
-  layout: false,
-});
 
 /**
  * Системные переменные ----------------
@@ -59,8 +51,8 @@ const userStore = useUserStore(); // Хранилище данных польз�
 const errors = ref([]); // Ошибки
 const errorsValidate = ref([]); // Ошибки
 const isLoading = ref(false); // Загрузка
-const emailValue = ref('');
-const passwordValue = ref('');
+const emailValue = ref(''); // Значения поля email
+const passwordValue = ref(''); // Значения поля пароля
 
 /**
  * Методы ----------------
