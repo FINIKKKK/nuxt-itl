@@ -4,15 +4,15 @@
 export const useOutsideClick = (
   elementRef: Ref<HTMLElement | null>,
   event: Ref<boolean | null>,
-  extraEvent?: Ref<any>,
+  callback?: any,
 ) => {
   const handleClickOutside = (e: MouseEvent) => {
     if (elementRef.value && !elementRef.value.contains(e.target as Node)) {
       // Закрытие попапа
       event.value = false;
-      // Дополнительное действие
-      if (extraEvent) {
-        extraEvent.value = null;
+      // Дополнительный действия
+      if (callback) {
+        callback();
       }
     }
   };

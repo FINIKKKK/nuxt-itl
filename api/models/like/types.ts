@@ -7,9 +7,9 @@ export type TLikesData = TData & {
 };
 
 export type TLike = TBase & {
-  liketable_id: number;
+  likeable_id: number;
   type: string;
-  liketable: TPost | TComment;
+  likeable: TPost | TComment;
 };
 
 export type LikeDto = {

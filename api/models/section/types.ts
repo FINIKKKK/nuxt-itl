@@ -13,8 +13,8 @@ export type TSectionData = TData & {
 export type TSection = TBase & {
   title: string;
   body?: OutputBlockData[];
-  user: TUser;
-  parent?: TSection;
+  author: TUser;
+  parentSection?: TSection;
   data: {
     sections?: TSection[];
     posts?: TPost[];

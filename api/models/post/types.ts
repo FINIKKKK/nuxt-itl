@@ -13,7 +13,7 @@ export type TPostData = TData & {
 export type TPost = TBase & {
   title: string;
   body: OutputBlockData[];
-  user: TUser;
+  author: TUser;
   section: TSection;
   isFavorite: boolean;
   isLike: boolean;

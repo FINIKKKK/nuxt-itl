@@ -2,10 +2,6 @@
   <NuxtLayout name="create" type="section"></NuxtLayout>
 </template>
 
-<script lang="ts" setup>
-definePageMeta({
-  layout: false,
-});
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss" scoped></style>

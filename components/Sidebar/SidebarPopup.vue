@@ -7,7 +7,7 @@
     }"
   >
     <div class="inner">
-      <div class="main" v-if="!route.path.includes('/sections/')">
+      <div class="main">
         <h3 class="title">
           {{ innerItems.find((obj) => obj.name === activeItem)?.title }}
         </h3>
@@ -152,7 +152,7 @@ const innerItems = [
       {
         icon: 'favorite',
         label: 'Закладки',
-        link: `${companyStore.activeCompanySlug}/favorites`,
+        link: `/account/favorites`,
       },
     ],
   },

@@ -166,7 +166,6 @@ const onSubmit = async () => {
   try {
     errors.value = []; // Обнуляем ошибки
     isLoading.value = true; // Ставим загрузку
-
     // Если тип - пост
     if (props.type === 'post') {
       // Объект с данными
@@ -208,13 +207,6 @@ const onSubmit = async () => {
           Number(route.params.id),
           dto,
         );
-        // Перенапрвляем пользователя на страницу раздела
-        await router.push(
-          `${companyStore.activeCompanySlug}/sections/${data.id}`,
-        );
-      } else {
-        // Создаем раздел
-        const { data } = await Api().section.create(dto);
         // Перенапрвляем пользователя на страницу раздела
         await router.push(
           `${companyStore.activeCompanySlug}/sections/${data.id}`,

@@ -20,7 +20,7 @@
       <!-- Кнопка для показа или скрытия пароля -->
       <div v-if="props.type === 'password'" class="showPassword">
         <svg-icon
-          :name="isShowPassword ? 'eye' : 'noeye'"
+          :name="isShowPassword ? 'noeye' : 'eye'"
           v-if="model"
           @click="() => setShowPassword()"
         />
@@ -130,8 +130,8 @@ const setShowPassword = () => {
     transition: 0.3s;
     svg {
       fill: $blue;
-      width: 18px;
-      height: 16px;
+      width: 20px;
+      height: 18px;
     }
     &:hover {
       opacity: 1;

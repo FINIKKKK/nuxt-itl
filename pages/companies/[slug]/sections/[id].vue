@@ -1,11 +1,7 @@
 <template>
-  <NuxtLayout name="elem" type="section"></NuxtLayout>
+  <NuxtLayout name="item" type="section"></NuxtLayout>
 </template>
 
-<script lang="ts" setup>
-definePageMeta({
-  layout: false,
-});
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss" scoped></style>

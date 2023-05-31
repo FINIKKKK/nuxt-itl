@@ -67,7 +67,7 @@ const route = useRoute();
 /**
  * Пользовательские переменные ----------------
  */
-const popupRef = ref(null); // Ref-cсылка на элемент попапа
+const popupRef = ref(null); // Ref-ссылка на элемент попапа
 const isShowPopup = ref<boolean>(route.path.includes('/companies/') || true); // Показывать попап сайдара или нет
 const activeItem = ref<string | null>(null); // Активный элемент в сайдаре
 
@@ -76,7 +76,9 @@ const activeItem = ref<string | null>(null); // Активный элемент 
  */
 // Скрывать попап, если нажатие было вне его области
 // + Обнулять активный элемент
-useOutsideClick(popupRef, isShowPopup, activeItem);
+useOutsideClick(popupRef, isShowPopup, () => {
+  activeItem.value = null;
+});
 
 /**
  * Методы ----------------

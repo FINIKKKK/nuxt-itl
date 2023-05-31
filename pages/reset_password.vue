@@ -1,50 +1,57 @@
 <template>
-  <NuxtLayout
-    name="main"
-    title="Восстановление пароля
-"
-  >
+  <NuxtLayout name="main" title="Восстановление пароля">
+    <!-- Отображение ошибок -->
+    <Warning v-if="errors.length" :errors="errors as string[]" />
+
+    <!-- Форма -->
     <form class="form" @submit.prevent="onSubmit">
-      <div class="error" v-if="errors">
-        <span v-for="error in errors">
-          {{ error[0] }}
-        </span>
-      </div>
-      <Input placeholder="Введите адрес электронной почты" name="email" />
+      <Input
+        placeholder="Введите адрес электронной почты"
+        v-model="emailValue"
+        :errors="errorsValidate['email']"
+      />
       <button class="btn" :class="{ disabled: isLoading }">Продолжить</button>
     </form>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-import { useForm } from 'vee-validate';
 import { ResetPasswordScheme } from '~/utils/validation';
+import Input from '~/components/UI/Input.vue';
+import { useFormValidation } from '~/hooks/useFormValidation';
+import Warning from '~/components/UI/Warning.vue';
 
-definePageMeta({
-  layout: false,
-});
+/**
+ * Системные переменные ----------------
+ */
+const router = useRouter(); // Роутер
 
-const isLoading = ref(false);
-const errors = ref('');
-const { handleSubmit } = useForm({
-  validationSchema: ResetPasswordScheme,
-});
-const router = useRouter();
+/**
+ * Пользовательские переменные ----------------
+ */
+const emailValue = ref(''); // Значение email
 
-const onSubmit = handleSubmit(async (values) => {
-  try {
-    isLoading.value = true;
-    const dto = {
-      email: values.email,
-    };
+/**
+ * Хуки ----------------
+ */
+// Для обработки формы
+const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
+
+/**
+ * Методы ----------------
+ */
+// Отправление на почту код для восстановления пароля
+const onSubmit = async () => {
+  // Объект с данными
+  const dto = {
+    email: emailValue.value,
+  };
+  // Вызываем хук для валидации формы
+  await validateForm(dto, ResetPasswordScheme, async () => {
+    // Отправляем на почту код для восстановления пароля
     // await Api().auth.reset_password(dto);
-    await router.push('/add_users');
-  } catch (err: any) {
-    errors.value = err?.response?.data?.message;
-  } finally {
-    isLoading.value = false;
-  }
-});
+  });
+};
 </script>
 
 <style lang="scss" scoped>

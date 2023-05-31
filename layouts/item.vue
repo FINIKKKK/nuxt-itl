@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="main" :title="navTitle" :isMiniTitle="true">
-    <div v-if="elem">
+    <div v-if="item">
       <!--------------------------------------
       Элементы управления 
       ---------------------------------------->
@@ -10,12 +10,10 @@
           class="control"
           :to="`${companyStore.activeCompanySlug}/${
             type === 'post' ? 'posts' : 'sections'
-          }/edit/${elem?.id}`"
+          }/edit/${item?.id}`"
         >
           <svg-icon name="edit" />
         </NuxtLink>
-        <!-- Прикрепить -->
-        <svg-icon class="control" name="attach" />
         <!-- Доступ -->
         <svg-icon class="control" name="lock" />
         <!-- Поделиться -->
@@ -32,12 +30,12 @@
         <svg-icon
           v-if="type === 'post'"
           class="favorite"
-          :name="isFavorite || elem.isFavorite ? 'favorite2' : 'favorite'"
+          :name="isFavorite || item.isFavorite ? 'favorite2' : 'favorite'"
           @click="onFavorite"
           :class="{ disabled: isLoading }"
         />
         <!-- Заголовок -->
-        <h1 class="title">{{ elem.title }}</h1>
+        <h1 class="title">{{ item.title }}</h1>
       </div>
 
       <!--------------------------------------
@@ -47,19 +45,21 @@
         <!-- Автор -->
         <li class="post__info-item">
           Автор:
-          <span>{{ `${elem?.user.firstName} ${elem?.user.lastName}` }}</span>
+          <span>{{
+            `${item?.author.firstName} ${item?.author.lastName}`
+          }}</span>
         </li>
         <!-- Время -->
         <li
           class="post__info-item"
-          v-html="useDateString(elem.created_at, elem.updated_at)"
+          v-html="useDateString(item.created_at, item.updated_at)"
         ></li>
       </ul>
 
       <!--------------------------------------
       Тело элемента
       ---------------------------------------->
-      <Body class="body" :data="elem.body" />
+      <Body class="body" :data="item.body" />
 
       <!--------------------------------------
       Дополнительные элементы
@@ -67,7 +67,7 @@
       <div v-if="type === 'post'" class="post__footer">
         <!-- Кнопка лайка" -->
         <div class="like" @click="onLike" :class="{ disabled: isLoading }">
-          <svg-icon :name="isLike || elem.isLike ? 'like2' : 'like'" />
+          <svg-icon :name="isLike || item.isLike ? 'like2' : 'like'" />
           <p>Мне нравиться</p>
         </div>
         <!-- Тэги -->
@@ -87,7 +87,7 @@
       ---------------------------------------->
       <div v-if="type === 'section'" class="works">
         <ul class="items">
-          <li class="item" v-for="section in elem.data.sections">
+          <li class="item" v-for="section in item.data.sections">
             <svg-icon name="folder" />
             <div class="item__info">
               <NuxtLink
@@ -103,7 +103,7 @@
           </li>
         </ul>
         <ul class="items">
-          <li class="item" v-for="post in elem.data.posts">
+          <li class="item" v-for="post in item.data.posts">
             <svg-icon name="document" />
             <div class="item__info">
               <NuxtLink
@@ -155,7 +155,7 @@ const postId = Number(route.params.id); // id поста
  * Хуки ----------------
  */
 // Получение данных элемента
-const { data: elem } = useAsyncData(async () => {
+const { data: item } = useAsyncData(async () => {
   if (props.type == 'post') {
     const { data } = await Api().post.getOne(postId);
     return data;
@@ -168,8 +168,8 @@ const { data: elem } = useAsyncData(async () => {
 /**
  * Пользовательские переменные ----------------
  */
-const isFavorite = ref(elem.value?.isFavorite); // Избранное
-const isLike = ref(elem.value?.isLike); // Лайк
+const isFavorite = ref(item.value?.isFavorite); // Избранное
+const isLike = ref(item.value?.isLike); // Лайк
 
 /**
  * Вычисляемые значения ----------------
@@ -178,12 +178,12 @@ const isLike = ref(elem.value?.isLike); // Лайк
 const navTitle = computed(() => {
   // Если тип - пост
   if (props.type === 'post') {
-    return elem.value?.section.title;
+    return item.value?.section.title;
   }
   // Если тип - раздел
   else {
     // Если есть родительский раздел или его нет
-    return elem.value?.parent ? elem.value?.parent.title : elem.value?.title;
+    return item.value?.parent ? item.value?.parent.title : item.value?.title;
   }
 });
 
