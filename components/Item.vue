@@ -16,13 +16,13 @@
     </div>
 
     <!-- Элементы управления -->
-    <div class="controls">
-      <NuxtLink :to="`${linkItem}/edit`" class="control">
+    <div class="btns">
+      <NuxtLink :to="`${linkItem}/edit`" class="btns__item">
         <svg-icon name="edit" />
         <p>Правка</p>
       </NuxtLink>
       <!-- Доступ -->
-      <div class="control">
+      <div class="btns__item">
         <svg-icon name="lock" />
         <p>У всех</p>
       </div>
@@ -78,7 +78,7 @@ const linkItem = computed(() => {
   border-radius: 3px;
   &:hover {
     background-color: $blue3;
-    .controls {
+    .btns {
       opacity: 1;
     }
   }
@@ -111,7 +111,7 @@ const linkItem = computed(() => {
   }
 }
 
-.controls {
+.btns {
   position: absolute;
   right: 17px;
   top: 50%;
@@ -120,11 +120,11 @@ const linkItem = computed(() => {
   align-items: center;
   opacity: 0;
   transition: 0.2s;
-  .control {
+  &__item {
     cursor: pointer;
     display: flex;
     align-items: center;
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     &:not(:last-child) {
       margin-right: 25px;
     }
@@ -132,6 +132,7 @@ const linkItem = computed(() => {
       width: 18px;
       height: 18px;
       margin-right: 12px;
+      flex: 0 0 auto;
     }
     p {
       font-size: 13px;

@@ -1,6 +1,5 @@
 import { AxiosInstance } from 'axios';
 import { FavoriteDto, TFavoritesData } from './types';
-import { TMessage } from '~/api/types';
 
 export const FavoriteApi = (instance: AxiosInstance) => ({
   async getAll() {
@@ -8,7 +7,7 @@ export const FavoriteApi = (instance: AxiosInstance) => ({
     return data;
   },
   async addOrRemove(dto: FavoriteDto) {
-    const { data } = await instance.post<FavoriteDto, { data: TMessage }>(
+    const { data } = await instance.post<FavoriteDto, { data: boolean }>(
       '/favorites',
       dto,
     );

@@ -31,7 +31,7 @@
     >
       <!-- Заголовок -->
       <!-- Либо маленький -->
-      <h4 class="pretitle" v-if="isMiniTitle">{{ props.title }}</h4>
+      <h4 class="pretitle" v-if="props.isMiniTitle">{{ props.title }}</h4>
       <!-- Либо большой -->
       <h1 class="title" v-else>
         <span>{{ props.title }}</span>
@@ -61,15 +61,40 @@ const props = defineProps<{
 /**
  * Системные переменные ----------------
  */
-const config = useRuntimeConfig();
-const route = useRoute();
+const config = useRuntimeConfig(); // Конфиг
+const route = useRoute(); // Роут
+
+/**
+ * Вычислительные значения ----------------
+ */
+// Какой элемент отображать в sidebar изначально
+const getActiveItem = () => {
+  const namespace = config.public.sidebar;
+  const homePages = [
+    '/companies',
+    'moderation',
+    'my_works',
+    'sections',
+    'posts',
+  ];
+  const settingsPages = ['settings'];
+
+  if (homePages.some((page) => route.path.includes(page))) {
+    return namespace.list1.home;
+  }
+  if (settingsPages.some((page) => route.path.includes(page))) {
+    return namespace.list2.settings;
+  }
+
+  return null; // Если ни одно условие не выполняется, возвращаем null
+};
 
 /**
  * Пользовательские переменные ----------------
  */
 const popupRef = ref(null); // Ref-ссылка на элемент попапа
 const isShowPopup = ref<boolean>(route.path.includes('/companies/') || true); // Показывать попап сайдара или нет
-const activeItem = ref<string | null>(null); // Активный элемент в сайдаре
+const activeItem = ref<string | null>(getActiveItem()); // Активный элемент в сайдаре
 
 /**
  * Хуки ----------------

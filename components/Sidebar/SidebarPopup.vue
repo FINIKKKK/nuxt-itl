@@ -153,6 +153,7 @@ const innerItems = [
         icon: 'glasses',
         label: 'На модерации',
         link: `${companyStore.activeCompanySlug}/moderation`,
+        isShow: companyStore.activeCompany?.pivot.role_id === 1,
       },
       {
         icon: 'favorite',
@@ -194,11 +195,6 @@ const innerItems = [
         icon: 'user',
         label: 'Соотрудники',
         link: `${companyStore.activeCompanySlug}/settings/employees`,
-      },
-      {
-        icon: 'tag',
-        label: 'Внешние интеграции',
-        link: `${companyStore.activeCompanySlug}/settings/integrations`,
       },
     ],
   },
@@ -342,7 +338,7 @@ const { data: sections } = useAsyncData(async () => {
   }
 }
 
-.popup.search {
+.sidebar__popup.search {
   width: 550px;
   .input {
     input {

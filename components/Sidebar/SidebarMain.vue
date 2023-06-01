@@ -19,22 +19,22 @@
       >
         <!--
           Элемент навигации в списке
-          + Если
+          + В зависимости от условия, показывать или скрывать
          -->
         <li
           v-show="isShowItem(item)"
           v-for="(item, index) in itemsList"
           class="item"
           :class="{
-            active: activeItem === item, // Если это активный элемент
-            link: isToolTip(item), // Если это ссылка
+            active: props.activeItem === item, // Если это активный элемент
+            link: isTooltip(item), // Если это ссылка
           }"
           :key="index"
-          @click="emits('setActiveItem', item)"
+          @click="setActiveItem(item)"
         >
           <!-- Если это tooltip, то показывать ссылку -->
           <a
-            v-if="isToolTip(item)"
+            v-if="isTooltip(item)"
             href="https://help.itl.wiki/public/section/30"
             target="_blank"
           >
@@ -76,31 +76,61 @@ const companyStore = useCompanyStore(); // Хранилище активной �
 const route = useRoute(); // Роут
 
 /**
- * Вычисляемые значения ----------------
- */
-// Показываеть элемент сайдбара
-const isShowItem = computed(() => (item: string) => {
-  return (
-    // Если есть активная компания
-    // Если элемент tooltip
-    // Если элемент user
-    companyStore.activeCompany ||
-    item === config.public.sidebar.list2.tooltip ||
-    item === config.public.sidebar.list2.user
-  );
-});
-// Если элемент это tooltip
-const isToolTip = computed(
-  () => (item: string) => item === config.public.sidebar.list2.tooltip,
-);
-
-/**
  * Пользовательские переменные ----------------
  */
 // Массив элементов сайдбара
 const items = Object.values(config.public.sidebar).map((list) =>
   Object.values(list).map((name) => name as string),
 );
+
+/**
+ * Вычисляемые значения ----------------
+ */
+// Показываеть элемент сайдбара
+const isShowItem = computed(() => (item: string) => {
+  // Получаем роль пользователя в компании
+  const role = companyStore.activeCompany?.pivot.role_id;
+
+  // Если есть активная компания, то показываем только tooltip и профиль
+  if (
+    companyStore.activeCompany ||
+    item === config.public.sidebar.list2.tooltip ||
+    item === config.public.sidebar.list2.user
+  ) {
+    // Если роль - модератор
+    if (role === 1) {
+      // Показываем всё
+      return true;
+    }
+    // Если роль - админ
+    else if (role === 2) {
+      // Не показываем только настройки
+      return item !== config.public.sidebar.list2.settings;
+    }
+    // Если роль - обычный пользователь
+    else {
+      // Не показываем добавление элементов и настройки
+      return !(
+        item === config.public.sidebar.list1.add ||
+        item === config.public.sidebar.list2.settings
+      );
+    }
+  }
+});
+// Если элемент это tooltip
+const isTooltip = computed(
+  () => (item: string) => item === config.public.sidebar.list2.tooltip,
+);
+
+/**
+ * Методы ----------------
+ */
+// Установить активный элемент в сайдбаре
+const setActiveItem = (item: string) => {
+  if (item !== config.public.sidebar.list2.tooltip) {
+    emits('setActiveItem', item);
+  }
+};
 </script>
 
 <!-- ----------------------------------------------------- -->

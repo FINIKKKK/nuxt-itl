@@ -13,6 +13,7 @@ export type TCompany = TBase & {
   slug: string;
   user_id: number;
   users_count: number;
+  pivot: [role_id: number];
 };
 
 export type CompanyDto = {

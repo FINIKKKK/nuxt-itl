@@ -1,6 +1,5 @@
 import { AxiosInstance } from 'axios';
 import { LikeDto, TLikesData } from './types';
-import { TMessage } from '~/api/types';
 
 export const LikeApi = (instance: AxiosInstance) => ({
   async getAll() {
@@ -8,7 +7,7 @@ export const LikeApi = (instance: AxiosInstance) => ({
     return data;
   },
   async addOrRemove(dto: LikeDto) {
-    const { data } = await instance.post<LikeDto, { data: TMessage }>(
+    const { data } = await instance.post<LikeDto, { data: boolean }>(
       '/likes',
       dto,
     );
