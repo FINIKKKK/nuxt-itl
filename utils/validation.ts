@@ -37,10 +37,27 @@ export const CompanyScheme = yup.object().shape({
 });
 
 export const AddUsersScheme = yup.object().shape({
-  email: yup
+  emails: yup
     .string()
-    .email('Введите правильный адрес электронной почты')
-    .transform((value) => value.trim().replace(/,+$/, '')),
+    .required('Прежде заполните поле')
+    .test(
+      'valid-emails',
+      'Введите правильный адрес электронной почты или несколько адресов через запятую',
+      function (value) {
+        if (!value) {
+          // Поле пустое, ничего не вводили
+          return true;
+        }
+        // Разделяем введенные адреса по запятой
+        const emailList = value.split(',');
+        // Проверяем каждый адрес на валидность
+        const isValid = emailList.every((email) => {
+          const trimmedEmail = email.trim();
+          return yup.string().email().isValidSync(trimmedEmail);
+        });
+        return isValid;
+      },
+    ),
 });
 
 export const PostScheme = yup.object().shape({

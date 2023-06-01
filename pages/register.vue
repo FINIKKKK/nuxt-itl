@@ -35,7 +35,7 @@
       />
       <Input
         placeholder="Пароль"
-        :isPassword="true"
+        type="password"
         v-model="passwordValue"
         :errors="errorsValidate['password']"
       />

@@ -80,7 +80,7 @@ const onSubmit = async () => {
     // Сохраняем в хранилище компании
     userStore.addCompany(data);
     // Перенаправляем на страницу добавления пользователей
-    await router.push('/add_users');
+    await router.push(`/companies/${data.slug}/add_users`);
   });
 };
 </script>

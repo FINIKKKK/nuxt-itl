@@ -4,12 +4,7 @@
     <svg-icon :name="props.type === 'section' ? 'folder' : 'document2'" />
     <!-- Заголовок -->
     <div class="item__info">
-      <NuxtLink
-        :to="`/company/${data.company.slug}/${
-          props.type === 'section' ? 'sections' : 'posts'
-        }/${props.data.id}`"
-        >{{ props.data.title }}
-      </NuxtLink>
+      <NuxtLink :to="linkItem"> {{ props.data.title }}</NuxtLink>
       <!-- Дата -->
       <div
         class="date"
@@ -40,6 +35,18 @@ const props = defineProps<{
  * Системные переменные ----------------
  */
 const companyStore = useCompanyStore(); // Хранилище активной компании
+
+/**
+ * Вычисляемые значения ----------------
+ */
+// Ссылка элемента
+const linkItem = computed(() => {
+  return `/companies/${
+    props.data.company
+      ? props.data.company.slug
+      : companyStore.activeCompany?.slug
+  }/${props.type === 'section' ? 'sections' : 'posts'}/${props.data.id}`;
+});
 </script>
 
 <!-- ----------------------------------------------------- -->

@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="main" :title="navTitle" :isMiniTitle="true">
-    <div v-if="item">
+    <div v-if="props.data">
       <!--------------------------------------
       Элементы управления 
       ---------------------------------------->
@@ -10,7 +10,7 @@
           class="control"
           :to="`${companyStore.activeCompanySlug}/${
             type === 'post' ? 'posts' : 'sections'
-          }/edit/${item?.id}`"
+          }/edit/${props.data?.id}`"
         >
           <svg-icon name="edit" />
         </NuxtLink>
@@ -30,12 +30,12 @@
         <svg-icon
           v-if="type === 'post'"
           class="favorite"
-          :name="isFavorite || item.isFavorite ? 'favorite2' : 'favorite'"
+          :name="isFavorite || props.data.isFavorite ? 'favorite2' : 'favorite'"
           @click="onFavorite"
           :class="{ disabled: isLoading }"
         />
         <!-- Заголовок -->
-        <h1 class="title">{{ item.title }}</h1>
+        <h1 class="title">{{ props.data.title }}</h1>
       </div>
 
       <!--------------------------------------
@@ -46,78 +46,25 @@
         <li class="post__info-item">
           Автор:
           <span>{{
-            `${item?.author.firstName} ${item?.author.lastName}`
+            `${props.data?.author.firstName} ${props.data?.author.lastName}`
           }}</span>
         </li>
         <!-- Время -->
         <li
           class="post__info-item"
-          v-html="useDateString(item.created_at, item.updated_at)"
+          v-html="useDateString(props.data.created_at, props.data.updated_at)"
         ></li>
       </ul>
 
       <!--------------------------------------
       Тело элемента
       ---------------------------------------->
-      <Body class="body" :data="item.body" />
+      <!--      <Body class="body" :data="props.data.body" />-->
 
       <!--------------------------------------
-      Дополнительные элементы
+      Слот шаблона
       ---------------------------------------->
-      <div v-if="type === 'post'" class="post__footer">
-        <!-- Кнопка лайка" -->
-        <div class="like" @click="onLike" :class="{ disabled: isLoading }">
-          <svg-icon :name="isLike || item.isLike ? 'like2' : 'like'" />
-          <p>Мне нравиться</p>
-        </div>
-        <!-- Тэги -->
-        <ul class="tags">
-          <li class="tag">Мой тег</li>
-          <li class="tag">Мой тег</li>
-        </ul>
-      </div>
-
-      <!--------------------------------------
-      Комментарии
-      ---------------------------------------->
-      <Comments v-if="type === 'post'" :post_id="route.params.id" />
-
-      <!--------------------------------------
-      Разделы и статьи в текущем разделе
-      ---------------------------------------->
-      <div v-if="type === 'section'" class="works">
-        <ul class="items">
-          <li class="item" v-for="section in item.data.sections">
-            <svg-icon name="folder" />
-            <div class="item__info">
-              <NuxtLink
-                :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
-                >{{ section.title }}
-              </NuxtLink>
-              <div
-                class="date"
-                v-html="useDateString(section.created_at, section.updated_at)"
-              ></div>
-              ё
-            </div>
-          </li>
-        </ul>
-        <ul class="items">
-          <li class="item" v-for="post in item.data.posts">
-            <svg-icon name="document" />
-            <div class="item__info">
-              <NuxtLink
-                :to="`${companyStore.activeCompanySlug}/posts/${post.id}`"
-                >{{ post.title }}
-              </NuxtLink>
-              <div
-                class="date"
-                v-html="useDateString(post.created_at, post.updated_at)"
-              ></div>
-            </div>
-          </li>
-        </ul>
-      </div>
+      <slot />
     </div>
   </NuxtLayout>
 </template>
@@ -130,12 +77,15 @@ import { Api } from '~/api';
 import { useDateString } from '~/hooks/useDateString';
 import Body from '~/components/Editor/Body.vue';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import { TSection } from '~/api/models/section/types';
+import { TPost } from '~/api/models/post/types';
 
 /**
  * Пропсы ----------------
  */
 const props = defineProps<{
   type: 'post' | 'section';
+  data: TSection | TPost;
 }>();
 
 /**
@@ -152,24 +102,10 @@ const isLoading = ref(false); // Загрузка
 const postId = Number(route.params.id); // id поста
 
 /**
- * Хуки ----------------
- */
-// Получение данных элемента
-const { data: item } = useAsyncData(async () => {
-  if (props.type == 'post') {
-    const { data } = await Api().post.getOne(postId);
-    return data;
-  } else {
-    const { data } = await Api().section.getOne(postId);
-    return data;
-  }
-});
-
-/**
  * Пользовательские переменные ----------------
  */
-const isFavorite = ref(item.value?.isFavorite); // Избранное
-const isLike = ref(item.value?.isLike); // Лайк
+const isFavorite = ref(props.data?.isFavorite); // Избранное
+// const isLike = ref(props.data?.isLike); // Лайк
 
 /**
  * Вычисляемые значения ----------------
@@ -178,12 +114,12 @@ const isLike = ref(item.value?.isLike); // Лайк
 const navTitle = computed(() => {
   // Если тип - пост
   if (props.type === 'post') {
-    return item.value?.section.title;
+    return props.data?.section.title;
   }
   // Если тип - раздел
   else {
     // Если есть родительский раздел или его нет
-    return item.value?.parent ? item.value?.parent.title : item.value?.title;
+    return props.data?.parent ? props.data?.parent.title : props.data?.title;
   }
 });
 
@@ -235,26 +171,6 @@ const onFavorite = async () => {
     await Api().favorite.addOrRemove(dto);
     // Установить, как отмеченное
     isFavorite.value = !isFavorite.value;
-  } catch (err) {
-    console.warn(err);
-  } finally {
-    isLoading.value = false; // Убираем загрузку
-  }
-};
-
-// Лайкнуть или убрать лайк
-const onLike = async () => {
-  try {
-    isLoading.value = true; // Ставим загрузку
-    // Объект с данными
-    const dto = {
-      item_id: postId,
-      type: 'post',
-    };
-    // Добавить в понравившееся
-    await Api().like.addOrRemove(dto);
-    // Установить, как отмеченное
-    isLike.value = !isLike.value;
   } catch (err) {
     console.warn(err);
   } finally {

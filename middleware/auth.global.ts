@@ -38,7 +38,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       } catch (err: any) {
         // Если токен не валидный
         // Обнуляем токен
-        // token.value = '';
+        token.value = '';
       }
     }
   }

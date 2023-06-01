@@ -6,7 +6,7 @@
       <h3 class="title">{{ company.name }}.itl.wiki</h3>
       <!-- Список элементы -->
       <template v-for="favorite in company.favorites">
-        <Item :data="favorite.favoriable" :type="favorite.type" />
+        <Item :data="favorite.favoritable" :type="favorite.type" />
       </template>
     </div>
   </NuxtLayout>

@@ -8,6 +8,7 @@ import { SectionApi } from '~/api/models/section';
 import { UserApi } from '~/api/models/user';
 import { LikeApi } from '~/api/models/like';
 import { FavoriteApi } from '~/api/models/favorite';
+import { RolesApi } from '~/api/models/role';
 
 export type ApiReturnTypes = {
   auth: ReturnType<typeof AuthApi>;
@@ -19,6 +20,7 @@ export type ApiReturnTypes = {
   user: ReturnType<typeof UserApi>;
   favorite: ReturnType<typeof FavoriteApi>;
   like: ReturnType<typeof LikeApi>;
+  role: ReturnType<typeof RolesApi>;
 };
 
 export const Api = (): ApiReturnTypes => {
@@ -41,5 +43,6 @@ export const Api = (): ApiReturnTypes => {
     user: UserApi(instance),
     favorite: FavoriteApi(instance),
     like: LikeApi(instance),
+    role: RolesApi(instance),
   };
 };
