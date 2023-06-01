@@ -5,7 +5,7 @@
       <Warning
         v-if="errors.length || successMessage"
         :errors="errors as string[]"
-        :successMessage="successMessage"
+        :successMessage="successMessage as string"
       />
 
       <!-- Форма -->
@@ -47,19 +47,15 @@ import Input from '~/components/UI/Input.vue';
 import { Api } from '~/api';
 
 /**
- * Системные переменные ----------------
- */
-const router = useRouter();
-
-/**
  * Пользовательские переменные ----------------
  */
 const emailsValue = ref(''); // Значение emails
-const successMessage = ref('');
+const successMessage = ref(''); // Сообщение при успешной отправке
 
 /**
- * Пользовательские переменные ----------------
+ * Получение данных ----------------
  */
+// Роли
 const { data: roles } = useAsyncData(async () => {
   const { data } = await Api().role.getAll();
   return data;
@@ -74,6 +70,7 @@ const { errorsValidate, errors, isLoading, validateForm } = useFormValidation();
 /**
  * Методы ----------------
  */
+// Выслать приглашения
 const onSubmit = () => {
   // Убираем warning
   successMessage.value = '';

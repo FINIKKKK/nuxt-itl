@@ -26,5 +26,6 @@ export type PostDto = {
 };
 
 export type PostParams = {
-  section_id: number;
+  section_id?: number;
+  company_id?: number;
 };

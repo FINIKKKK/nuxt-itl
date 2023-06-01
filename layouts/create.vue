@@ -173,6 +173,7 @@ const onSubmit = async () => {
         title: titleValue.value,
         body: bodyValue.value,
         section_id: selectValue.value,
+        company_id: companyStore.activeCompany?.id,
       };
       // Проверка валидации
       await PostScheme.validate(dto, { abortEarly: false });
@@ -207,6 +208,13 @@ const onSubmit = async () => {
           Number(route.params.id),
           dto,
         );
+        // Перенапрвляем пользователя на страницу раздела
+        await router.push(
+          `${companyStore.activeCompanySlug}/sections/${data.id}`,
+        );
+      } else {
+        // Создаем раздел
+        const { data } = await Api().section.create(dto);
         // Перенапрвляем пользователя на страницу раздела
         await router.push(
           `${companyStore.activeCompanySlug}/sections/${data.id}`,

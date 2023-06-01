@@ -1,5 +1,5 @@
 <template>
-  <li class="item">
+  <div class="item">
     <!-- Иконка -->
     <svg-icon :name="props.type === 'section' ? 'folder' : 'document2'" />
     <!-- Заголовок -->
@@ -11,7 +11,7 @@
         v-html="useDateString(props.data.created_at, props.data.updated_at)"
       ></div>
     </div>
-  </li>
+  </div>
 </template>
 
 <!-- ----------------------------------------------------- -->
