@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="main" title="Мои работы">
+  <NuxtLayout name="main" title="На модерации">
     <!-- Список статьей -->
     <ul class="items">
       <template v-for="post in posts">
@@ -14,8 +14,8 @@
 <!-- ----------------------------------------------------- -->
 
 <script lang="ts" setup>
-import { Api } from '~/api';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import { Api } from '~/api';
 
 /**
  * Системные переменные ----------------
@@ -25,12 +25,12 @@ const companyStore = useCompanyStore(); // Хранилище активной �
 /**
  * Получение данных ----------------
  */
-// Мои посты
+// Посты на модерации
 const { data: posts } = useAsyncData(async () => {
   const params = {
     company_id: companyStore.activeCompany?.id,
   };
-  const { data } = await Api().post.getMine(params);
+  const { data } = await Api().post.getModeration(params);
   return data;
 });
 </script>

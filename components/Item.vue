@@ -4,12 +4,28 @@
     <svg-icon :name="props.type === 'section' ? 'folder' : 'document2'" />
     <!-- Заголовок -->
     <div class="item__info">
-      <NuxtLink :to="linkItem"> {{ props.data.title }}</NuxtLink>
+      <NuxtLink :to="linkItem">
+        {{ props.data.title }}
+        <span v-if="props.data.onModeration" class="tag">На модерации</span>
+      </NuxtLink>
       <!-- Дата -->
       <div
         class="date"
         v-html="useDateString(props.data.created_at, props.data.updated_at)"
       ></div>
+    </div>
+
+    <!-- Элементы управления -->
+    <div class="controls">
+      <NuxtLink :to="`${linkItem}/edit`" class="control">
+        <svg-icon name="edit" />
+        <p>Правка</p>
+      </NuxtLink>
+      <!-- Доступ -->
+      <div class="control">
+        <svg-icon name="lock" />
+        <p>У всех</p>
+      </div>
     </div>
   </div>
 </template>
@@ -54,6 +70,7 @@ const linkItem = computed(() => {
 
 <style lang="scss" scoped>
 .item {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 9px 12px;
@@ -61,6 +78,9 @@ const linkItem = computed(() => {
   border-radius: 3px;
   &:hover {
     background-color: $blue3;
+    .controls {
+      opacity: 1;
+    }
   }
   svg {
     width: 32px;
@@ -68,6 +88,7 @@ const linkItem = computed(() => {
     margin-right: 15px;
   }
   a {
+    margin-bottom: 5px;
     &:hover {
       text-decoration: none;
     }
@@ -78,6 +99,49 @@ const linkItem = computed(() => {
     color: $gray;
     span {
       color: $black;
+    }
+  }
+  .tag {
+    background-color: $blue5;
+    border-radius: 2px;
+    font-size: 11px;
+    padding: 6px 9px;
+    color: $black;
+    margin-left: 12px;
+  }
+}
+
+.controls {
+  position: absolute;
+  right: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: 0.2s;
+  .control {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    &:not(:last-child) {
+      margin-right: 25px;
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+    }
+    p {
+      font-size: 13px;
+      transition: 0.3s;
+      color: $black;
+    }
+    &:hover {
+      p {
+        color: $blue;
+      }
     }
   }
 }

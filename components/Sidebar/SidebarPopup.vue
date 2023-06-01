@@ -150,6 +150,11 @@ const innerItems = [
         link: `${companyStore.activeCompanySlug}/my_works`,
       },
       {
+        icon: 'glasses',
+        label: 'На модерации',
+        link: `${companyStore.activeCompanySlug}/moderation`,
+      },
+      {
         icon: 'favorite',
         label: 'Закладки',
         link: `/account/favorites`,

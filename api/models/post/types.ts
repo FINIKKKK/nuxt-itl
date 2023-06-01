@@ -2,6 +2,7 @@ import { OutputBlockData } from '@editorjs/editorjs';
 import { TBase, TData } from '~/api/types';
 import { TUser } from '../user/types';
 import { TSection } from '~/api/models/section/types';
+import { TCompany } from '~/api/models/company/types';
 
 export type TPostsData = TData & {
   data: TPost[];
@@ -17,6 +18,8 @@ export type TPost = TBase & {
   section: TSection;
   isFavorite: boolean;
   isLike: boolean;
+  onModeration: boolean;
+  company?: TCompany;
 };
 
 export type PostDto = {
