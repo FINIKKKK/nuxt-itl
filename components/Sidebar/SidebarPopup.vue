@@ -7,7 +7,13 @@
     }"
   >
     <div class="inner">
-      <div class="main">
+      <div
+        class="main"
+        v-if="
+          activeItem !== config.public.sidebar.list1.home ||
+          (!route.path.includes('/sections') && !route.path.includes('/posts'))
+        "
+      >
         <h3 class="title">
           {{ innerItems.find((obj) => obj.name === activeItem)?.title }}
         </h3>
@@ -45,45 +51,67 @@
         />
       </div>
 
-      <div
-        v-if="activeItem === config.public.sidebar.list1.home"
-        class="sections"
-      >
-        <h3>Разделы</h3>
-        <ul>
-          <li
-            class="item"
-            v-if="activeItem"
-            v-for="section in sections"
-            :key="section.id"
-          >
-            <NuxtLink
-              :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
-            >
-              <svg-icon name="folder" />
-              <p>{{ section.title }}</p>
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
-      <!--      <div-->
-      <!--        v-if="posts && activeItem === config.public.sidebar.list1.home"-->
-      <!--        class="sections"-->
-      <!--      >-->
-      <!--        <h3>Статьи</h3>-->
-      <!--        <ul>-->
-      <!--          <li-->
-      <!--            class="item post"-->
-      <!--            v-if="activeItem"-->
-      <!--            v-for="post in posts"-->
-      <!--            :key="post.id"-->
-      <!--          >-->
-      <!--            <NuxtLink :to="`/posts/${post.id}`">-->
-      <!--              <p>{{ post.title }}</p>-->
-      <!--            </NuxtLink>-->
-      <!--          </li>-->
-      <!--        </ul>-->
-      <!--      </div>-->
+      <template v-if="activeItem === config.public.sidebar.list1.home">
+        <template
+          v-if="
+            !(route.path.includes('/sections') || route.path.includes('/posts'))
+          "
+        >
+          <div class="items">
+            <h3>Разделы</h3>
+            <ul>
+              <li
+                class="item"
+                v-if="activeItem"
+                v-for="section in sections"
+                :key="section.id"
+              >
+                <NuxtLink
+                  :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
+                >
+                  <svg-icon name="folder" />
+                  <p>{{ section.title }}</p>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </template>
+        <template v-else>
+          <div class="items">
+            <h3>{{ sectionItemsStore.sectionName }}</h3>
+            <ul>
+              <li
+                class="item"
+                v-if="activeItem"
+                v-for="section in sectionItemsStore.sections"
+                :key="section.id"
+              >
+                <NuxtLink
+                  :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
+                >
+                  <svg-icon name="folder" />
+                  <p>{{ section.title }}</p>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+          <div class="items">
+            <h3>Статьи</h3>
+            <ul>
+              <li
+                class="item post"
+                v-if="activeItem"
+                v-for="post in sectionItemsStore.posts"
+                :key="post.id"
+              >
+                <NuxtLink :to="`/posts/${post.id}`">
+                  <p>{{ post.title }}</p>
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </template>
+      </template>
     </div>
   </div>
 </template>
@@ -93,6 +121,7 @@ import { Api } from '~/api';
 import { useUserStore } from '~/stores/UserStore';
 import Input from '~/components/UI/Input.vue';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import { useSectionItemsStore } from '~/stores/SectionItemsStore';
 
 const props = defineProps<{
   isShow: boolean;
@@ -104,6 +133,7 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const companyStore = useCompanyStore();
+const sectionItemsStore = useSectionItemsStore();
 const token = useCookie('access_token');
 
 /**
@@ -167,14 +197,14 @@ const innerItems = [
     title: 'Создать',
     items: [
       {
-        icon: 'document',
-        label: 'Статью',
-        link: `${companyStore.activeCompanySlug}/posts/create`,
-      },
-      {
         icon: 'folder',
         label: 'Раздел',
         link: `${companyStore.activeCompanySlug}/sections/create`,
+      },
+      {
+        icon: 'document',
+        label: 'Статью',
+        link: `${companyStore.activeCompanySlug}/posts/create`,
       },
     ],
   },
@@ -224,6 +254,16 @@ const { data: sections } = useAsyncData(async () => {
       company_id: companyStore.activeCompany?.id,
     };
     const { data } = await Api().section.getAll(params);
+    return data;
+  }
+});
+
+const { data: posts } = useAsyncData(async () => {
+  if (route.path.includes('/companies')) {
+    const params = {
+      section_id: companyStore.activeCompany?.id,
+    };
+    const { data } = await Api().posts.getAll(params);
     return data;
   }
 });
@@ -329,7 +369,7 @@ const { data: sections } = useAsyncData(async () => {
   }
 }
 
-.sections {
+.items {
   margin-bottom: 49px;
   h3 {
     text-transform: uppercase;

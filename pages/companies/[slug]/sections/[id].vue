@@ -20,18 +20,26 @@
 
 <script lang="ts" setup>
 import { Api } from '~/api';
+import { useSectionItemsStore } from '~/stores/sectionItemsStore';
 
 /**
  * Системные переменные ----------------
  */
 const route = useRoute(); // Роут
+const sectionItemsStore = useSectionItemsStore(); // Хранилище элементов раздела
 
 /**
- * Хуки ----------------
+ * Получение данных ----------------
  */
-// Получение данных раздела
+// Данные раздела
 const { data: section } = useAsyncData(async () => {
   const { data } = await Api().section.getOne(Number(route.params.id));
+  // Устанавливаем данные в хранилище
+  sectionItemsStore.setSectionItems(
+    data.title,
+    data.data.sections,
+    data.data.posts,
+  );
   return data;
 });
 </script>

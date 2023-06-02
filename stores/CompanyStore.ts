@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref, Ref } from 'vue';
 import { TCompany } from '~/api/models/company/types';
+import { TSection } from '~/api/models/section/types';
+import { TPost } from '~/api/models/post/types';
 
 /**
  * --------------------------------
- * Хранилище автивной компании
+ * Хранилище активной компании
  * --------------------------------
  */
 export const useCompanyStore = defineStore('companyStore', () => {

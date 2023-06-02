@@ -103,16 +103,22 @@ const companyStore = useCompanyStore(); // Хранилище активной �
  */
 // Предупреждение прежде чем покинуть страницу
 onBeforeRouteLeave((to, from, next) => {
-  if (confirm('Вы уверены, что хотите покинуть эту страницу?')) {
+  if (to.path.includes('/posts/') || to.path.includes('/sections/')) {
     next();
   } else {
-    next(false);
+    if (confirm('Вы уверены, что хотите покинуть эту страницу?')) {
+      next();
+    } else {
+      next(false);
+    }
   }
 });
+
 // Получение разделов для списка
 const { data: sections } = useAsyncData(async () => {
   const params = {
     company_id: companyStore.activeCompany?.id,
+    ...(props.type == 'section' && { isParents: true }),
   };
   const { data } = await Api().section.getAll(params);
   return data;

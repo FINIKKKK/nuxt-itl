@@ -30,4 +30,5 @@ export type SectionDto = {
 
 export type SectionParams = {
   company_id: number;
+  isParents?: boolean;
 };
