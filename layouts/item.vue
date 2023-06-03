@@ -1,10 +1,11 @@
 <template>
+  <!-- Главный шаблон -->
   <NuxtLayout name="main" :title="navTitle" :isMiniTitle="true">
     <div v-if="props.data">
       <!--------------------------------------
       Элементы управления 
       ---------------------------------------->
-      <div class="controls">
+      <div class="controls" v-if="showControls">
         <!-- Редактировать -->
         <NuxtLink
           class="control"
@@ -30,7 +31,7 @@
         <svg-icon
           v-if="type === 'post'"
           class="favorite"
-          :name="isFavorite || props.data.isFavorite ? 'favorite2' : 'favorite'"
+          :name="isFavorite ? 'favorite2' : 'favorite'"
           @click="onFavorite"
           :class="{ disabled: isLoading }"
         />
@@ -79,6 +80,7 @@ import Body from '~/components/Editor/Body.vue';
 import { useCompanyStore } from '~/stores/CompanyStore';
 import { TSection } from '~/api/models/section/types';
 import { TPost } from '~/api/models/post/types';
+import { useUserStore } from '~/stores/UserStore';
 
 /**
  * Пропсы ----------------
@@ -93,19 +95,15 @@ const props = defineProps<{
  */
 const route = useRoute(); // Роут
 const router = useRouter(); // Роутер
-const companyStore = useCompanyStore(); // Роутер
+const companyStore = useCompanyStore(); // Хранилище активной компании
+const userStore = useUserStore(); // Хранилище пользователя
 
 /**
  * Пользовательские переменные ----------------
  */
 const isLoading = ref(false); // Загрузка
 const postId = Number(route.params.id); // id поста
-
-/**
- * Пользовательские переменные ----------------
- */
 const isFavorite = ref(props.data?.isFavorite); // Избранное
-// const isLike = ref(props.data?.isLike); // Лайк
 
 /**
  * Вычисляемые значения ----------------
@@ -122,6 +120,13 @@ const navTitle = computed(() => {
     return props.data?.parent ? props.data?.parent.title : props.data?.title;
   }
 });
+// Показывать ли элементы управления
+const showControls = () => {
+  return (
+    userStore.user?.id === props.data.author.id ||
+    companyStore.activeCompany?.pivot.role_id !== 3
+  );
+};
 
 /**
  * Методы ----------------
@@ -248,84 +253,5 @@ const onFavorite = async () => {
 
 .body {
   margin-bottom: 50px;
-}
-
-.post__footer {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 50px;
-}
-
-.like {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  svg {
-    width: 15px;
-    height: 20px;
-    margin-right: 8px;
-  }
-  p {
-    font-size: 13px;
-    transition: 0.3s;
-  }
-  &:hover {
-    p {
-      color: $blue;
-    }
-  }
-}
-
-.tags {
-  display: flex;
-  .tag {
-    &:not(:last-child) {
-      margin-right: 16px;
-    }
-    cursor: pointer;
-    font-size: 13px;
-    line-height: 16px;
-    padding: 8px 16px;
-    border: 1px solid $blue6;
-    border-radius: 2px;
-    transition: 0.3s;
-    &:hover {
-      background-color: $blue4;
-      border-color: transparent;
-      color: $blue;
-    }
-  }
-}
-
-.works {
-  margin-top: 33px;
-  .item {
-    display: flex;
-    align-items: center;
-    padding: 9px 12px;
-    transition: 0.3s;
-    border-radius: 3px;
-    &:hover {
-      background-color: $blue3;
-    }
-    svg {
-      width: 32px;
-      height: 32px;
-      margin-right: 15px;
-    }
-    a {
-      &:hover {
-        text-decoration: none;
-      }
-    }
-    .date {
-      font-size: 12px;
-      line-height: 14px;
-      color: $gray;
-      span {
-        color: $black;
-      }
-    }
-  }
 }
 </style>

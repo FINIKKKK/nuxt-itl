@@ -41,6 +41,7 @@
             <svg-icon :name="item" />
           </a>
 
+          <!-- Иначе просто иконку -->
           <svg-icon v-else :name="item" />
         </li>
       </ul>

@@ -35,12 +35,11 @@
   <!--------------------------------------
     Ошибки
   ---------------------------------------->
-  <div class="errors" v-if="errors.length">
-    <svg-icon name="warning" />
-    <div class="items">
-      <span v-for="error in errors">{{ error }}</span>
-    </div>
-  </div>
+  <Warning
+    v-if="Object.values(errorsValidate).flat().length"
+    :errors="Object.values(errorsValidate).flat() as string[]"
+    class="warning"
+  />
 
   <!--------------------------------------
     Форма создания
@@ -51,6 +50,7 @@
       :options="sections"
       type="page_create"
       class="select"
+      :initialValue="elem.value?.section.id"
       @selectedOption="setSelectValue"
     />
     <!-- Заголовок жлемента -->
@@ -64,6 +64,7 @@
         "
       />
     </div>
+
     <!-- Тело элемента -->
     <div class="input">
       <Editor @data-change="setBodyValue" :initialValue="bodyValue" />
@@ -81,6 +82,8 @@ import { PostScheme, SectionScheme } from '~/utils/validation';
 import { useUserStore } from '~/stores/UserStore';
 import { useCompanyStore } from '~/stores/CompanyStore';
 import Select from '~/components/UI/Select.vue';
+import Warning from '~/components/UI/Warning.vue';
+import { useFormValidation } from '~/hooks/useFormValidation';
 
 /**
  * Пропсы ----------------
@@ -97,6 +100,39 @@ const router = useRouter(); // Роутер
 const route = useRoute(); // Роуте
 const userStore = useUserStore(); // Хранилище пользователя
 const companyStore = useCompanyStore(); // Хранилище активной компании
+const id = Number(route.params.id); // Id для элемента
+
+/**
+ * Получение данных ----------------
+ */
+// Данных элемента
+const { data: elem } = useAsyncData(async () => {
+  if (props.isEdit) {
+    if (props.type == 'post') {
+      const { data } = await Api().post.getOne(id);
+      return data;
+    } else {
+      const { data } = await Api().section.getOne(id);
+      return data;
+    }
+  }
+});
+// Разделы для списка
+const { data: sections } = useAsyncData(async () => {
+  const params = {
+    company_id: companyStore.activeCompany?.id,
+    ...(props.type == 'post' && { isParents: true }),
+  };
+  const { data } = await Api().section.getAll(params);
+  return data;
+});
+
+/**
+ * Пользовательские переменные ----------------
+ */
+const titleValue = ref(elem.value?.title || ''); // Заголовок элемента
+const bodyValue = ref<OutputBlockData[]>(elem.value?.body || []); // Тело элемента
+const selectValue = ref<number | null>(elem.value?.section.id || null); // Селект элемента
 
 /**
  * Хуки ----------------
@@ -113,41 +149,13 @@ onBeforeRouteLeave((to, from, next) => {
     }
   }
 });
-
-// Получение разделов для списка
-const { data: sections } = useAsyncData(async () => {
-  const params = {
-    company_id: companyStore.activeCompany?.id,
-    ...(props.type == 'section' && { isParents: true }),
-  };
-  const { data } = await Api().section.getAll(params);
-  return data;
-});
-// Получение данных элемента
-const { data: elem } = useAsyncData(async () => {
-  if (props.isEdit) {
-    if (props.type == 'post') {
-      const { data } = await Api().post.getOne(Number(route.params.id));
-      return data;
-    } else {
-      const { data } = await Api().section.getOne(Number(route.params.id));
-      return data;
-    }
-  }
-});
-
-/**
- * Пользовательские переменные ----------------
- */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
-const titleValue = ref(elem.value?.title || ''); // Заголовок элемента
-const bodyValue = ref<OutputBlockData[]>(elem.value?.body || []); // Тело элемента
-const selectValue = ref<number | null>(null); // Селект элемента
+// Для обработки формы
+const { errorsValidate, isLoading, validateForm } = useFormValidation();
 
 /**
  * Вычисляемые значения ----------------
  */
+// Текст для кнопки
 const buttonTitle = computed(() => {
   if (props.type === 'post') {
     return props.isEdit ? 'Редактировать' : 'Опубликовать';
@@ -167,26 +175,24 @@ const setBodyValue = (value: OutputBlockData[]) => {
 const setSelectValue = (value: number) => {
   selectValue.value = value;
 };
+
 // Метод создания или редактирования элемента
 const onSubmit = async () => {
-  try {
-    errors.value = []; // Обнуляем ошибки
-    isLoading.value = true; // Ставим загрузку
-    // Если тип - пост
-    if (props.type === 'post') {
-      // Объект с данными
-      const dto = {
-        title: titleValue.value,
-        body: bodyValue.value,
-        section_id: selectValue.value,
-        company_id: companyStore.activeCompany?.id,
-      };
-      // Проверка валидации
-      await PostScheme.validate(dto, { abortEarly: false });
+  // Если тип - пост
+  if (props.type === 'post') {
+    // Объект с данными
+    const dto = {
+      title: titleValue.value,
+      body: bodyValue.value,
+      section_id: selectValue.value,
+      company_id: companyStore.activeCompany?.id,
+    };
+    // Вызываем хук для обрабоки формы
+    validateForm(dto, PostScheme, async () => {
       // Если это редактирование
       if (props.isEdit) {
         // Редактируем пост
-        const { data } = await Api().post.update(Number(route.params.id), dto);
+        const { data } = await Api().post.update(id, dto);
         // Перенапрвляем пользователя на страницу поста
         await router.push(`${companyStore.activeCompanySlug}/posts/${data.id}`);
       } else {
@@ -195,25 +201,24 @@ const onSubmit = async () => {
         // Перенапрвляем пользователя на страницу поста
         await router.push(`${companyStore.activeCompanySlug}/posts/${data.id}`);
       }
-    }
-    // Если тип - раздел
-    else if (props.type === 'section') {
-      // Объект с данными
-      const dto = {
-        title: titleValue.value,
-        body: bodyValue.value,
-        company_id: companyStore.activeCompany?.id,
-        ...(selectValue.value && { parent_id: selectValue.value }),
-      };
-      // Проверка валидации
-      await SectionScheme.validate(dto, { abortEarly: false });
+    });
+  }
+
+  // Если тип - раздел
+  else if (props.type === 'section') {
+    // Объект с данными
+    const dto = {
+      title: titleValue.value,
+      body: bodyValue.value,
+      company_id: companyStore.activeCompany?.id,
+      ...(selectValue.value && { parent_id: selectValue.value }),
+    };
+    // Вызываем хук для обрабоки формы
+    validateForm(dto, SectionScheme, async () => {
       // Если это редактирование
       if (props.isEdit) {
         // Редактируем раздел
-        const { data } = await Api().section.update(
-          Number(route.params.id),
-          dto,
-        );
+        const { data } = await Api().section.update(id, dto);
         // Перенапрвляем пользователя на страницу раздела
         await router.push(
           `${companyStore.activeCompanySlug}/sections/${data.id}`,
@@ -226,11 +231,7 @@ const onSubmit = async () => {
           `${companyStore.activeCompanySlug}/sections/${data.id}`,
         );
       }
-    }
-  } catch (err: any) {
-    errors.value = err.errors; // Выводим ошибки, если они есть
-  } finally {
-    isLoading.value = false; // Убираем загрузку
+    });
   }
 };
 </script>
@@ -301,23 +302,7 @@ const onSubmit = async () => {
   }
 }
 
-.errors {
-  background-color: $red2;
-  display: flex;
-  align-items: center;
-  padding: 21px 50px;
-  svg {
-    width: 23px;
-    height: 23px;
-    margin-right: 16px;
-    fill: $red;
-  }
-  .items span {
-    display: block;
-    color: $red;
-    &:not(:last-child) {
-      margin-bottom: 3px;
-    }
-  }
+.warning {
+  padding: 20px 100px;
 }
 </style>

@@ -6,7 +6,7 @@
     <div class="post__footer">
       <!-- Кнопка лайка" -->
       <div class="like" @click="onLike" :class="{ disabled: isLoading }">
-        <svg-icon :name="isLike || post.isLike ? 'like2' : 'like'" />
+        <svg-icon :name="isLike ? 'like2' : 'like'" />
         <p>Мне нравиться</p>
       </div>
       <!-- Тэги -->
@@ -32,21 +32,21 @@ import { Api } from '~/api';
 const route = useRoute(); // Роут
 
 /**
- * Пользоветльские переменные ----------------
+ * Получение данных ----------------
  */
 const postId = Number(route.params.id); // Id поста
-const isLoading = ref(false); // Загрузка
-
-/**
- * Хуки ----------------
- */
-// Получение данных поста
+// Данные поста
 const { data: post } = useAsyncData(async () => {
   const { data } = await Api().post.getOne(postId);
+  isLike.value = data.isLike;
   return data;
 });
 
-const isLike = ref(post.isLike); // Лайкнут ли пост?
+/**
+ * Пользовательские переменные ----------------
+ */
+const isLoading = ref(false); // Загрузка
+const isLike = ref(false); // Лайкнут ли пост?
 
 /**
  * Методы ----------------
@@ -72,4 +72,51 @@ const onLike = async () => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.post__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+
+.like {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  svg {
+    width: 15px;
+    height: 20px;
+    margin-right: 8px;
+  }
+  p {
+    font-size: 13px;
+    transition: 0.3s;
+  }
+  &:hover {
+    p {
+      color: $blue;
+    }
+  }
+}
+
+.tags {
+  display: flex;
+  .tag {
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 16px;
+    padding: 8px 16px;
+    border: 1px solid $blue6;
+    border-radius: 2px;
+    transition: 0.3s;
+    &:hover {
+      background-color: $blue4;
+      border-color: transparent;
+      color: $blue;
+    }
+  }
+}
+</style>

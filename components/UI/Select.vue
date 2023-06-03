@@ -53,17 +53,31 @@ export type TSelect = {
 const props = defineProps<{
   options: TSelect[];
   type?: string;
+  initialValue?: number;
 }>();
 
+/**
+ * События ----------------
+ */
 const emits = defineEmits(['selectedOption']);
+
+/**
+ * Вычисляемые значения ----------------
+ */
+// Изначальное значение select'a
+const initialValue = () => {
+  if (props.initialValue && props.type === 'page_create')
+    return props.options[props.initialValue];
+  else if (!props.initialValue && props.type === 'page_create') return null;
+  else return props.options[0];
+};
 
 /**
  * Пользовательские переменные ----------------
  */
 const isOpen = ref(false); // Открыт ли select
-const selectedOption = ref<TSelect | null>(
-  props.type === 'page_create' ? null : props.options[0],
-); // Выбранный элемент
+// Выбранный элемент
+const selectedOption = ref<TSelect | null>(initialValue() || null);
 const selectRef = ref(null); // Ссылка на html элемент select'a
 
 /**
