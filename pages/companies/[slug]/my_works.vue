@@ -16,6 +16,7 @@
 <script lang="ts" setup>
 import { Api } from '~/api';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import { useFetchData } from '~/hooks/useFetchData';
 
 /**
  * Системные переменные ----------------
@@ -26,12 +27,11 @@ const companyStore = useCompanyStore(); // Хранилище активной �
  * Получение данных ----------------
  */
 // Мои посты
-const { data: posts } = useAsyncData(async () => {
+const posts = useFetchData(async () => {
   const params = {
     company_id: companyStore.activeCompany?.id,
   };
-  const { data } = await Api().post.getMine(params);
-  return data;
+  return Api().post.getMine(params);
 });
 </script>
 

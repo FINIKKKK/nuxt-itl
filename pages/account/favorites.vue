@@ -17,14 +17,14 @@
 
 <script lang="ts" setup>
 import { Api } from '~/api';
+import { useFetchData } from '~/hooks/useFetchData';
 
 /**
  * Получени данных ----------------
  */
 // Список элементов в избранном
-const { data: favoritesList } = useAsyncData(async () => {
-  const { data } = await Api().favorite.getAll();
-  return data;
+const favoritesList = useFetchData(async () => {
+  return Api().favorite.getAll();
 });
 </script>
 

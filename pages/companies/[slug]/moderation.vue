@@ -16,6 +16,7 @@
 <script lang="ts" setup>
 import { useCompanyStore } from '~/stores/CompanyStore';
 import { Api } from '~/api';
+import { useFetchData } from '~/hooks/useFetchData';
 
 /**
  * Системные переменные ----------------
@@ -26,12 +27,11 @@ const companyStore = useCompanyStore(); // Хранилище активной �
  * Получение данных ----------------
  */
 // Посты на модерации
-const { data: posts } = useAsyncData(async () => {
+const posts = useFetchData(async () => {
   const params = {
     company_id: companyStore.activeCompany?.id,
   };
-  const { data } = await Api().post.getModeration(params);
-  return data;
+  return Api().post.getModeration(params);
 });
 </script>
 

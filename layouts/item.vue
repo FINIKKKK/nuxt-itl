@@ -81,6 +81,7 @@ import { useCompanyStore } from '~/stores/CompanyStore';
 import { TSection } from '~/api/models/section/types';
 import { TPost } from '~/api/models/post/types';
 import { useUserStore } from '~/stores/UserStore';
+import { useHandleErrors } from '~/hooks/useHandleErrors';
 
 /**
  * Пропсы ----------------
@@ -101,9 +102,14 @@ const userStore = useUserStore(); // Хранилище пользователя
 /**
  * Пользовательские переменные ----------------
  */
-const isLoading = ref(false); // Загрузка
 const postId = Number(route.params.id); // id поста
 const isFavorite = ref(props.data?.isFavorite); // Избранное
+
+/**
+ * Пользовательские переменные ----------------
+ */
+// Для оработки ошибок
+const { isLoading, handleSubmit } = useHandleErrors();
 
 /**
  * Вычисляемые значения ----------------
@@ -141,8 +147,8 @@ const onDelete = async () => {
 
   // Подтверждение удаления
   if (window.confirm(message)) {
-    try {
-      isLoading.value = true; // Ставим загрузку
+    // Хук для обботки ошибок
+    handleSubmit(async () => {
       // Проверка типа элемента
       if (props.type === 'post') {
         // Удаляем элемент
@@ -155,18 +161,14 @@ const onDelete = async () => {
         // Перенапрвляем пользователя
         await router.push('/posts');
       }
-    } catch (err) {
-      console.warn(err);
-    } finally {
-      isLoading.value = false; // Убираем загрузку
-    }
+    });
   }
 };
 
 // Добавление в избранное
 const onFavorite = async () => {
-  try {
-    isLoading.value = true; // Ставим загрузку
+  // Хук для обботки ошибок
+  handleSubmit(async () => {
     // Объект с данными
     const dto = {
       item_id: postId,
@@ -176,11 +178,7 @@ const onFavorite = async () => {
     await Api().favorite.addOrRemove(dto);
     // Установить, как отмеченное
     isFavorite.value = !isFavorite.value;
-  } catch (err) {
-    console.warn(err);
-  } finally {
-    isLoading.value = false; // Убираем загрузку
-  }
+  });
 };
 </script>
 
