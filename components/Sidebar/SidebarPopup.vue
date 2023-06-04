@@ -2,11 +2,14 @@
   <div
     class="sidebar__popup"
     :class="{
-      active: isShow && activeItem,
-      search: activeItem === config.public.sidebar.list1.search,
+      active: isShow && activeItem, // Если sidebar открыт
+      search: activeItem === config.public.sidebar.list1.search, // Если открыт поиск
     }"
   >
     <div class="inner">
+      <!--------------------------------------
+      Основные элементы активной группы
+      ---------------------------------------->
       <div
         class="main"
         v-if="
@@ -29,89 +32,20 @@
             ).items"
             :key="index"
           >
-            <li
-              class="item"
-              v-if="item.hasOwnProperty('isShow') ? item.isShow : true"
-            >
-              <NuxtLink v-if="item.link" :to="item.link">
-                <svg-icon :name="item.icon" />
-                <p>{{ item.label }}</p>
-              </NuxtLink>
-              <a v-else @click="item.method">
-                <svg-icon :name="item.icon" />
-                <p>{{ item.label }}</p>
-              </a>
-            </li>
+            <SidebarItem :data="item" />
           </template>
         </ul>
-        <Input
-          v-if="activeItem === config.public.sidebar.list1.search"
-          placeholder="Искать статью, раздел или пользователя"
-          class="input"
-        />
+
+        <!--------------------------------------
+        Поиск
+        ---------------------------------------->
+        <SidebarSearch :activeItem="activeItem" />
       </div>
 
-      <template v-if="activeItem === config.public.sidebar.list1.home">
-        <template
-          v-if="
-            !(route.path.includes('/sections') || route.path.includes('/posts'))
-          "
-        >
-          <div class="items">
-            <h3>Разделы</h3>
-            <ul>
-              <li
-                class="item"
-                v-if="activeItem"
-                v-for="section in sections"
-                :key="section.id"
-              >
-                <NuxtLink
-                  :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
-                >
-                  <svg-icon name="folder" />
-                  <p>{{ section.title }}</p>
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-        </template>
-        <template v-else>
-          <div class="items">
-            <h3>{{ sectionItemsStore.sectionName }}</h3>
-            <ul>
-              <li
-                class="item"
-                v-if="activeItem"
-                v-for="section in sectionItemsStore.sections"
-                :key="section.id"
-              >
-                <NuxtLink
-                  :to="`${companyStore.activeCompanySlug}/sections/${section.id}`"
-                >
-                  <svg-icon name="folder" />
-                  <p>{{ section.title }}</p>
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-          <div class="items">
-            <h3>Статьи</h3>
-            <ul>
-              <li
-                class="item post"
-                v-if="activeItem"
-                v-for="post in sectionItemsStore.posts"
-                :key="post.id"
-              >
-                <NuxtLink :to="`/posts/${post.id}`">
-                  <p>{{ post.title }}</p>
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-        </template>
-      </template>
+      <!--------------------------------------
+      Дополнительные элементы
+      ---------------------------------------->
+      <SidebarItems v-if="activeItem === config.public.sidebar.list1.home" />
     </div>
   </div>
 </template>
@@ -121,34 +55,45 @@ import { Api } from '~/api';
 import { useUserStore } from '~/stores/UserStore';
 import Input from '~/components/UI/Input.vue';
 import { useCompanyStore } from '~/stores/CompanyStore';
-import { useSectionItemsStore } from '~/stores/SectionItemsStore';
+import SidebarSearch from '~/components/Sidebar/SidebarSearch.vue';
+import SidebarItems from '~/components/Sidebar/SidebarItems.vue';
+import { useHandleErrors } from '~/hooks/useHandleErrors';
 
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
   isShow: boolean;
   activeItem: string | null;
 }>();
 
-const config = useRuntimeConfig();
-const route = useRoute();
-const router = useRouter();
-const userStore = useUserStore();
-const companyStore = useCompanyStore();
-const sectionItemsStore = useSectionItemsStore();
-const token = useCookie('access_token');
+/**
+ * Системные переменные ----------------
+ */
+const config = useRuntimeConfig(); // Конфиг
+const route = useRoute(); // Роут
+const router = useRouter(); // Роутер
+const userStore = useUserStore(); // Хранилище пользователя
+const companyStore = useCompanyStore(); // Хранилище активной компании
 
 /**
  * Пользовательские переменные ----------------
  */
-const errors = ref([]); // Ошибки
-const isLoading = ref(false); // Загрузка
+const token = useCookie('access_token'); // Достаем токен из куки
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки ошибок
+const { handleSubmit } = useHandleErrors();
 
 /**
  * Методы ----------------
  */
 // Выход из аккаунта
 const onLogout = async () => {
-  try {
-    isLoading.value = true; // Ставим загрузку
+  // Вызываем хук для обработки ошибок
+  handleSubmit(async () => {
     await Api().auth.logout(); // Выходим с аккаунта
     token.value = ''; // Обнуляем токен
     // Удаляем информацию из хранилища
@@ -156,14 +101,12 @@ const onLogout = async () => {
     userStore.companies = [];
     // Перенаправляем пользователя на страницу авторизации
     await router.push('/login');
-  } catch (err: any) {
-    alert('Ошибка при выходе из аккаунта');
-    console.warn(err);
-  } finally {
-    isLoading.value = false; // Убираем загрузку
-  }
+  });
 };
 
+/**
+ * Список элементов ----------------
+ */
 const innerItems = [
   {
     name: config.public.sidebar.list1.home,
@@ -244,36 +187,6 @@ const innerItems = [
     ],
   },
 ];
-const activeItemInList = ref(
-  innerItems.find((obj) => obj.name === props.activeItem) || innerItems[0],
-);
-
-const { data: sections } = useAsyncData(async () => {
-  if (route.path.includes('/companies')) {
-    const params = {
-      company_id: companyStore.activeCompany?.id,
-    };
-    const { data } = await Api().section.getAll(params);
-    return data;
-  }
-});
-
-const { data: posts } = useAsyncData(async () => {
-  if (route.path.includes('/companies')) {
-    const params = {
-      section_id: companyStore.activeCompany?.id,
-    };
-    const { data } = await Api().posts.getAll(params);
-    return data;
-  }
-});
-// const { data: posts } = useAsyncData(async () => {
-//   const params = {
-//     section_id: route.fullPath.includes('/sections/') && route.params.id,
-//   };
-//   const { data } = await Api().post.getAll(params);
-//   return data;
-// });
 </script>
 
 <style lang="scss" scoped>
@@ -308,65 +221,17 @@ const { data: posts } = useAsyncData(async () => {
   }
 }
 
-.main {
-  margin-bottom: 46px;
+.sidebar__popup.search {
+  width: 550px;
+  .input {
+    input {
+      font-size: 16px;
+    }
+  }
 }
 
-.item {
-  transition: 0.3s;
-  margin-left: -16px;
-  cursor: pointer;
-  &:not(:last-child) {
-    margin-bottom: 8px;
-  }
-  a {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: 3px;
-  }
-  svg {
-    width: 22px;
-    height: 22px;
-    margin-right: 15px;
-    fill: $blue;
-    flex: 0 0 auto;
-  }
-  p {
-    font-size: 14px;
-    line-height: 20px;
-    color: $black;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: 0.3s;
-  }
-  &:hover {
-    background-color: $blue4;
-    a {
-      text-decoration: none;
-    }
-    p {
-      color: $blue;
-    }
-    &.post {
-      a::before {
-        background-color: $blue;
-      }
-    }
-  }
-  &.post {
-    a::before {
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      margin-right: 10px;
-      background-color: $black;
-      flex: 0 0 auto;
-      transition: 0.3s;
-    }
-  }
+.main {
+  margin-bottom: 46px;
 }
 
 .items {
@@ -375,15 +240,6 @@ const { data: posts } = useAsyncData(async () => {
     text-transform: uppercase;
     color: $gray;
     margin-bottom: 18px;
-  }
-}
-
-.sidebar__popup.search {
-  width: 550px;
-  .input {
-    input {
-      font-size: 16px;
-    }
   }
 }
 </style>

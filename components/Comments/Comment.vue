@@ -1,12 +1,14 @@
 <template>
   <div class="comment">
-    <Avatar :user="comment.user" class="avatar" />
+    <Avatar :user="props.comment.author" class="avatar" />
     <div class="content">
       <div class="info">
         <div class="name">
-          {{ `${comment.user.firstName} ${comment.user.lastName}` }}
+          {{
+            `${props.comment.author.firstName} ${props.comment.author.lastName}`
+          }}
         </div>
-        <div class="date">{{ useFormatDate(comment.created_at) }}</div>
+        <div class="date">{{ useFormatDate(props.comment.created_at) }}</div>
       </div>
       <p class="comment__text">{{ comment.text }}</p>
       <div class="comment__controls">
@@ -16,30 +18,19 @@
         </div>
         <button
           class="btn-inline"
-          @click="isAnswer = !isAnswer"
+          @click="onReplyComment"
           :class="{ disabled: isLoading }"
         >
           {{ !isAnswer ? 'Ответить' : 'Закрыть' }}
         </button>
         <button
-          v-if="user?.id === comment.user.id"
+          v-if="userStore.user?.id === props.comment.author.id"
           class="btn-inline"
           @click="onDeleteComment"
           :class="{ disabled: isLoading }"
         >
           Удалить
         </button>
-      </div>
-      <div v-if="isAnswer" class="reply">
-        <Textarea
-          label="Добавить комментарий"
-          @value="setReplyValue"
-          isCommentInput
-        />
-        <button @click="onReplyComment" class="btn">Отправить</button>
-      </div>
-      <div class="children">
-        <Comment v-for="comment in comment.children" :comment="comment" />
       </div>
     </div>
   </div>
@@ -57,10 +48,12 @@ const props = defineProps<{
   comment: TComment;
 }>();
 
+const emits = defineEmits(['deleteComment', 'onReplyComment']);
+
 const isLoading = ref(false);
 const isAnswer = ref(false);
 const replyValue = ref('');
-const { user } = useUserStore();
+const userStore = useUserStore();
 
 const setReplyValue = (value: string) => {
   replyValue.value = value;
@@ -71,6 +64,7 @@ const onDeleteComment = async () => {
     try {
       isLoading.value = true;
       await Api().comment.remove(props.comment.id);
+      emits('deleteComment', props.comment.id);
     } catch (err) {
       console.warn(err);
       alert('Ошибка при удалении комментария');
@@ -80,20 +74,7 @@ const onDeleteComment = async () => {
   }
 };
 const onReplyComment = async () => {
-  try {
-    isLoading.value = true;
-    const dto = {
-      text: replyValue.value,
-      post_id: props.comment.post_id,
-      reply_id: props.comment.id,
-    };
-    await Api().comment.create(dto);
-  } catch (err) {
-    console.warn(err);
-    alert('Ошибка при ответе на комментарий');
-  } finally {
-    isLoading.value = false;
-  }
+  emits('replyComment', props.comment.author);
 };
 </script>
 

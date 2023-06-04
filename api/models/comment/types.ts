@@ -12,8 +12,8 @@ export type TComment = TBase & {
   text: string;
   post_id: number;
   user: TUser;
-  children: TComment[];
   isLike: boolean;
+  replyUser: TUser;
 };
 
 export type CommentDto = {

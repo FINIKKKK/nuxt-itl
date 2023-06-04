@@ -50,7 +50,6 @@
       :options="sections"
       type="page_create"
       class="select"
-      :initialValue="elem.value?.section.id"
       @selectedOption="setSelectValue"
     />
     <!-- Заголовок жлемента -->

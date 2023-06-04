@@ -31,7 +31,14 @@
   <!--------------------------------------
    Список комментариев
   -------------------------------------->
-  <Comment v-for="comment in comments" :key="comment.id" :comment="comment" />
+  comments{{ comments }}
+  <Comment
+    v-for="comment in comments"
+    :key="comment.id"
+    :comment="comment"
+    @deleteComment="onDeleteComment"
+    @replyComment="onReplyComment"
+  />
 </template>
 
 <!-- ----------------------------------------------------- -->
@@ -41,6 +48,7 @@
 import { Api } from '~/api';
 import Textarea from '~/components/UI/Textarea.vue';
 import Comment from '~/components/Comments/Comment.vue';
+import { TUser } from '~/api/models/user/types';
 
 const route = useRoute();
 
@@ -51,6 +59,7 @@ const isLoading = ref(false); // Загрузка
 const textareaRef = ref<HTMLTextAreaElement | null>(null); // Ссылка на html элемент поле ввода
 const commentValue = ref('');
 const postId = Number(route.params.id);
+const replyUser = ref(null);
 
 watch(commentValue, () => {
   if (textareaRef.value) {
@@ -74,6 +83,13 @@ const { data: comments } = useAsyncData(async () => {
 /**
  * Методы ----------------
  */
+const onDeleteComment = (value: number) => {
+  comments.value = comments.value.filter((obj) => obj.id !== value);
+};
+const onReplyComment = (value: TUser) => {
+  replyUser.value = value;
+  commentValue.value = `@${value.firstName} ${value.lastName}`;
+};
 // Создание комментария
 const onCreateComment = async () => {
   try {
