@@ -5,19 +5,19 @@
       placeholder="Имя"
       name="firstName"
       v-model="firstNameValue"
-      :errors="errorsValidate['firstName']"
+      :errors="errorsValidate['firstName'] || []"
     />
     <Input
       placeholder="Фамилия"
       name="lastName"
       v-model="lastNameValue"
-      :errors="errorsValidate['lastName']"
+      :errors="errorsValidate['lastName'] || []"
     />
     <Input
       placeholder="Email"
       name="email"
       v-model="emailValue"
-      :errors="errorsValidate['email']"
+      :errors="errorsValidate['email'] || []"
     />
     <button class="btn" :class="{ disabled: isLoading }">
       Сохранить настройки

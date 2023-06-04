@@ -26,6 +26,16 @@ export const useUserStore = defineStore('userStore', () => {
   const setCompanies = (obj: TCompany[]) => {
     companies.value = obj;
   };
+  // Обновить данные компании
+  const updateCompany = (id: number, obj: TCompany) => {
+    companies.value = companies.value.map((item) => {
+      if (item.id === id) {
+        // Обновление объекта
+        return obj;
+      }
+      return item;
+    });
+  };
   // Добавить компанию
   const addCompany = (obj: TCompany) => {
     companies.value.push(obj);
@@ -44,5 +54,6 @@ export const useUserStore = defineStore('userStore', () => {
     setCompanies,
     addCompany,
     setUserAvatar,
+    updateCompany,
   };
 });

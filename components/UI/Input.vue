@@ -56,7 +56,7 @@ import { useOutsideClick } from '~/hooks/useOutsideClick';
 const props = defineProps<{
   placeholder: string;
   modelValue: string;
-  errors: string;
+  errors: string[];
   type?: string;
 }>();
 

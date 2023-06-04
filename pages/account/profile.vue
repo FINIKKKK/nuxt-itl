@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="main" title="Профиль / Редактирование" :isMiniTitle="true">
+  <NuxtLayout name="main" title="Профиль / Редактирование" isMiniTitle="true">
     <!-- Отображение ошибок -->
     <Warning
       v-if="errors.length || successMessage"

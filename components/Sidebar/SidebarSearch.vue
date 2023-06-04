@@ -4,6 +4,7 @@
     placeholder="Искать статью, раздел или пользователя"
     class="input"
     v-model="searchValue"
+    :errors="[]"
   />
 </template>
 

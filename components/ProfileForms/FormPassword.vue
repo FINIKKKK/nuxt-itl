@@ -5,19 +5,19 @@
       placeholder="Текущий пароль"
       type="password"
       v-model="oldPasswordValue"
-      :errors="errorsValidate['old_password']"
+      :errors="errorsValidate['old_password'] || []"
     />
     <Input
       placeholder="Новый пароль"
       type="password"
       v-model="newPasswordValue"
-      :errors="errorsValidate['password']"
+      :errors="errorsValidate['password'] || []"
     />
     <Input
       placeholder="Повторить пароль"
       type="password"
       v-model="passwordConfirmValue"
-      :errors="errorsValidate['password_confirmation']"
+      :errors="errorsValidate['password_confirmation'] || []"
     />
     <button class="btn" :class="{ disabled: isLoading }">
       Сохранить настройки
@@ -80,12 +80,16 @@ const onChangePassword = async () => {
     emits('showWarningSuccess', 'Пароль успешно изменен');
     // Перемещаем пользователя на вверх
     const block = document.getElementById('scroll');
-    block?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (block && typeof block.scrollTo === 'function') {
+      block.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
   // Если, есть ошибки при отправке формы, то перемещаем пользователя на вверх
   if (errors.value.length) {
     const block = document.getElementById('scroll');
-    block?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (block && typeof block.scrollTo === 'function') {
+      block.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 };
 </script>

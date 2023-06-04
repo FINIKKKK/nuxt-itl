@@ -37,6 +37,7 @@ export const useFormValidation = () => {
       }
       // Обрабатываем ошибки колбека
       errors.value = err.response.data.message;
+      console.log('err', err.response.data.message);
       console.log(err);
     } finally {
       isLoading.value = false; // Убираем загрузку

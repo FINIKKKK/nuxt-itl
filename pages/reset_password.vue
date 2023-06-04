@@ -8,7 +8,7 @@
       <Input
         placeholder="Введите адрес электронной почты"
         v-model="emailValue"
-        :errors="errorsValidate['email']"
+        :errors="errorsValidate['email'] || []"
       />
       <button class="btn" :class="{ disabled: isLoading }">Продолжить</button>
     </form>

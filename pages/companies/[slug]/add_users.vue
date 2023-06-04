@@ -18,7 +18,7 @@
           name="email"
           placeholder="Введите e-mail адреса пользователей через запятую"
           v-model="emailsValue"
-          :errors="errorsValidate['emails']"
+          :errors="errorsValidate['emails'] || []"
         />
         <Select :options="roles" class="select" />
         <p class="link">

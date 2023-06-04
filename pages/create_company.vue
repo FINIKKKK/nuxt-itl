@@ -12,13 +12,13 @@
       <Input
         placeholder="Название вашей компании"
         v-model="nameValue"
-        :errors="errorsValidate['name']"
+        :errors="errorsValidate['name'] || []"
       />
       <Input
         placeholder="Адрес сайта"
         type="url_address"
         v-model="addressValue"
-        :errors="errorsValidate['url_address']"
+        :errors="errorsValidate['url_address'] || []"
       />
       <p class="link">
         Нажимая кнопку «Создать компанию» вы принимаете

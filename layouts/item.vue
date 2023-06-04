@@ -1,6 +1,6 @@
 <template>
   <!-- Главный шаблон -->
-  <NuxtLayout name="main" :title="navTitle" :isMiniTitle="true">
+  <NuxtLayout name="main" :title="navTitle" isMiniTitle="true">
     <div v-if="props.data">
       <!--------------------------------------
       Элементы управления 

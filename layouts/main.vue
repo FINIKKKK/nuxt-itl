@@ -72,18 +72,18 @@ const getActiveItem = () => {
   const namespace = config.public.sidebar;
   const homePages = [
     '/companies',
-    'moderation',
-    'my_works',
-    'sections',
-    'posts',
+    '/moderation',
+    '/my_works',
+    '/sections',
+    '/posts',
   ];
-  const settingsPages = ['settings'];
+  const settingsPages = ['/settings'];
 
-  if (homePages.some((page) => route.path.includes(page))) {
-    return namespace.list1.home;
-  }
   if (settingsPages.some((page) => route.path.includes(page))) {
     return namespace.list2.settings;
+  }
+  if (homePages.some((page) => route.path.includes(page))) {
+    return namespace.list1.home;
   }
 
   return null; // Если ни одно условие не выполняется, возвращаем null

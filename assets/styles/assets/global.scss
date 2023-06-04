@@ -80,6 +80,10 @@ svg {
     pointer-events: none;
     opacity: 0.5;
   }
+
+  &:focus {
+    background-color: darken($blue, 10%);
+  }
 }
 
 a.btn {

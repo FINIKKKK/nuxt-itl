@@ -12,12 +12,12 @@
       <Input
         placeholder="Email"
         v-model="emailValue"
-        :errors="errorsValidate['email']"
+        :errors="errorsValidate['email'] || []"
       />
       <Input
         placeholder="Пароль"
         v-model="passwordValue"
-        :errors="errorsValidate['password']"
+        :errors="errorsValidate['password'] || []"
         type="password"
       />
       <p class="link">

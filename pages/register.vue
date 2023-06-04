@@ -19,32 +19,32 @@
           placeholder="Имя"
           class="input"
           v-model="firstNameValue"
-          :errors="errorsValidate['firstName']"
+          :errors="errorsValidate['firstName'] || []"
         />
         <Input
           placeholder="Фамилия"
           class="input"
           v-model="lastNameValue"
-          :errors="errorsValidate['lastName']"
+          :errors="errorsValidate['lastName'] || []"
         />
       </div>
       <Input
         placeholder="Email"
         v-model="emailValue"
-        :errors="errorsValidate['email']"
+        :errors="errorsValidate['email'] || []"
       />
       <Input
         placeholder="Пароль"
         type="password"
         v-model="passwordValue"
-        :errors="errorsValidate['password']"
+        :errors="errorsValidate['password'] || []"
       />
       <Input
         name="password_confirmation"
         placeholder="Подтвердите пароль"
         type="password"
         v-model="passwordConfirmValue"
-        :errors="errorsValidate['password_confirmation']"
+        :errors="errorsValidate['password_confirmation'] || []"
       />
       <p class="link">
         Нажимая кнопку «Зарегистроваться» вы принимаете
