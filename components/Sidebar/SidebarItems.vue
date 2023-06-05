@@ -21,7 +21,7 @@
   <template v-else>
     <!-- Разделы -->
     <div class="items">
-      <h3>{{ sectionItemsStore.sectionName }}</h3>
+      <h3 class="title">{{ sectionItemsStore.sectionName }}</h3>
       <ul>
         <template
           v-for="section in sectionItemsStore.sections"
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Посты -->
-    <div class="items">
+    <div class="items" v-if="sectionItemsStore.posts?.length">
       <h3>Статьи</h3>
       <ul>
         <template v-for="post in sectionItemsStore.posts" :key="post.id">
@@ -80,6 +80,13 @@ const { data: sections } = useAsyncData(async () => {
 <style lang="scss" scoped>
 .items {
   margin-bottom: 49px;
+  .title {
+    color: $black;
+    text-transform: none;
+    font-size: 20px;
+    line-height: 23px;
+    margin-bottom: 30px;
+  }
   h3 {
     text-transform: uppercase;
     color: $gray;

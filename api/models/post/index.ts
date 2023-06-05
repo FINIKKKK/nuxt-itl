@@ -39,6 +39,12 @@ export const PostApi = (instance: AxiosInstance) => ({
     );
     return data;
   },
+  async removeFromModeration(id: number) {
+    const { data } = await instance.patch<{ data: TPostData }>(
+      `/posts/${id}/moderation`,
+    );
+    return data;
+  },
   async remove(id: number) {
     const { data } = await instance.delete<TMessage>(`/posts/${id}`);
     return data;

@@ -4,7 +4,7 @@
     <svg-icon :name="props.type === 'section' ? 'folder' : 'document2'" />
     <!-- Заголовок -->
     <div class="item__info">
-      <NuxtLink :to="linkItem">
+      <NuxtLink :to="linkItem()">
         {{ props.data.title }}
         <span v-if="props.data.onModeration" class="tag">На модерации</span>
       </NuxtLink>
@@ -16,13 +16,21 @@
     </div>
 
     <!-- Элементы управления -->
-    <div class="btns">
-      <NuxtLink :to="`${linkItem}/edit`" class="btns__item">
+    <div class="controls" v-if="showControls">
+      <div
+        v-if="route.path.includes('/moderation')"
+        class="btn control"
+        :class="{ disabled: isLoading }"
+        @click="onSubmit"
+      >
+        Опубликовать
+      </div>
+      <NuxtLink :to="linkItem(true)" class="control">
         <svg-icon name="edit" />
         <p>Правка</p>
       </NuxtLink>
       <!-- Доступ -->
-      <div class="btns__item">
+      <div class="control">
         <svg-icon name="lock" />
         <p>У всех</p>
       </div>
@@ -38,6 +46,9 @@ import { useDateString } from '~/hooks/useDateString';
 import { TPost } from '~/api/models/post/types';
 import { TSection } from '~/api/models/section/types';
 import { useCompanyStore } from '~/stores/CompanyStore';
+import { useHandleErrors } from '~/hooks/useHandleErrors';
+import { Api } from '~/api';
+import { useUserStore } from '~/stores/UserStore';
 
 /**
  * Пропсы ----------------
@@ -48,21 +59,56 @@ const props = defineProps<{
 }>();
 
 /**
+ * События ----------------
+ */
+const emits = defineEmits(['removeItem']); // Хранилище активной компании
+
+/**
  * Системные переменные ----------------
  */
+const route = useRoute(); // Роут
 const companyStore = useCompanyStore(); // Хранилище активной компании
+const userStore = useUserStore(); // Хранилище данных пользователя
 
 /**
  * Вычисляемые значения ----------------
  */
 // Ссылка элемента
-const linkItem = computed(() => {
+const linkItem = computed(() => (isEdit?: boolean) => {
   return `/companies/${
     props.data.company
       ? props.data.company.slug
       : companyStore.activeCompany?.slug
-  }/${props.type === 'section' ? 'sections' : 'posts'}/${props.data.id}`;
+  }/${props.type === 'section' ? 'sections' : 'posts'}${
+    isEdit ? '/edit' : ''
+  }/${props.data.id}`;
 });
+// Показывать элементы управления
+const showControls = computed(() => {
+  return (
+    userStore.user?.id === props.data.user_id &&
+    !route.path.includes('/sections')
+  );
+});
+
+/**
+ * Хуки ----------------
+ */
+// Для обработки ошибок
+const { isLoading, handleSubmit } = useHandleErrors();
+
+/**
+ * Методы ----------------
+ */
+// Удалить элемент из модерации
+const onSubmit = () => {
+  handleSubmit(async () => {
+    // Удалить элемент из модерации
+    await Api().post.removeFromModeration(props.data.id);
+    // События для удаления элемента из массива
+    emits('removeItem', props.data.id);
+  });
+};
 </script>
 
 <!-- ----------------------------------------------------- -->
@@ -78,7 +124,7 @@ const linkItem = computed(() => {
   border-radius: 3px;
   &:hover {
     background-color: $blue3;
-    .btns {
+    .controls {
       opacity: 1;
     }
   }
@@ -111,7 +157,7 @@ const linkItem = computed(() => {
   }
 }
 
-.btns {
+.controls {
   position: absolute;
   right: 17px;
   top: 50%;
@@ -120,7 +166,16 @@ const linkItem = computed(() => {
   align-items: center;
   opacity: 0;
   transition: 0.2s;
-  &__item {
+  .btn {
+    background-color: $blue5;
+    font-size: 13px;
+    padding: 5px 10px;
+    color: $blue;
+    &:hover {
+      background-color: $blue4;
+    }
+  }
+  .control {
     cursor: pointer;
     display: flex;
     align-items: center;

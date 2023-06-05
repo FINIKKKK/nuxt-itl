@@ -14,6 +14,7 @@ export type TPostData = TData & {
 export type TPost = TBase & {
   title: string;
   body: OutputBlockData[];
+  user_id: number;
   author: TUser;
   section: TSection;
   isFavorite: boolean;

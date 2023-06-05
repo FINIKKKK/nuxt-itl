@@ -6,7 +6,7 @@ import { useFormatDate } from '~/hooks/useFormatDate';
 export const useDateString = (createdAt: string, updatedAt: string) => {
   // Либо дата создания
   if (createdAt !== updatedAt) {
-    return `Обновлено: < style="color: #000000">${useFormatDate(
+    return `Обновлено: <span style="color: #000000">${useFormatDate(
       updatedAt,
     )}<span>`;
   }

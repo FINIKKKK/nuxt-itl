@@ -4,7 +4,7 @@
     <ul class="items">
       <template v-for="post in posts">
         <!-- Статья -->
-        <Item :data="post" type="post" />
+        <Item :data="post" type="post" @removeItem="removeItem" />
       </template>
     </ul>
   </NuxtLayout>
@@ -33,6 +33,14 @@ const posts = useFetchData(async () => {
   };
   return Api().post.getModeration(params);
 });
+
+/**
+ * Методы ----------------
+ */
+// Удалить элемент (событие)
+const removeItem = (value: number) => {
+  posts.value = posts.value.filter((obj) => obj.id !== value);
+};
 </script>
 
 <!-- ----------------------------------------------------- -->
