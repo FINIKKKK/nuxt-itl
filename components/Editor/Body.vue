@@ -139,7 +139,7 @@ const props = defineProps<{
     border-radius: 5px;
     font-family: 'Consolas', serif;
     background-color: $blue4;
-    color: $blue3;
+    color: $blue;
   }
 
   // list ###############
@@ -248,7 +248,7 @@ const props = defineProps<{
     padding: 15px 25px;
     border-radius: 15px;
     svg {
-      fill: $blue3;
+      fill: $blue;
       width: 25px;
       height: 25px;
       margin-right: 20px;
@@ -261,7 +261,8 @@ const props = defineProps<{
       color: $blue;
     }
     p {
-      color: $blue3;
+      margin-top: 15px;
+      color: $blue;
       text-align: right;
       font-weight: 700;
     }

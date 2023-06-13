@@ -31,13 +31,13 @@
   <!--------------------------------------
    Список комментариев
   -------------------------------------->
-  comments{{ comments }}
   <Comment
     v-for="comment in comments"
     :key="comment.id"
     :comment="comment"
     @deleteComment="onDeleteComment"
     @replyComment="onReplyComment"
+    @edit="onEditComment"
   />
 </template>
 
@@ -49,6 +49,8 @@ import { Api } from '~/api';
 import Textarea from '~/components/UI/Textarea.vue';
 import Comment from '~/components/Comments/Comment.vue';
 import { TUser } from '~/api/models/user/types';
+import { TComment } from '~/api/models/comment/types';
+import { post } from 'axios';
 
 const route = useRoute();
 
@@ -60,6 +62,7 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null); // Ссылка на 
 const commentValue = ref('');
 const postId = Number(route.params.id);
 const replyUser = ref(null);
+const isEdit = ref(null);
 
 watch(commentValue, () => {
   if (textareaRef.value) {
@@ -83,6 +86,10 @@ const { data: comments } = useAsyncData(async () => {
 /**
  * Методы ----------------
  */
+const onEditComment = (comment: TComment) => {
+  isEdit.value = comment.id;
+  commentValue.value = comment.text;
+};
 const onDeleteComment = (value: number) => {
   comments.value = comments.value.filter((obj) => obj.id !== value);
 };
@@ -97,10 +104,16 @@ const onCreateComment = async () => {
     const dto = {
       text: commentValue.value,
       post_id: postId,
+      replyUser: replyUser.value.id
     };
-    const { data } = await Api().comment.create(dto);
-    comments.value && comments.value.unshift(data);
-    commentValue.value = '';
+    if (isEdit.value) {
+      const { data } = await Api().comment.update(isEdit.value, dto);
+      commentValue.value = '';
+    } else {
+      const { data } = await Api().comment.create(dto);
+      comments.value && comments.value.unshift(data);
+      commentValue.value = '';
+    }
   } catch (err) {
     console.warn(err);
     alert('Ошибка при создании комментария');

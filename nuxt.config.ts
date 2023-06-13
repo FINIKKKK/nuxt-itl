@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  css: ['~/assets/styles/style.scss'],
+  css: ['@/assets/styles/style.scss'],
   modules: ['@pinia/nuxt', '@nuxtjs/svg-sprite'],
   vite: {
     css: {

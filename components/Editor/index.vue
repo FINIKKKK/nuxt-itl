@@ -99,6 +99,12 @@ watch(editorData, (newData) => {
   max-width: 900px;
 }
 
+.cdx-quote {
+  .cdx-input {
+    display: block;
+  }
+}
+
 .cdx-input {
   display: none;
 }

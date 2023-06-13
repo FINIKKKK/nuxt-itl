@@ -85,10 +85,7 @@ const linkItem = computed(() => (isEdit?: boolean) => {
 });
 // Показывать элементы управления
 const showControls = computed(() => {
-  return (
-    userStore.user?.id === props.data.user_id &&
-    !route.path.includes('/sections')
-  );
+  return !route.path.includes('/sections');
 });
 
 /**

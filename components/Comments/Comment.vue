@@ -1,6 +1,6 @@
 <template>
   <div class="comment">
-    <Avatar :user="props.comment.author" class="avatar" />
+    <Avatar :user="props.comment.author" class="avatar"/>
     <div class="content">
       <div class="info">
         <div class="name">
@@ -13,21 +13,29 @@
       <p class="comment__text">{{ comment.text }}</p>
       <div class="comment__controls">
         <div class="like">
-          <svg-icon name="like" />
+          <svg-icon name="like"/>
           0
         </div>
         <button
-          class="btn-inline"
-          @click="onReplyComment"
-          :class="{ disabled: isLoading }"
+            class="btn-inline"
+            @click="onReplyComment"
+            :class="{ disabled: isLoading }"
         >
           {{ !isAnswer ? 'Ответить' : 'Закрыть' }}
         </button>
         <button
-          v-if="userStore.user?.id === props.comment.author.id"
-          class="btn-inline"
-          @click="onDeleteComment"
-          :class="{ disabled: isLoading }"
+            v-if="userStore.user?.id === props.comment.author.id"
+            class="btn-inline"
+            @click="onEdit"
+            :class="{ disabled: isLoading }"
+        >
+          Редактировать
+        </button>
+        <button
+            v-if="userStore.user?.id === props.comment.author.id"
+            class="btn-inline"
+            @click="onDeleteComment"
+            :class="{ disabled: isLoading }"
         >
           Удалить
         </button>
@@ -41,14 +49,13 @@ import { useFormatDate } from '~/hooks/useFormatDate';
 import { Api } from '~/api';
 import { TComment } from '~/api/models/comment/types';
 import { useUserStore } from '~/stores/UserStore';
-import Textarea from '~/components/UI/Textarea.vue';
 import Avatar from '~/components/UI/Avatar.vue';
 
 const props = defineProps<{
   comment: TComment;
 }>();
 
-const emits = defineEmits(['deleteComment', 'onReplyComment']);
+const emits = defineEmits(['deleteComment', 'onReplyComment', 'edit']);
 
 const isLoading = ref(false);
 const isAnswer = ref(false);
@@ -59,6 +66,9 @@ const setReplyValue = (value: string) => {
   replyValue.value = value;
 };
 
+const onEdit = () => {
+  emits('edit', props.comment);
+}
 const onDeleteComment = async () => {
   if (window.confirm('Вы точно хотите удалить комментарий?')) {
     try {

@@ -86,6 +86,9 @@ const { data: sections } = useAsyncData(async () => {
     font-size: 20px;
     line-height: 23px;
     margin-bottom: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   h3 {
     text-transform: uppercase;

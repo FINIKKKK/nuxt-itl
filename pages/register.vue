@@ -115,6 +115,7 @@ const onSubmit = async () => {
       path: '/',
     });
     userStore.setUser(data.user); // Сохраняем в хранилище данные о пользователе
+    userStore.setCompanies([]); // Обнуляем компании
     await router.push('/create_company'); // Перенаправляем на страницу создания компании
   });
 };
