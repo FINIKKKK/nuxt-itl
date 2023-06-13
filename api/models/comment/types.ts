@@ -11,9 +11,10 @@ export type TCommentData = TData & {
 export type TComment = TBase & {
   text: string;
   post_id: number;
-  user: TUser;
+  author: TUser;
   isLike: boolean;
-  replyUser: TUser;
+  likesCount: number;
+  reply_user: TUser;
 };
 
 export type CommentDto = {

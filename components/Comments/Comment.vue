@@ -1,41 +1,66 @@
 <template>
   <div class="comment">
-    <Avatar :user="props.comment.author" class="avatar"/>
+    <!-- Аватарка -->
+    <Avatar :user="props.comment.author" class="avatar" />
+
     <div class="content">
+      <!-- Информация о комментарии -->
       <div class="info">
         <div class="name">
           {{
             `${props.comment.author.firstName} ${props.comment.author.lastName}`
           }}
         </div>
-        <div class="date">{{ useFormatDate(props.comment.created_at) }}</div>
+        <div class="date">{{ dateString }}</div>
       </div>
-      <p class="comment__text">{{ comment.text }}</p>
-      <div class="comment__controls">
-        <div class="like">
-          <svg-icon name="like"/>
-          0
-        </div>
-        <button
-            class="btn-inline"
-            @click="onReplyComment"
-            :class="{ disabled: isLoading }"
+
+      <!-- Текст -->
+      <p class="comment__text">
+        <span v-if="props.comment.reply_user"
+          >@{{
+            props.comment.reply_user.firstName +
+            ' ' +
+            props.comment.reply_user.lastName
+          }}</span
         >
-          {{ !isAnswer ? 'Ответить' : 'Закрыть' }}
-        </button>
+        {{ props.comment.text }}
+      </p>
+
+      <!--------------------------------------
+      Кнопки
+      ---------------------------------------->
+      <div class="comment__controls">
+        <!-- Лайки -->
+        <div class="like">
+          <svg-icon name="like" />
+          {{ props.comment.likesCount }}
+        </div>
+
+        <!-- Ответить на комментарий -->
         <button
-            v-if="userStore.user?.id === props.comment.author.id"
-            class="btn-inline"
-            @click="onEdit"
-            :class="{ disabled: isLoading }"
+          class="btn-inline"
+          @click="emits('replyComment', props.comment.author)"
+          :class="{ disabled: isLoading }"
+        >
+          Ответить
+        </button>
+
+        <!-- Редактировать комментарий -->
+        <button
+          v-if="userStore.user?.id === props.comment.author.id"
+          class="btn-inline"
+          @click="emits('edit', props.comment)"
+          :class="{ disabled: isLoading }"
         >
           Редактировать
         </button>
+
+        <!-- Удалить комментарий -->
         <button
-            v-if="userStore.user?.id === props.comment.author.id"
-            class="btn-inline"
-            @click="onDeleteComment"
-            :class="{ disabled: isLoading }"
+          v-if="userStore.user?.id === props.comment.author.id"
+          class="btn-inline"
+          @click="onDeleteComment"
+          :class="{ disabled: isLoading }"
         >
           Удалить
         </button>
@@ -44,55 +69,74 @@
   </div>
 </template>
 
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
+
 <script lang="ts" setup>
-import { useFormatDate } from '~/hooks/useFormatDate';
 import { Api } from '~/api';
 import { TComment } from '~/api/models/comment/types';
 import { useUserStore } from '~/stores/UserStore';
 import Avatar from '~/components/UI/Avatar.vue';
+import { useFormatDate } from '~/hooks/useFormatDate';
+import { useHandleErrors } from '~/hooks/useHandleErrors';
 
+/**
+ * Пропсы ----------------
+ */
 const props = defineProps<{
   comment: TComment;
 }>();
 
+/**
+ * События ----------------
+ */
 const emits = defineEmits(['deleteComment', 'onReplyComment', 'edit']);
 
-const isLoading = ref(false);
-const isAnswer = ref(false);
-const replyValue = ref('');
-const userStore = useUserStore();
+/**
+ * Системные переменные ----------------
+ */
+const userStore = useUserStore(); // Храниолище данных пользователя
 
-const setReplyValue = (value: string) => {
-  replyValue.value = value;
-};
+/**
+ * Хуки ----------------
+ */
+const { isLoading, handleSubmit } = useHandleErrors(); // Для обработки ошибок
 
-const onEdit = () => {
-  emits('edit', props.comment);
-}
+/**
+ * Вычисляемые значения ----------------
+ */
+// Дата комментария
+const dateString = computed(() => {
+  if (props.comment.created_at !== props.comment.updated_at) {
+    return `${useFormatDate(props.comment.updated_at)} (Изменено)`;
+  } else {
+    return useFormatDate(props.comment.created_at);
+  }
+});
+
+/**
+ * Методы ----------------
+ */
+// Удалить комментарий
 const onDeleteComment = async () => {
   if (window.confirm('Вы точно хотите удалить комментарий?')) {
-    try {
-      isLoading.value = true;
+    handleSubmit(async () => {
       await Api().comment.remove(props.comment.id);
       emits('deleteComment', props.comment.id);
-    } catch (err) {
-      console.warn(err);
-      alert('Ошибка при удалении комментария');
-    } finally {
-      isLoading.value = false;
-    }
+    });
   }
 };
-const onReplyComment = async () => {
-  emits('replyComment', props.comment.author);
-};
 </script>
+
+<!-- ----------------------------------------------------- -->
+<!-- ----------------------------------------------------- -->
 
 <style lang="scss" scoped>
 .comment {
   display: flex;
   align-items: flex-start;
   width: 100%;
+
   &:not(:last-child) {
     margin-bottom: 40px;
   }
@@ -116,6 +160,10 @@ const onReplyComment = async () => {
 
 .comment__text {
   margin-bottom: 32px;
+
+  span {
+    color: $blue;
+  }
 }
 
 .like {
@@ -123,9 +171,11 @@ const onReplyComment = async () => {
   align-items: center;
   margin-right: 24px;
   cursor: pointer;
+
   &:hover {
     color: $blue;
   }
+
   svg {
     width: 18px;
     height: 18px;
@@ -137,6 +187,7 @@ const onReplyComment = async () => {
   display: flex;
   align-self: center;
   width: 100%;
+
   button {
     &:not(:last-child) {
       margin-right: 32px;
@@ -148,6 +199,7 @@ const onReplyComment = async () => {
   margin-top: 25px;
   position: relative;
   width: 100%;
+
   .btn {
     position: absolute;
     top: 11px;
@@ -156,6 +208,7 @@ const onReplyComment = async () => {
     color: $white;
     padding: 8px 22px;
     font-size: 12px;
+
     &:hover {
       background-color: darken($blue, 10%);
     }

@@ -23,8 +23,14 @@
         class="btn btn3"
         :class="{ disabled: isLoading }"
       >
-        Отправить
+        {{ isEdit ? 'Изменить' : 'Отправить' }}
       </button>
+      <svg-icon
+        v-if="isEdit"
+        name="close"
+        class="cancel"
+        @click="onCancelEdit"
+      />
     </div>
   </div>
 
@@ -50,7 +56,6 @@ import Textarea from '~/components/UI/Textarea.vue';
 import Comment from '~/components/Comments/Comment.vue';
 import { TUser } from '~/api/models/user/types';
 import { TComment } from '~/api/models/comment/types';
-import { post } from 'axios';
 
 const route = useRoute();
 
@@ -97,6 +102,12 @@ const onReplyComment = (value: TUser) => {
   replyUser.value = value;
   commentValue.value = `@${value.firstName} ${value.lastName}`;
 };
+
+const onCancelEdit = () => {
+  isEdit.value = false;
+  commentValue.value = '';
+};
+
 // Создание комментария
 const onCreateComment = async () => {
   try {
@@ -104,17 +115,19 @@ const onCreateComment = async () => {
     const dto = {
       text: commentValue.value,
       post_id: postId,
-      replyUser: replyUser.value.id
+      ...(replyUser.value && { replyUser: replyUser.value.id }),
     };
     if (isEdit.value) {
       const { data } = await Api().comment.update(isEdit.value, dto);
+      comments.value = comments.value.map(obj => isEdit.value === obj.id ? data : obj );
       commentValue.value = '';
     } else {
       const { data } = await Api().comment.create(dto);
-      comments.value && comments.value.unshift(data);
+      comments.value.unshift(data);
       commentValue.value = '';
     }
   } catch (err) {
+    console.log('gg');
     console.warn(err);
     alert('Ошибка при создании комментария');
   } finally {
@@ -130,6 +143,7 @@ const onCreateComment = async () => {
 .field {
   position: relative;
   margin-bottom: 40px;
+
   textarea {
     font-size: 14px;
     line-height: 20px;
@@ -137,6 +151,7 @@ const onCreateComment = async () => {
     padding: 25px 165px 15px 7px;
     overflow: hidden;
   }
+
   .field__controls {
     display: flex;
     align-items: center;
@@ -144,11 +159,25 @@ const onCreateComment = async () => {
     top: 11px;
     right: 15px;
   }
+
   .set_user {
     width: 17px;
     height: 21px;
     cursor: pointer;
     margin-right: 23px;
+  }
+
+  .cancel {
+    margin-left: 15px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    opacity: 0.5;
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 </style>
