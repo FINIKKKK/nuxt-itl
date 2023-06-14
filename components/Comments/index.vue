@@ -4,13 +4,16 @@
   -------------------------------------->
   <div class="field">
     <!-- Поле ввода -->
-    <div class="input">
+    <div class="input" :class="{ reply: replyUser }">
       <div class="inner">
+        <span v-if="replyUser" ref="refReplyUser">{{ replyUserValue }}</span>
         <textarea
           placeholder="Добавить комментарий"
           ref="textareaRef"
           v-model="commentValue"
           maxlength="250"
+          :style="{ textIndent: replyUserWidth + 'px' }"
+          @keydown="handleKeyDown"
         ></textarea>
       </div>
     </div>
@@ -68,12 +71,24 @@ const commentValue = ref('');
 const postId = Number(route.params.id);
 const replyUser = ref(null);
 const isEdit = ref(null);
+const refReplyUser = ref(null);
+// const replyUserWidth = ref(0);
+const replyUserValue = computed(() => {
+  return `@${replyUser.value.firstName} ${replyUser.value.lastName}`;
+});
 
 watch(commentValue, () => {
   if (textareaRef.value) {
     textareaRef.value.style.height = '65px';
     textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`;
   }
+});
+// watch(replyUser, () => {
+//   console.log(replyUser.value);
+//   replyUserWidth.value = refReplyUser.value ? refReplyUser.value.offsetWidth : 0;
+// });
+const replyUserWidth = computed(() => {
+    return refReplyUser.value ? refReplyUser.value.offsetWidth : 0;
 });
 
 /**
@@ -91,6 +106,11 @@ const { data: comments } = useAsyncData(async () => {
 /**
  * Методы ----------------
  */
+const handleKeyDown = (e) => {
+  if (e.keyCode === 8 && !commentValue.value) {
+    replyUser.value = null;
+  }
+};
 const onEditComment = (comment: TComment) => {
   isEdit.value = comment.id;
   commentValue.value = comment.text;
@@ -100,7 +120,7 @@ const onDeleteComment = (value: number) => {
 };
 const onReplyComment = (value: TUser) => {
   replyUser.value = value;
-  commentValue.value = `@${value.firstName} ${value.lastName}`;
+  textareaRef.value.focus();
 };
 
 const onCancelEdit = () => {
@@ -119,7 +139,9 @@ const onCreateComment = async () => {
     };
     if (isEdit.value) {
       const { data } = await Api().comment.update(isEdit.value, dto);
-      comments.value = comments.value.map(obj => isEdit.value === obj.id ? data : obj );
+      comments.value = comments.value.map((obj) =>
+        isEdit.value === obj.id ? data : obj,
+      );
       commentValue.value = '';
     } else {
       const { data } = await Api().comment.create(dto);
@@ -144,12 +166,24 @@ const onCreateComment = async () => {
   position: relative;
   margin-bottom: 40px;
 
+  .input {
+    position: relative;
+
+    span {
+      position: absolute;
+      top: 25px;
+      left: 5px;
+      z-index: 10;
+    }
+  }
+
   textarea {
     font-size: 14px;
     line-height: 20px;
     height: 65px;
     padding: 25px 165px 15px 7px;
     overflow: hidden;
+    transition: none;
   }
 
   .field__controls {

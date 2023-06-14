@@ -31,9 +31,9 @@
       ---------------------------------------->
       <div class="comment__controls">
         <!-- Лайки -->
-        <div class="like">
-          <svg-icon name="like" />
-          {{ props.comment.likesCount }}
+        <div class="like" @click="onLike">
+          <svg-icon :name="isLike ? 'like2' : 'like'" />
+          {{ likesCount }}
         </div>
 
         <!-- Ответить на комментарий -->
@@ -98,6 +98,11 @@ const emits = defineEmits(['deleteComment', 'onReplyComment', 'edit']);
 const userStore = useUserStore(); // Храниолище данных пользователя
 
 /**
+ * Пользовательские переменные ----------------
+ */
+const isLike = ref(props.comment.isLike); // Есть ли лайк?
+
+/**
  * Хуки ----------------
  */
 const { isLoading, handleSubmit } = useHandleErrors(); // Для обработки ошибок
@@ -125,6 +130,25 @@ const onDeleteComment = async () => {
       emits('deleteComment', props.comment.id);
     });
   }
+};
+const onLike = async () => {
+    handleSubmit(async () => {
+      // Объект с данными
+      const dto = {
+        item_id: props.comment.id,
+        type: 'comment',
+      };
+      // Добавить в понравившееся
+      await Api().like.addOrRemove(dto);
+      // Установить, как отмеченное
+      isLike.value = !isLike.value;
+      // Увеличиваем или уменьшаем количество лайков
+      if(!isLike.value) {
+        likesCount.value -= 1;
+      } else {
+        likesCount.value += 1;
+      }
+    });
 };
 </script>
 
